@@ -1,4 +1,8 @@
+package util;
+
+import gui.ServerConfigWindow;
 import java.net.*;
+import javax.swing.JFrame;
 
 /**
  * TheTitanic Server Side Main Class
@@ -24,9 +28,17 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        ServerConfigWindow configWindow = new ServerConfigWindow();
+        configWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        configWindow.setVisible(true);
+    }
+
+    public static void startServer(){
+        System.out.println("Starting the Titanic game server...");
         connections = new ConnectionContainer();
         try{
             server = new ServerSocket(DEFAULT_PORT);
+            System.out.println("Waiting for incoming connections...");
             while(true){
                 Socket newClient = server.accept();
                 connections.add(newClient);
@@ -39,4 +51,10 @@ public class Main {
         }
     }
 
+}
+
+class MainServerThread implements Runnable {
+    public void run(){
+        Main.startServer();
+    }
 }
