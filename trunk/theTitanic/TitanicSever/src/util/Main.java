@@ -9,6 +9,30 @@ import javax.swing.JFrame;
  * @author DANON [Anton Danshin]
  */
 public class Main {
+    
+    private static ServerConfigWindow configWindow = null;
+    /**
+     * Program entry point
+     * @param args the command line arguments
+     */
+    public static void main(String[] args) {
+        java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                configWindow = new ServerConfigWindow();
+                configWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                configWindow.setVisible(true);
+            }
+        });
+    }
+
+    public static void startServer(){
+        Thread t = new Thread(new MainServerThread());
+        t.start();
+    }
+
+}
+
+class MainServerThread implements Runnable {
     /**
      * Contains all currently active connections
      */
@@ -22,15 +46,9 @@ public class Main {
      * Default port for incoming connections
      */
     static final int DEFAULT_PORT = 10000;
-
-    /**
-     * Program entry point
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        ServerConfigWindow configWindow = new ServerConfigWindow();
-        configWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        configWindow.setVisible(true);
+    
+    public void run(){
+        startServer();
     }
 
     public static void startServer(){
@@ -51,10 +69,4 @@ public class Main {
         }
     }
 
-}
-
-class MainServerThread implements Runnable {
-    public void run(){
-        Main.startServer();
-    }
 }
