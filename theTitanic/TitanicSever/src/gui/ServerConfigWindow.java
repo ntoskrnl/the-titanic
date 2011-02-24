@@ -6,12 +6,9 @@
 
 package gui;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.InputVerifier;
 import javax.swing.JComponent;
 import javax.swing.JSpinner;
-import javax.swing.UIManager;
 import util.*;
 
 /**
@@ -22,12 +19,18 @@ public class ServerConfigWindow extends javax.swing.JFrame {
 
     /** Creates new form ServerConfigWindow */
     public ServerConfigWindow() {
-        try {
-            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-        } catch (Exception ex){
-            System.err.println("Could not find CrossPlatformLookAndFeel.");
-        }
         initComponents();
+        portSpinner.setValue(ServerConfiguration.serverPort);
+        serverTypeComboBox.setSelectedIndex(ServerConfiguration.proxyType);
+        proxyHostTextField.setText(ServerConfiguration.proxyHost);
+        proxyPortSpinner.setValue(ServerConfiguration.proxyPort);
+    }
+
+    public void applyConfigChanges(){
+        ServerConfiguration.serverPort = (Integer)portSpinner.getValue();
+        ServerConfiguration.proxyType = serverTypeComboBox.getSelectedIndex();
+        ServerConfiguration.proxyPort = (Integer)proxyPortSpinner.getValue();
+        ServerConfiguration.proxyHost = proxyHostTextField.getText();
     }
 
     /** This method is called from within the constructor to
@@ -55,6 +58,11 @@ public class ServerConfigWindow extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("the Titanic Server Configuration");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                serverConfigWindowClosing(evt);
+            }
+        });
 
         jButton1.setText("Start Server!");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -204,6 +212,7 @@ public class ServerConfigWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        applyConfigChanges();
         Main.startServer();
         jButton2.setEnabled(true);
         jButton1.setEnabled(false);
@@ -226,6 +235,11 @@ public class ServerConfigWindow extends javax.swing.JFrame {
         jButton2.setEnabled(false);
         jButton1.setEnabled(true);
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void serverConfigWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_serverConfigWindowClosing
+        applyConfigChanges();
+        ServerConfiguration.savePreferences();
+    }//GEN-LAST:event_serverConfigWindowClosing
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
