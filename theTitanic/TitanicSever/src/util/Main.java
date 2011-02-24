@@ -79,6 +79,13 @@ class MainServerThread implements Runnable {
         System.out.println("Starting the Titanic game server on port "+ServerConfiguration.serverPort+"...");
         connections = new ConnectionContainer();
         try{
+            SocketAddress addr = new InetSocketAddress(ServerConfiguration.proxyHost, ServerConfiguration.proxyPort);
+            
+            if(ServerConfiguration.proxyType==2||ServerConfiguration.proxyType==1){
+                System.setProperty("socksProxyHost",ServerConfiguration.proxyHost);
+                System.setProperty("socksProxyPort",""+ServerConfiguration.proxyPort);
+            }
+ 
             server = new ServerSocket(ServerConfiguration.serverPort);
             server.setSoTimeout(1000);
             System.out.println("Waiting for incoming connections...");
