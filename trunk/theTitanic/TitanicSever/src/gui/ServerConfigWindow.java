@@ -6,9 +6,6 @@
 
 package gui;
 
-import javax.swing.InputVerifier;
-import javax.swing.JComponent;
-import javax.swing.JSpinner;
 import util.*;
 
 /**
@@ -104,8 +101,7 @@ public class ServerConfigWindow extends javax.swing.JFrame {
 
         jLabel1.setText("Listen port:");
 
-        portSpinner.setInputVerifier(new PortInputVerifier());
-        portSpinner.setValue(10000);
+        portSpinner.setModel(new javax.swing.SpinnerNumberModel(10000, 1, 65535, 1));
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Proxy Server"));
 
@@ -113,8 +109,8 @@ public class ServerConfigWindow extends javax.swing.JFrame {
 
         jLabel3.setText("Port:");
 
+        proxyPortSpinner.setModel(new javax.swing.SpinnerNumberModel(8081, 1, 65535, 1));
         proxyPortSpinner.setEnabled(false);
-        proxyPortSpinner.setInputVerifier(new PortInputVerifier());
 
         proxyHostTextField.setEnabled(false);
 
@@ -256,16 +252,5 @@ public class ServerConfigWindow extends javax.swing.JFrame {
     private javax.swing.JSpinner proxyPortSpinner;
     private javax.swing.JComboBox serverTypeComboBox;
     // End of variables declaration//GEN-END:variables
-
-}
-
-class PortInputVerifier extends InputVerifier {
-
-    @Override
-    public boolean verify(JComponent input) {
-        JSpinner s = (JSpinner) input;
-        int val = (Integer)s.getValue();
-        return (val<65536)&&val>=0;
-    }
 
 }

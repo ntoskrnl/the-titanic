@@ -59,8 +59,6 @@ public class Main {
         return mainServerThread;
     }
 
-
-
 }
 
 class MainServerThread implements Runnable {
@@ -72,11 +70,6 @@ class MainServerThread implements Runnable {
      * ServerSocket to accept incoming connections
      */
     static ServerSocket server;
-
-    /**
-     * Default port for incoming connections
-     */
-    static final int DEFAULT_PORT = 10000;
     
     public void run(){
         startServer();
@@ -86,7 +79,7 @@ class MainServerThread implements Runnable {
         System.out.println("Starting the Titanic game server...");
         connections = new ConnectionContainer();
         try{
-            server = new ServerSocket(DEFAULT_PORT);
+            server = new ServerSocket(ServerConfiguration.serverPort);
             System.out.println("Waiting for incoming connections...");
             while(true){
                 if(Thread.currentThread().isInterrupted()) break;
