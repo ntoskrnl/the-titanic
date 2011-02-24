@@ -1,7 +1,10 @@
 package util;
 
 import gui.ServerConfigWindow;
+import java.io.IOException;
 import java.net.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 
 /**
@@ -11,6 +14,7 @@ import javax.swing.JFrame;
 public class Main {
     
     private static ServerConfigWindow configWindow = null;
+    private static Thread mainServerThread = null;
     /**
      * Program entry point
      * @param args the command line arguments
@@ -26,8 +30,12 @@ public class Main {
     }
 
     public static void startServer(){
-        Thread t = new Thread(new MainServerThread());
-        t.start();
+        mainServerThread = new Thread(new MainServerThread());
+        mainServerThread.start();
+    }
+
+    public static Thread getMainServerThread(){
+        return mainServerThread;
     }
 
 }
@@ -58,7 +66,9 @@ class MainServerThread implements Runnable {
             server = new ServerSocket(DEFAULT_PORT);
             System.out.println("Waiting for incoming connections...");
             while(true){
+                if(Thread.currentThread().isInterrupted()) break;
                 Socket newClient = server.accept();
+                if(Thread.currentThread().isInterrupted()) break;
                 connections.add(newClient);
                 System.out.println(System.currentTimeMillis()+"\tNew client has just connected to the server!");
             }
@@ -66,6 +76,11 @@ class MainServerThread implements Runnable {
             //Error
             System.out.println("Error!");
             System.err.println(ex);
+        }
+        try {
+            server.close();
+        } catch (IOException ex) {
+            Logger.getLogger(MainServerThread.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
