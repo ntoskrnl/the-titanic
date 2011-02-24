@@ -76,15 +76,21 @@ class MainServerThread implements Runnable {
     }
 
     public static void startServer(){
-        System.out.println("Starting the Titanic game server...");
+        System.out.println("Starting the Titanic game server on port "+ServerConfiguration.serverPort+"...");
         connections = new ConnectionContainer();
         try{
             server = new ServerSocket(ServerConfiguration.serverPort);
+            server.setSoTimeout(1000);
             System.out.println("Waiting for incoming connections...");
             while(true){
-                if(Thread.currentThread().isInterrupted()) break;
-                Socket newClient = server.accept();
-                if(Thread.currentThread().isInterrupted()) break;
+                Socket newClient = null;
+                try{
+                    newClient = server.accept();
+                } catch(SocketTimeoutException ex){
+                   if(Thread.currentThread().isInterrupted()) break;
+                   else continue;
+                }
+
                 connections.add(newClient);
                 System.out.println(System.currentTimeMillis()+"\tNew client has just connected to the server!");
             }
@@ -98,6 +104,7 @@ class MainServerThread implements Runnable {
         } catch (IOException ex) {
             Logger.getLogger(MainServerThread.class.getName()).log(Level.SEVERE, null, ex);
         }
+        System.out.println("Server stopped.");
     }
 
 }
