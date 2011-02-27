@@ -39,6 +39,6 @@ On the server side there will be one basic thread waiting incomming connection. 
 To be Done!
 
 ==Project participants==
- * Anton Danshin (server, GUI, web-site)
- * Alexander Kozlovsky (3D rendering, GUI, translation)
- * Artur Gilmullin (physics, manual, testing and fixing bugs)
+ * *Anton Danshin* (server, GUI, web-site)
+ * *Alexander Kozlovsky* (3D rendering, GUI, translation)
+ * *Artur Gilmullin* (physics, manual, testing and fixing bugs)
