@@ -25,12 +25,12 @@ On the client side we will create separate thread for computing of the result of
 On the server side there will be one basic thread waiting incomming connection. When there is one incoming connection (new client apearred), the server initiates new thread for interaction with the client application.
 
 ==Division into subproblems==
-# Server side implementation (connection, authentication, DataBase, server command protocol)
-# Physics implementation (maths + mechanics of collision)
-# 3D Rendering of the game scene
-# Client GUI development
-# Testing and fixing bugs
-# Translating to Russian
-# Writing Manual
-# Web-site
-# Starting up.
+ # Server side implementation (connection, authentication, DataBase, server command protocol)
+ # Physics implementation (maths + mechanics of collision)
+ # 3D Rendering of the game scene
+ # Client GUI development
+ # Testing and fixing bugs
+ # Translating to Russian
+ # Writing Manual
+ # Web-site
+ # Starting up.
