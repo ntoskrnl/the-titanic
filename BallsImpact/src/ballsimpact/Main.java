@@ -49,10 +49,10 @@ public class Main {
 
         content.add(buttonPanel, BorderLayout.SOUTH);
         ballPanel = new BallPanel();
-        ballPanel.setBorder(new LineBorder(Color.BLACK, 2));
+        ballPanel.setBorder(new LineBorder(Color.BLACK, 1));
         content.add(ballPanel, BorderLayout.CENTER);
         myFrame.pack();
-        myFrame.setSize(500, 400);
+        myFrame.setSize(600, 500);
         myFrame.setResizable(false);
         myFrame.setVisible(true);
     }
@@ -225,7 +225,7 @@ class CollisionThread implements Runnable {
             physics.compute(balls);
             ballPanel.repaint();
             try{
-                thread.sleep(40);
+                thread.sleep(34); // ~ 25-30 fps
             }catch(InterruptedException ex){ }
         }
     }
@@ -257,11 +257,24 @@ class Physics {
         for(int i=0;i<balls.length;i++){
             double x = balls[i].getX(), y=balls[i].getY(),
                     vx=balls[i].getVX(), vy=balls[i].getVY();
+            double r = balls[i].getR();
             x+=vx; y+=vy;
-            if(y<0&&vy<0) vy=-vy;
-            if(y>height&&vy>0) vy=-vy;
-            if(x<0&&vx<0) vx=-vx;
-            if(x>width&&vx>0) vx=-vx;
+            if(y<r&&vy<0){
+                y = r;
+                vy=-vy;
+            }
+            if(y>height-r&&vy>0){
+                y=height-r;
+                vy=-vy;
+            }
+            if(x<r&&vx<0){
+                x=r;
+                vx=-vx;
+            }
+            if(x>width-r&&vx>0){
+                x=width-r;
+                vx=-vx;
+            }
             balls[i].setVX(vx);
             balls[i].setVY(vy);
             balls[i].setX(x);
