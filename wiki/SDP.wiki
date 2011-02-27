@@ -1,4 +1,38 @@
 #summary The Titanic: The main problems and ways to solve them.
 #labels Featured,Phase-Design
 
-= Introduction =
+= Software Development Plan =
+
+Work name of the project: *The Titanic*
+
+Problem: create client-server application, which provides users to play billiard via the internet.
+
+==Algorithm and logic==
+
+Server supports database of registred users and provides access to the database via java Socket. Client software interacts with server through specific protocol.
+
+During entire process of the game clients send commands to the server and server redirects requests to another client (if needed). 
+
+The data, which are transmitted between client and server, include information about current user status (authentication, waiting, playing, afk, busy), personal information (login, name, location, gender), game changes (make move, balls number, win/loose). Some information must be encrypted to avoid disclosure of personal data.
+
+All information about registered users is stored in the database. We will provide access to the database through our server (password required). Then we are planning to create a web-site where users can register, modify personal information and view their score.
+
+Physics is emplemented as a separate class with the only public method for computing location and speed of the balls after a small period of time.
+
+The graphic user interphase will be implemented with Java Swing package. For rendering objects we will use Java3D package.
+
+==Parallel computing==
+On the client side we will create separate thread for computing of the result of user's move.
+
+On the server side there will be one basic thread waiting incomming connection. When there is one incoming connection (new client apearred), the server initiates new thread for interaction with the client application.
+
+==Division into subproblems==
+1. Server side implementation (connection, authentication, DataBase, server command protocol)
+2. Physics implementation (maths + mechanics of collision)
+3. 3D Rendering of the game scene
+4. Client GUI development
+5. Testing and fixing bugs
+5. Translating to Russian
+6. Writing Manual
+7. Web-site
+8. Starting up.
