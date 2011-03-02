@@ -8,7 +8,7 @@
 
 ==Algorithm and logic==
 
-Server supports database (MySQL DB) of registered users and provides access to the database via Java Socket. Client software interacts with server through specific protocol.
+Server supports database (_MySQL DB_) of registered users and provides access to the database via _Java Socket_. Client software interacts with server through specific protocol.
 
 During entire process of the game clients send commands to the server and server redirects requests to another client (if needed). 
 
@@ -18,22 +18,24 @@ All information about registered users is stored in the database. We will provid
 
 Physics is emplemented as a separate class with the only public method for computing location and speed of the balls after a small period of time.
 
-The graphic user interphase will be implemented with Java Swing package. For rendering objects we will use Java3D package.
+The graphic user interphase will be implemented with Java Swing package. For rendering objects we will use _Java3D_ package.
 
 ==Parallel computing==
 On the client side we will create separate thread for computing of the result of user's move.
 
 On the server side there will be one basic thread waiting incomming connection. When there is one incoming connection (new client apearred), the server initiates new thread for interaction with the client application.
 
+To provide multi-threading we will use standard _Java Threads_.
+
 ==Main Goal and Approaches==
-The main goal of the project is to create cross-platform 3D game that provides users to play Russian billiard through the Internet. 
+*The main goal* of the project is to create cross-platform 3D game that provides people to play Russian billiard through the Internet. 
 
 We want to implement the following features:
- * Dedicated game server, which services the requests from client applications and support a database. The database will contain the information about users and their score.
- * Client application will enable the user to see the other ones to play with and will provide to play Russian Billiard in comfortable conditions of friendly user interface.
- * 3D rendering of the game scene.
- * For the physical engine is based on a concept of the impact theory. 
- * Web-site for registration of users. It will be also used to display current game stats (score, who is online).
+ * *Dedicated game server*, which services the requests from client applications and support a database. The database will contain the information about users and their score.
+ * *Client application* will enable the user to see the other ones to play with and will provide to play Russian Billiard in comfortable conditions of friendly user interface.
+ * *3D rendering* of the game scene.
+ * *Physical engine* will be based on a concept of the impact theory. 
+ * *Web-site* for registration of users. It will be also used to display current game stats (score, who is online).
 
 The process of development can be divided into several parts: 
  # Server side implementation (connection, authentication, DataBase, server command protocol)
