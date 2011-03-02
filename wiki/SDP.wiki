@@ -23,7 +23,9 @@ The graphic user interphase will be implemented with Java Swing package. For ren
 ==Parallel computing==
 On the client side we will create separate thread for computing of the result of user's move.
 
-On the server side there will be one basic thread waiting incomming connection. When there is one incoming connection (new client apearred), the server initiates new thread for interaction with the client application.
+On the server side there will be one basic thread waiting for incoming connections. When there is one incoming connection (new client appeared), the server initiates new thread for interaction with the client application (creates private room).
+
+When the process of the game starts, server interacts with clients and plays a role of a tunnel between these two machines.
 
 To provide multi-threading we will use standard _Java Threads_.
 
