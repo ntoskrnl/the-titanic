@@ -10,15 +10,15 @@
 
 Server supports database (_MySQL DB_) of registered users and provides access to the database via _Java Socket_. Client software interacts with server through specific protocol.
 
-During entire process of the game clients send commands to the server and server redirects requests to another client (if needed). 
+During entire process of the game one client sends commands to the server (e.g. to inform about a change in the game), and server processes the data and redirects requests to another client (if needed). 
 
 The data, which are transmitted between client and server, include information about current user status (authentication, waiting, playing, AFK, busy), personal information (login, name, location, gender), game changes (make move, balls number, win/loose). Some information must be encrypted to avoid disclosure of personal data.
 
 All information about registered users is stored in the database. We will provide access to the database through our server (password required). Then we are planning to create a web-site where users can register, modify personal information and view their score.
 
-Physics is emplemented as a separate class with the only public method for computing location and speed of the balls after a small period of time.
+Physics is implemented as a separate class with the only public method for computing location and speed of the balls after a small period of time.
 
-The graphic user interphase will be implemented with Java Swing package. For rendering objects we will use _Java3D_ package.
+The graphic user interface will be implemented with Java Swing package. For rendering objects we will use _Java3D_ package.
 
 ==Parallel computing==
 On the client side we will create separate thread for computing of the result of user's move.
