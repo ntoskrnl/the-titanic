@@ -27,7 +27,7 @@ On the server side there will be one basic thread waiting incomming connection. 
 
 To provide multi-threading we will use standard _Java Threads_.
 
-==Main Goal and Approaches==
+==Main goal and problems==
 *The main goal* of the project is to create cross-platform 3D game that provides people to play Russian billiard through the Internet. 
 
 We want to implement the following features:
