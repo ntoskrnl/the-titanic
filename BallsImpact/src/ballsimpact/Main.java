@@ -14,9 +14,10 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
+import titanic.basic.*;
 
 /**
- *
+ * 2D Balls Collision Test (using SimplePhysics by Arkthik)
  * @author Danon
  */
 public class Main {
@@ -26,6 +27,7 @@ public class Main {
     private static JButton startButton = null;
     private static boolean suspended = true;
     private static JLabel statusLabel = null;
+    private static Game game = null;
     /**
      * @param args the command line arguments
      */
@@ -77,6 +79,50 @@ public class Main {
 
 }
 
+class SimpleGame extends Game {
+    private GameScene gameScene = null;
+    public SimpleGame(Ball[] balls, Vector2D bounds) {
+        gameScene = new SimpleGameScene(balls, bounds);
+    }
+
+
+
+    @Override
+    public GameScene getGameScene() {
+        return gameScene;
+    }
+
+    @Override
+    public int changeStatus(int gameStatus) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
+    
+    
+}
+
+class SimpleGameScene extends GameScene {
+    private Ball[] balls;
+    private Vector2D bounds;
+
+    public SimpleGameScene(Ball[] balls, Vector2D bounds) {
+        this.balls = balls;
+        this.bounds = bounds;
+    }
+
+
+
+    @Override
+    public Ball[] getBalls() {
+        return balls;
+    }
+
+    @Override
+    public Vector2D getBounds() {
+        return bounds;
+    }
+
+}
+
 
 class BallPanel extends JPanel {
 
@@ -91,13 +137,15 @@ class BallPanel extends JPanel {
     public void addBalls(int count){
         balls = new Ball[count];
         Random rand = new Random(System.currentTimeMillis());
-        double R = 11;
+        float R = 11;
         for(int i=0;i<count;i++){
-            balls[i] = new Ball(R+rand.nextDouble()*(getWidth()-R), R+rand.nextDouble()*(getHeight()-R));
+            balls[i] = new Ball();
+            balls[i].setCoordinates(new Vector2D(R+rand.nextFloat()*(getWidth()-R) - getWidth()/2.0f,
+                    R+rand.nextFloat()*(getHeight()-R) - getHeight()/2.0f));
             balls[i].setColor(Color.BLACK);
-            balls[i].setVY(10 - rand.nextDouble()*20);
-            balls[i].setVX(10 - rand.nextDouble()*20);
-            balls[i].setR(R-1);
+            balls[i].getSpeed().setY(10 - rand.nextFloat()*20);
+            balls[i].getSpeed().setX(10 - rand.nextFloat()*20);
+            balls[i].setRadius(R-1);
             System.out.println(balls[i]);
         }
         this.repaint();
@@ -110,11 +158,11 @@ class BallPanel extends JPanel {
         Graphics2D g2 = (Graphics2D)g;
         for(int i=0;i<getBalls().length;i++){
             double r, x, y;
-            r = balls[i].getR();
-            x = balls[i].getX();
-            y = balls[i].getY();
-            Ellipse2D p = new Ellipse2D.Double(x-r,
-                   getHeight() - (y-r),
+            r = balls[i].getRadius();
+            x = balls[i].getCoordinates().getX();
+            y = balls[i].getCoordinates().getY();
+            Ellipse2D p = new Ellipse2D.Double(x-r + getWidth()/2.0f,
+                   0.5f*getHeight() - (y-r),
                     r*2, r*2);
             g2.setColor(balls[i].getColor());
             g2.fill(p);
@@ -130,208 +178,33 @@ class BallPanel extends JPanel {
 }
 
 
-class Ball{
-    private double x, y, vx, vy, r;
-    private Color color;
-
-    public Ball() {
-        x=y=vx=vy=0d;
-        r=5.0d;
-        color = Color.BLACK;
-    }
-
-    public Ball(double x, double y){
-        this.x = x; this.y = y;
-        vx=vy=0;
-        r=5.0d;
-        color = Color.BLACK;
-    }
-
-    @Override
-    public String toString(){
-        return "Ball{x="+x+"; y="+y+"; Vx="+vx+"; Vy="+vy+"; color="+color+"}";
-    }
-
-    synchronized public double getX() {
-        return x;
-    }
-
-    synchronized public double getY() {
-        return y;
-    }
-
-    synchronized public double getVX() {
-        return vx;
-    }
-
-    synchronized public double getVY() {
-        return vy;
-    }
-
-    synchronized public double getR() {
-        return r;
-    }
-
-    synchronized public Color getColor() {
-        return color;
-    }
-
-    synchronized public void setX(double x) {
-        this.x = x;
-    }
-
-
-    synchronized public void setY(double y) {
-        this.y = y;
-    }
-
-    synchronized public void setVX(double vx) {
-        this.vx = vx;
-    }
-
-    synchronized public void setVY(double vy) {
-        this.vy = vy;
-    }
-
-    public void setR(double r) {
-        this.r = r;
-    }
-
-    synchronized public void setColor(Color color) {
-        this.color = color;
-    }
-
-}
-
 class CollisionThread implements Runnable {
     private Ball[] balls = null;
-    private Physics physics = null;
+    private PhysicalEngine physics = null;
     private BallPanel ballPanel = null;
+    private Game game = null;
 
     public CollisionThread(BallPanel b) {
         ballPanel = b;
         if(b==null) return;
         balls = b.getBalls();
-        physics = new Physics(ballPanel.getWidth(), ballPanel.getHeight());
+        game = new SimpleGame(balls, new Vector2D(ballPanel.getWidth()/2f, ballPanel.getHeight()));
+        physics = new SimplePhysics(game);
     }
 
     public void run(){
         if(balls==null) return;
         if(ballPanel==null) return;
         if(physics==null) return;
+        System.out.println("Thread started!");
         Thread thread = Thread.currentThread();
         System.out.println("Collision started!");
         while(!thread.isInterrupted()){
-            physics.compute(balls);
+            physics.compute();
             ballPanel.repaint();
             try{
                 thread.sleep(34); // ~ 25-30 fps
             }catch(InterruptedException ex){ }
         }
-    }
-}
-
-class Physics {
-    private double width = 0, height =0;
-
-    public Physics(double w, double h) {
-        width = w;
-        height = h;
-    }
-
-    // Warning! This code does not seem to be thread-safe!!!
-    void compute(Ball[] balls){
-        for(int i=0;i<balls.length-1;i++){
-            double x1 = balls[i].getX(), y1=balls[i].getY(),
-                    vx1=balls[i].getVX(), vy1=balls[i].getVY(),
-                    r1 = balls[i].getR();
-            for(int j=i+1;j<balls.length;j++){
-                double x2 = balls[j].getX(), y2=balls[j].getY(),
-                    vx2=balls[j].getVX(), vy2=balls[j].getVY(),
-                    r2=balls[j].getR();
-                double d = (x1-x2)*(x1-x2)+(y1-y2)*(y1-y2);
-                if(d<0.01&&d>(r1+r2)*(r1+r2)) continue;
-                impact(balls[i], balls[j]);
-            }
-        }
-        for(int i=0;i<balls.length;i++){
-            double x = balls[i].getX(), y=balls[i].getY(),
-                    vx=balls[i].getVX(), vy=balls[i].getVY();
-            double r = balls[i].getR();
-            x+=vx; y+=vy;
-            if(y<r&&vy<0){
-                y = r;
-                vy=-vy;
-            }
-            if(y>height-r&&vy>0){
-                y=height-r;
-                vy=-vy;
-            }
-            if(x<r&&vx<0){
-                x=r;
-                vx=-vx;
-            }
-            if(x>width-r&&vx>0){
-                x=width-r;
-                vx=-vx;
-            }
-            balls[i].setVX(vx);
-            balls[i].setVY(vy);
-            balls[i].setX(x);
-            balls[i].setY(y);
-            if(Math.abs(vx)>0.001)
-                vx-=vx/Math.abs(vx)*0.01;
-            if(Math.abs(vy)>0.001)
-                vy-=vy/Math.abs(vy)*0.01;
-            if(Math.abs(vx)<0.01) vx = 0;
-            if(Math.abs(vy)<0.01) vy = 0;
-            balls[i].setVX(vx);
-            balls[i].setVY(vy);
-            
-        }
-    }
-
-     // Warning! This code is not tested and optimized!
-    // Warning! This method ignores weight of the balls
-    public void impact(Ball a, Ball b){
-        // TODO Implement and test impact(Ball, Ball) method
-        // The distance detween centers of the balls a and b
-        // can be less than summ of their radii.
-
-        // Algorithm by A. Gilmullin
-        // Вектор (cx,cy), соединяющий середины шаров.
-        double cx = b.getX()-a.getX(),
-               cy = b.getY()-a.getY();
-        // Вектор (dx,dy), ему ортогональный.
-        double dx = -cy, dy = cx;
-
-        // Square of the distance
-        double dist = (a.getX()-b.getX())*(a.getX()-b.getX())+(a.getY()-b.getY())*(a.getY()-b.getY());
-        if(Math.sqrt(dist)>a.getR()+b.getR()) return;
-
-        double v1x = 1/dist*(cx*(b.getVX()*cx + b.getVY()*cy)
-                    + dx*(dx*a.getVX() + dy*a.getVY()));
-        double v1y = 1/dist*(cy*(b.getVX()*cx + b.getVY()*cy)
-                    + dy*(dx*a.getVX() + dy*a.getVY()));
-        a.setVX(v1x);
-        a.setVY(v1y);
-
-        double v2x = 1/dist*(cx*(a.getVX()*cx + a.getVY()*cy)
-                    + dx*(dx*b.getVX() + dy*b.getVY()));
-        double v2y = 1/dist*(cy*(a.getVX()*cx + a.getVY()*cy)
-                    + dy*(dx*b.getVX() + dy*b.getVY()));
-        b.setVX(v2x);
-        b.setVY(v2y);
-
-        // Now we have to correct coordinates (to avoid multiple multiple interchange)
-        double mx = cx/2 + a.getX(),
-               my = cy/2 + a.getY();
-        cx*=(a.getR()+b.getR()+0.6)/Math.sqrt(dist);
-        cy*=(a.getR()+b.getR()+0.6)/Math.sqrt(dist);
-
-        a.setX(mx-cx/2); a.setY(my-cy/2);
-        b.setX(mx+cx/2); b.setY(my+cy/2);
-
-
     }
 }
