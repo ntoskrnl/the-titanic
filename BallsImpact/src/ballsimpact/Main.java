@@ -188,7 +188,7 @@ class CollisionThread implements Runnable {
         ballPanel = b;
         if(b==null) return;
         balls = b.getBalls();
-        game = new SimpleGame(balls, new Vector2D(ballPanel.getWidth()/2f, ballPanel.getHeight()));
+        game = new SimpleGame(balls, new Vector2D(ballPanel.getWidth(), ballPanel.getHeight()));
         physics = new SimplePhysics(game);
     }
 
@@ -203,7 +203,7 @@ class CollisionThread implements Runnable {
             physics.compute();
             ballPanel.repaint();
             try{
-                thread.sleep(34); // ~ 25-30 fps
+                thread.sleep(16); // ~ 25-30 fps
             }catch(InterruptedException ex){ }
         }
     }
