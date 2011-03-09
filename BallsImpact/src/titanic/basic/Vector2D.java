@@ -72,7 +72,7 @@ public class Vector2D {
      * @return Result of the summ
      */
     public Vector2D add(Vector2D v){
-        return new Vector2D(getX()+v.getX(), getY()+v.getY());
+        return new Vector2D(this.getX()+v.getX(), this.getY()+v.getY());
     }
     
 }
