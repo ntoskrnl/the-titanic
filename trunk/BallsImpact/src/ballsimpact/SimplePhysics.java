@@ -14,6 +14,8 @@ public class SimplePhysics implements PhysicalEngine {
         /* Как же Java отличается от C++! Наверно это удобно когда привыкнешь.*/
         balls = game.getGameScene().getBalls(); // Получаем все шары.
         BQ = balls.length; // Число шаров.
+        
+        uy = 0;
 
         /* Потом напишу, для чего этот массив. */
         impDet = new boolean [BQ+4][BQ+4];
@@ -27,16 +29,23 @@ public class SimplePhysics implements PhysicalEngine {
     int BQ; // Число шаров.
     boolean impDet[][];
     double r2;
-    
+    int uy;
+
     /* Обработчик столкновений. */
     private void impact(Ball a, Ball b){
+        System.out.printf("Impact! %d\n",uy);
+        uy++;
+        
+        Vector2D pa = a.getCoordinates();
+        Vector2D pb = b.getCoordinates();
+
         Vector2D va = a.getSpeed();
         Vector2D vb = b.getSpeed();
 
         // Вектор, соединяющий середины векторов.
         Vector2D c = new Vector2D();
-            c.setX( (float) ( va.getX() - vb.getX() ) );
-            c.setY( (float) ( va.getY() - vb.getY() ) );
+            c.setX( (float) ( pa.getX() - pb.getX() ) );
+            c.setY( (float) ( pa.getY() - pb.getY() ) );
 
         // Вектор, ему ортогональный.
         Vector2D d = new Vector2D();
@@ -44,12 +53,14 @@ public class SimplePhysics implements PhysicalEngine {
             d.setY( (float) (-1) * c.getX() );
 
         Vector2D a2 = new Vector2D();
-            a2 = ( va.multiply(va.multiply(c)) ).add( vb.multiply(vb.multiply(d)) );
+            a2 = ( c.multiply(vb.multiply(c)) ).add( d.multiply(va.multiply(d)) )
+                   .multiply( (float) (1/(4*r2)) );
 
         Vector2D b2 = new Vector2D();
-            b2 = ( vb.multiply(vb.multiply(c)) ).add( va.multiply(va.multiply(d)) );
+            b2 = ( c.multiply(va.multiply(c)) ).add( d.multiply(vb.multiply(d)) )
+                   .multiply( (float) (1/(4*r2)) );
 
-         // Присваевыем новые скорости.
+         // Присваеваем новые скорости.
             a.setSpeed( a2 );
             b.setSpeed( b2 );
     }
@@ -61,7 +72,7 @@ public class SimplePhysics implements PhysicalEngine {
         /* Здесь неплохо бы разместить различные проверки на допустимость,
          но я не представляю себе какие. */
 
-        System.out.println("Physics iteration.");
+//        System.out.println("Physics iteration.");
         double Quant = 1; // Заданный квант времени.
         double Delta = 0.5; // Добавочное рассчётное время.
         double t = 0; // Текущее время.
@@ -87,7 +98,6 @@ public class SimplePhysics implements PhysicalEngine {
 
                 /* Столкновение с верхней стенкой. */
                 if (y>height/2){
-                    System.out.println("Impact!");
                     if (impDet[i][BQ] == false){
                         impDet[i][BQ] = true;
                         vy = (-1)*vy;
@@ -129,16 +139,23 @@ public class SimplePhysics implements PhysicalEngine {
                 for( int j = i+1; j<BQ; ++j ){
                     /* Получаем радиус векторы шаров. */
                     Vector2D a = balls[i].getCoordinates();
-                    Vector2D b = balls[i].getCoordinates();
+                    Vector2D b = balls[j].getCoordinates();
                     
-                    Vector2D c = a.add(b.multiply(-1));
+                    Vector2D c = a.add(b.multiply((float)-1));
+
+                    float x = a.getX() - b.getX();
+                    float y = a.getY() - b.getY();
                     /* Проверяем шары на столкновение. */
-                    if ( (c.getX()*c.getX() + c.getY()*c.getY())< r2 ){
+                    if //( (c.getX()*c.getX() + c.getY()*c.getY())< r2 ){
+
+                        //  (((a.getX()-b.getX())*(a.getX()-b.getX()))+
+                        //  ((a.getY()-b.getY())*(a.getY()-b.getY()))<r2){
+                            ( ((x*x)+(y*y))<(4*r2)) {
                         /* Шары столкнулись. */
                         if (!impDet[i][j]){
                             impDet[i][j] = true;
                             /* Шары не столкнулись, так что impact! */
-                            this.impact(balls[i],balls[j]);
+                            impact(balls[i],balls[j]);
                         }
                     }
                     else
