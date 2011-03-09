@@ -46,6 +46,8 @@ public class SimplePhysics implements PhysicalEngine {
         Vector2D c = new Vector2D();
             c.setX( (float) ( pa.getX() - pb.getX() ) );
             c.setY( (float) ( pa.getY() - pb.getY() ) );
+        // Расстояние между шарами.
+        float ab = c.getX()*c.getX() + c.getY()*c.getY();
 
         // Вектор, ему ортогональный.
         Vector2D d = new Vector2D();
@@ -54,11 +56,11 @@ public class SimplePhysics implements PhysicalEngine {
 
         Vector2D a2 = new Vector2D();
             a2 = ( c.multiply(vb.multiply(c)) ).add( d.multiply(va.multiply(d)) )
-                   .multiply( (float) (1/(4*r2)) );
+                   .multiply( (float) (1/(ab)) );
 
         Vector2D b2 = new Vector2D();
             b2 = ( c.multiply(va.multiply(c)) ).add( d.multiply(vb.multiply(d)) )
-                   .multiply( (float) (1/(4*r2)) );
+                   .multiply( (float) (1/(ab)) );
 
          // Присваеваем новые скорости.
             a.setSpeed( a2 );
