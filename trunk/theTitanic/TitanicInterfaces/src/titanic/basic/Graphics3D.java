@@ -5,11 +5,8 @@
 
 package titanic.basic;
 
-import java.applet.Applet;
+
 import java.awt.*;
-import java.awt.event.*;
-import java.awt.event.WindowAdapter;
-import com.sun.j3d.utils.applet.MainFrame;
 import com.sun.j3d.utils.geometry.Box;
 import com.sun.j3d.utils.geometry.Primitive;
 import com.sun.j3d.utils.universe.*;
@@ -17,8 +14,6 @@ import javax.media.j3d.*;
 import javax.vecmath.*;
 import com.sun.j3d.utils.geometry.Sphere;
 import com.sun.j3d.utils.image.TextureLoader;
-import javax.swing.Timer;
-import java.math.*;
 
 /**
  *
@@ -80,6 +75,30 @@ Color3f speculas = new Color3f(1.0f, 1.0f, 1.0f);
    
     }
 
+    public void setDrawBalls(){
+    int i;
+
+    for(i = 0;i < 16;i++){
+    if(speedch[i] == null) speedch[i] = new Transform3D();
+    speedch[i].setTranslation(mass[i]);
+    objTrans[i].setTransform(speedch[i]);
+    }
+}
+
+    public void SetSpeedVector(){
+    int i;
+    for(i=0;i<16;i++){
+
+        V[i] = new Vector3f();
+
+        V[i].setX(BallsArray[i].getSpeed().getX());
+        V[i].setY(BallsArray[i].getSpeed().getY());
+        V[i].setZ(0.0f);
+
+
+            }
+}
+
    //---------------------------------------------------------------------------
    //****************************************************************
    //*               Метод перерисовки группы обьектов              *
@@ -88,7 +107,10 @@ Color3f speculas = new Color3f(1.0f, 1.0f, 1.0f);
    //---------------------------------------------------------------------------
 
      public void render(Game game) {
+
      BallsArray = game.getGameScene().getBalls();
+     SetSpeedVector();
+     setDrawBalls();
 
 
     }
@@ -99,6 +121,8 @@ Color3f speculas = new Color3f(1.0f, 1.0f, 1.0f);
    //*           public Vector3f[] startmass(Vector3f start)        *
    //****************************************************************
    //---------------------------------------------------------------------------
+
+     
 public Vector3f[] startmass(Vector3f start){
     mass[0] = start;
 
@@ -114,7 +138,7 @@ public Vector3f[] startmass(Vector3f start){
         k--;
         x = x + k;
         }
- else{;
+     else{
             mass[i].setX(mass[i-1].getX() + r);
             mass[i].setY((float)(mass[i-1].getY() +2 * r * Math.cos((Math.PI) / 6)));
 
