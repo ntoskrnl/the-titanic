@@ -19,17 +19,23 @@ public class SimplePhysics implements PhysicalEngine {
 
         /* Потом напишу, для чего этот массив. */
         impDet = new boolean [BQ+4][BQ+4];
-//        for(int i=0; i<BQ+4; ++i)
-//            for(int j=0; j<BQ+4; ++j)
-//                impDet[i][j] = false;
+        reject = 0;
     }
 
     Game game;// Экземпляр игры.
     Ball[] balls; // Получаем все шары.
     int BQ; // Число шаров.
+    int reject; // Время до режекции.
     boolean impDet[][];
     double r2;
     int uy;
+
+    /* Режектор. */
+    private void clean(){
+        for(int i=0; i<BQ+4; ++i)
+            for(int j=0; j<BQ+4; ++j)
+                impDet[i][j] = false;
+    }
 
     /* Обработчик столкновений. */
     private void impact(Ball a, Ball b){
@@ -87,6 +93,7 @@ public class SimplePhysics implements PhysicalEngine {
         double width = game.getGameScene().getBounds().getX();
         double height = game.getGameScene().getBounds().getY();
 
+        if (((++reject)%7)==0) clean();
             /* Проверяем, не столкнулся ли какой шар со стенкой. */
             /* Очень важно вставить сюда проверку на валидность! */
             for( int i=0; i<BQ; ++i ){
