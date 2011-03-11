@@ -62,7 +62,7 @@ public class Main {
     public static void startCollision(){
         if(ballPanel==null) return;
         if(collision==null||suspended){
-            ballPanel.addBalls(20);
+            ballPanel.addBalls(16);
             collision = new Thread(new CollisionThread(ballPanel));
             collision.start();
             startButton.setText("Stop");
@@ -137,7 +137,7 @@ class BallPanel extends JPanel {
     public void addBalls(int count){
         balls = new Ball[count];
         Random rand = new Random(System.currentTimeMillis());
-        float R = 11;
+        float R = 15;
         for(int i=0;i<count;i++){
             balls[i] = new Ball();
             balls[i].setCoordinates(new Vector2D(R+rand.nextFloat()*(getWidth()-R) - getWidth()/2.0f,
