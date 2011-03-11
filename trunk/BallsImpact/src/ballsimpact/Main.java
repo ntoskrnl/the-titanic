@@ -129,7 +129,7 @@ class BallPanel extends JPanel {
     private Ball[] balls = null;
 
     public BallPanel() {
-        setBackground(Color.BLACK);
+        //setBackground(Color.BLACK);
     }
 
 
@@ -151,25 +151,25 @@ class BallPanel extends JPanel {
         this.repaint();
     }
 
-    @Override
-    public void paintComponent(Graphics g){
-        super.paintComponent(g);
-        if(getBalls()==null) return;
-        Graphics2D g2 = (Graphics2D)g;
-        for(int i=0;i<getBalls().length;i++){
-            double r, x, y;
-            r = balls[i].getRadius();
-            x = balls[i].getCoordinates().getX();
-            y = balls[i].getCoordinates().getY();
-            Ellipse2D p = new Ellipse2D.Double(x-r + getWidth()/2.0f,
-                   0.5f*getHeight() - (y-r),
-                    r*2, r*2);
-            g2.setColor(balls[i].getColor());
-            g2.fill(p);
-            g2.setColor(Color.WHITE);
-            g2.draw(p);
-        }
-    }
+//    @Override
+//    public void paintComponent(Graphics g){
+//        super.paintComponent(g);
+//        if(getBalls()==null) return;
+//        Graphics2D g2 = (Graphics2D)g;
+//        for(int i=0;i<getBalls().length;i++){
+//            double r, x, y;
+//            r = balls[i].getRadius();
+//            x = balls[i].getCoordinates().getX();
+//            y = balls[i].getCoordinates().getY();
+//            Ellipse2D p = new Ellipse2D.Double(x-r + getWidth()/2.0f,
+//                   0.5f*getHeight() - (y-r),
+//                    r*2, r*2);
+//            g2.setColor(balls[i].getColor());
+//            g2.fill(p);
+//            g2.setColor(Color.WHITE);
+//            g2.draw(p);
+//        }
+//    }
 
     synchronized public Ball[] getBalls() {
         return balls;
@@ -183,6 +183,7 @@ class CollisionThread implements Runnable {
     private PhysicalEngine physics = null;
     private BallPanel ballPanel = null;
     private Game game = null;
+    private GraphicalEngine graphics;
 
     public CollisionThread(BallPanel b) {
         ballPanel = b;
@@ -190,6 +191,8 @@ class CollisionThread implements Runnable {
         balls = b.getBalls();
         game = new SimpleGame(balls, new Vector2D(ballPanel.getWidth(), ballPanel.getHeight()));
         physics = new SimplePhysics(game);
+        graphics = new Graphics3D(game);
+        graphics.setRenderingArea(b);
     }
 
     public void run(){
@@ -201,7 +204,8 @@ class CollisionThread implements Runnable {
         System.out.println("Collision started!");
         while(!thread.isInterrupted()){
             physics.compute();
-            ballPanel.repaint();
+
+            graphics.render(game);
             try{
                 thread.sleep(16); // ~ 25-30 fps
             }catch(InterruptedException ex){ }
