@@ -1,6 +1,7 @@
 package client;
 
 import client.gui.ClientLoginWindow;
+import client.util.TitanicServer;
 import javax.swing.UIManager;
 
 /**
@@ -8,6 +9,8 @@ import javax.swing.UIManager;
  * @author danon
  */
 public class Main {
+
+    public static TitanicServer server = null;
 
     public static void main(String[] args) {
         System.out.println("");
@@ -20,7 +23,8 @@ public class Main {
             public void run() {
                 new ClientLoginWindow().setVisible(true);
             }
-        });
+        }
+        );
     }
 
 }
