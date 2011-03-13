@@ -3,11 +3,8 @@ package ballsimpact;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.geom.Ellipse2D;
 import java.util.Random;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -17,7 +14,9 @@ import javax.swing.border.LineBorder;
 import titanic.basic.*;
 
 /**
- * 2D Balls Collision Test (using SimplePhysics by Arkthik)
+ * 3D Balls Collision Test 
+ * Using SimplePhysics by Arkthik and Graphical Engine by Out31
+ * NOTE: This application is for testing and debugging Physical and Graphical engines.
  * @author Danon
  */
 public class Main {
@@ -79,6 +78,11 @@ public class Main {
 
 }
 
+
+/**
+ * This class implements interface Game.
+ * @author danon
+ */
 class SimpleGame extends Game {
     private GameScene gameScene = null;
     public SimpleGame(Ball[] balls, Vector2D bounds) {
@@ -100,6 +104,11 @@ class SimpleGame extends Game {
     
 }
 
+
+/**
+ * GameScene
+ * @author danon
+ */
 class SimpleGameScene extends GameScene {
     private Ball[] balls;
     private Vector2D bounds;
@@ -124,15 +133,17 @@ class SimpleGameScene extends GameScene {
 }
 
 
+/**
+ * This panel is used as rendering area for 3D game scene
+ * @author danon
+ */
 class BallPanel extends JPanel {
 
     private Ball[] balls = null;
 
     public BallPanel() {
-        //setBackground(Color.BLACK);
+        setBackground(Color.BLACK);
     }
-
-
 
     public void addBalls(int count){
         balls = new Ball[count];
@@ -150,26 +161,6 @@ class BallPanel extends JPanel {
         }
         this.repaint();
     }
-
-//    @Override
-//    public void paintComponent(Graphics g){
-//        super.paintComponent(g);
-//        if(getBalls()==null) return;
-//        Graphics2D g2 = (Graphics2D)g;
-//        for(int i=0;i<getBalls().length;i++){
-//            double r, x, y;
-//            r = balls[i].getRadius();
-//            x = balls[i].getCoordinates().getX();
-//            y = balls[i].getCoordinates().getY();
-//            Ellipse2D p = new Ellipse2D.Double(x-r + getWidth()/2.0f,
-//                   0.5f*getHeight() - (y-r),
-//                    r*2, r*2);
-//            g2.setColor(balls[i].getColor());
-//            g2.fill(p);
-//            g2.setColor(Color.WHITE);
-//            g2.draw(p);
-//        }
-//    }
 
     synchronized public Ball[] getBalls() {
         return balls;
@@ -204,7 +195,6 @@ class CollisionThread implements Runnable {
         System.out.println("Collision started!");
         while(!thread.isInterrupted()){
             physics.compute();
-
             graphics.render(game);
             try{
                 thread.sleep(16); // ~ 25-30 fps

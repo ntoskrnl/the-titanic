@@ -4,14 +4,12 @@ package ballsimpact;
 
 import java.awt.*;
 import com.sun.j3d.utils.geometry.Box;
-import com.sun.j3d.utils.geometry.ColorCube;
 import com.sun.j3d.utils.geometry.Primitive;
 import com.sun.j3d.utils.universe.*;
 import javax.media.j3d.*;
 import javax.vecmath.*;
 import com.sun.j3d.utils.geometry.Sphere;
 import com.sun.j3d.utils.image.TextureLoader;
-import javax.swing.JButton;
 import titanic.basic.*;
 
 /**
@@ -258,8 +256,10 @@ public void SetStartTransform(Vector3f[] mass, BranchGroup bran){
    Appearance table = new Appearance();
   // table.setMaterial(new Material(outer, tabem, tabdif, tabsp, 1200f));
 
-   //Нужно указать правильный путь файла текстуры
-   TextureLoader loader = new TextureLoader("table.jpg",  new Container());
+   // Now the texture file is in special package ballsimpact.res,
+   // so we need to use getClass.getResource(String resname) method to access it.
+   // For more information see http://netbeans.org/kb/docs/java/gui-image-display.html
+   TextureLoader loader = new TextureLoader(getClass().getResource("/ballsimpact/res/table.jpg"),  new Container());
    Texture texture = loader.getTexture();
    texture.setBoundaryModeS(Texture.WRAP);
    texture.setBoundaryModeT(Texture.WRAP);
