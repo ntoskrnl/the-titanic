@@ -13,6 +13,8 @@ public class Ball implements PhysicalBall, GraphicalBall {
     private Vector2D coordinates;
     private Color color;
     private int id;
+    private boolean selected;
+    private static final double EPS = 1e-7;
 
     public Ball(){
         color = Color.WHITE;
@@ -21,6 +23,7 @@ public class Ball implements PhysicalBall, GraphicalBall {
         coordinates = new Vector2D(0, 0);
         mass = 0;
         radius = 0;
+        selected = false;
     }
 
     public Ball(float x, float y){
@@ -72,8 +75,16 @@ public class Ball implements PhysicalBall, GraphicalBall {
         color = c;
     }
 
+    @Override
     public String toString(){
         return this.getClass().getName();
     }
-    
+
+    public boolean isActive(){
+        return this.getSpeed().getNorm() > EPS;
+    }
+
+    public boolean isSelected(){
+        return selected;
+    }
 }

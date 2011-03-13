@@ -61,4 +61,10 @@ public interface PhysicalBall {
      * @return Current coordinates of the ball (Vector2D)
      */
     public Vector2D getCoordinates();
+
+    /**
+     * Ball is moving?
+     * @return TRUE if ball is still moving, ortherwise FALSE.
+     */
+    public boolean isActive();
 }

@@ -48,4 +48,11 @@ public interface GraphicalBall {
      * @return Current coordinates of the ball (Vector2D)
      */
     public Vector2D getCoordinates();
+
+    /**
+     * Check wether the ball is selected or not (to hit).
+     * @return TRUE if the ball is selected, or FALSE if this ball is not selected
+     */
+    public boolean isSelected();
+    
 }

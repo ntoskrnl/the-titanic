@@ -74,5 +74,9 @@ public class Vector2D {
     public Vector2D add(Vector2D v){
         return new Vector2D(this.getX()+v.getX(), this.getY()+v.getY());
     }
+
+    public double getNorm(){
+        return Math.sqrt(getX()*getX()+getY()*getY());
+    }
     
 }
