@@ -8,7 +8,7 @@
 
 ==Algorithm and logic==
 
-Server supports database (_MySQL DB_) of registered users and provides access to the database via _Java Socket_. Client software interacts with server through specific protocol.
+Server supports database (_SQLite DB_) of registered users and provides access to the database via _Java Socket_. Client software interacts with server through specific protocol.
 
 During entire process of the game one client sends commands to the server (e.g. to inform about a change in the game), and server processes the data and redirects requests to another client (if needed). 
 
