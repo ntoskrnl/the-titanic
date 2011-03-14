@@ -75,8 +75,19 @@ public class Vector2D {
         return new Vector2D(this.getX()+v.getX(), this.getY()+v.getY());
     }
 
+    /**
+     * Norm of the vector (abs(this))
+     * @return norm af the vector
+     */
     public double getNorm(){
         return Math.sqrt(getX()*getX()+getY()*getY());
+    }
+
+    @Override
+    public String toString(){
+        String s = this.getClass().getName();
+        s+="{x="+getX()+"; y="+getY()+";}";
+        return s;
     }
     
 }

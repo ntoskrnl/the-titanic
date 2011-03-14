@@ -88,7 +88,7 @@ public class SimplePhysics implements PhysicalEngine {
         /* Все шары одного радиуса, пока. */
         r2 = balls[0].getRadius()*balls[0].getRadius();
         /* Коэффицент трения. */
-        double f = 0.02;
+        double f = 0.01;
         /* Ширина и высота стола. */
         double width = game.getGameScene().getBounds().getX();
         double height = game.getGameScene().getBounds().getY();

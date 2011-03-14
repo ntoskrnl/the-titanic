@@ -77,7 +77,9 @@ public class Ball implements PhysicalBall, GraphicalBall {
 
     @Override
     public String toString(){
-        return this.getClass().getName();
+        String s = this.getClass().getName();
+        s+="{R="+getRadius()+"; (x,y)="+getCoordinates()+"; velocity="+getSpeed()+"; color="+getColor()+";}";
+        return s;
     }
 
     public boolean isActive(){
