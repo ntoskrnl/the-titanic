@@ -3,6 +3,7 @@ package client.util;
 import java.awt.Color;
 import java.awt.Container;
 import java.util.Random;
+import javax.media.j3d.Canvas3D;
 import titanic.basic.Ball;
 import titanic.basic.Game;
 import titanic.basic.GameScene;
@@ -18,7 +19,7 @@ public class SimpleGame extends Game {
     private GameScene scene;
     private PhysicalEngine physics;
     private GraphicalEngine graphics;
-    private Thread thread;
+    private Thread thread1, thread2;
     private Game game;
 
     /**
@@ -54,8 +55,8 @@ public class SimpleGame extends Game {
             balls[i].setCoordinates(new Vector2D(R+rand.nextFloat()*(bounds.getX()-R) - bounds.getX()/2.0f,
                     R+rand.nextFloat()*(bounds.getY()-R) - bounds.getY()/2.0f));
             balls[i].setColor(Color.BLACK);
-            balls[i].getSpeed().setY(10 - rand.nextFloat()*20);
-            balls[i].getSpeed().setX(10 - rand.nextFloat()*20);
+            balls[i].getSpeed().setY(10 - rand.nextFloat()*30);
+            balls[i].getSpeed().setX(10 - rand.nextFloat()*30);
             balls[i].setRadius(R-1);
             System.out.println(balls[i]);
         }
@@ -65,26 +66,42 @@ public class SimpleGame extends Game {
      * Starts game thread
      */
     public void start(){
+        stop();
+        Canvas3D c;
         arrangeBalls(game.getGameScene().getBalls(), game.getGameScene().getBounds());
-        thread = new Thread(new Runnable() {
+        thread1 = new Thread(new Runnable() {
             public void run() {
                 try {
-                    while(!thread.isInterrupted()){
+                    while(!thread1.isInterrupted()){
                         graphics.render(game);
-                        physics.compute();
-                        Thread.currentThread().sleep(30);
+                        Thread.currentThread().sleep(25);
                     }
                 } catch (InterruptedException ex){}
             }
         });
-        thread.start();
+        thread1.start();
+        thread2 = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    while(!thread1.isInterrupted()){
+                        physics.compute();
+                        Thread.currentThread().sleep(15);
+                    }
+                } catch (InterruptedException ex){}
+            }
+        });
+        thread2.start();
+
     }
 
     /**
      * Stops game thread
      */
     public void stop(){
-        thread.interrupt();
+        if(thread1!=null)
+            thread1.interrupt();
+        if(thread2!=null)
+            thread2.interrupt();
     }
 
     @Override

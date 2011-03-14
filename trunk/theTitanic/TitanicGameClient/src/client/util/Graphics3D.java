@@ -10,6 +10,8 @@ import javax.media.j3d.*;
 import javax.vecmath.*;
 import com.sun.j3d.utils.geometry.Sphere;
 import com.sun.j3d.utils.image.TextureLoader;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import titanic.basic.*;
 
 /**
