@@ -7,15 +7,13 @@
 package client.gui;
 
 import client.util.SimpleGame;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Timer;
 import java.util.TimerTask;
 import titanic.basic.Ball;
 
 /**
- * Window with GameScene and some control buttons.
+ * Window with GameScene and several control buttons.
  * @author danon
  */
 public class GameWindow extends javax.swing.JFrame {
@@ -30,11 +28,13 @@ public class GameWindow extends javax.swing.JFrame {
             @Override
             public void run() {
                 Ball[] b = game.getGameScene().getBalls();
-                double t = 0;
-                for(int i=0;i<b.length;i++)
-                    t+=b[i].getSpeed().getNorm()*b[i].getSpeed().getNorm();
-                t/=2.0;
-                jLabel2.setText(Math.round(t*100)/100.0d + " J/kg");
+                synchronized(b){
+                    double t = 0;
+                    for(int i=0;i<b.length;i++)
+                        t+=b[i].getSpeed().getNorm()*b[i].getSpeed().getNorm();
+                    t/=2.0;
+                    jLabel2.setText(Math.round(t*1000)/1000.0d + " J/kg");
+                }
             }
         }, new Date(), 100);
     }
@@ -61,6 +61,11 @@ public class GameWindow extends javax.swing.JFrame {
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
+            }
+        });
+        addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentResized(java.awt.event.ComponentEvent evt) {
+                formComponentResized(evt);
             }
         });
 
@@ -116,25 +121,21 @@ public class GameWindow extends javax.swing.JFrame {
 
         getContentPane().add(buttonPanel, java.awt.BorderLayout.LINE_END);
 
-        gameScenePanel.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        gameScenePanel.setLayout(new java.awt.BorderLayout());
+        gamePanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        gamePanel.setLayout(new java.awt.BorderLayout());
 
-        javax.swing.GroupLayout gamePanelLayout = new javax.swing.GroupLayout(gamePanel);
-        gamePanel.setLayout(gamePanelLayout);
-        gamePanelLayout.setHorizontalGroup(
-            gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(gamePanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(gameScenePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 412, Short.MAX_VALUE)
-                .addContainerGap())
+        javax.swing.GroupLayout gameScenePanelLayout = new javax.swing.GroupLayout(gameScenePanel);
+        gameScenePanel.setLayout(gameScenePanelLayout);
+        gameScenePanelLayout.setHorizontalGroup(
+            gameScenePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 416, Short.MAX_VALUE)
         );
-        gamePanelLayout.setVerticalGroup(
-            gamePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(gamePanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(gameScenePanel, javax.swing.GroupLayout.DEFAULT_SIZE, 405, Short.MAX_VALUE)
-                .addContainerGap())
+        gameScenePanelLayout.setVerticalGroup(
+            gameScenePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 409, Short.MAX_VALUE)
         );
+
+        gamePanel.add(gameScenePanel, java.awt.BorderLayout.CENTER);
 
         getContentPane().add(gamePanel, java.awt.BorderLayout.CENTER);
 
@@ -152,6 +153,10 @@ public class GameWindow extends javax.swing.JFrame {
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         if(game!=null) game.stop();
     }//GEN-LAST:event_formWindowClosing
+
+    private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
+
+    }//GEN-LAST:event_formComponentResized
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

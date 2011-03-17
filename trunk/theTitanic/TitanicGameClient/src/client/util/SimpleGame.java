@@ -22,6 +22,8 @@ public class SimpleGame extends Game {
     private Thread thread1, thread2;
     private Game game;
 
+    private boolean rearrange = false;
+
     /**
      * Constructs new Game instance and sets c as default rendering area.
      * @param c JPanel or other container where to render the scene
@@ -48,17 +50,19 @@ public class SimpleGame extends Game {
      * @param bounds Table bounds Vector2D
      */
     private void arrangeBalls(Ball[] balls, Vector2D bounds){
-        Random rand = new Random(System.currentTimeMillis());
-        float R = 12;
-        for(int i=0;i<balls.length;i++){
-            balls[i] = new Ball();
-            balls[i].setCoordinates(new Vector2D(R+rand.nextFloat()*(bounds.getX()-R) - bounds.getX()/2.0f,
-                    R+rand.nextFloat()*(bounds.getY()-R) - bounds.getY()/2.0f));
-            balls[i].setColor(Color.BLACK);
-            balls[i].getSpeed().setY(10 - rand.nextFloat()*30);
-            balls[i].getSpeed().setX(10 - rand.nextFloat()*30);
-            balls[i].setRadius(R-1);
-            System.out.println(balls[i]);
+        synchronized(balls){
+            Random rand = new Random(System.currentTimeMillis());
+            float R = 12;
+            for(int i=0;i<balls.length;i++){
+                balls[i] = new Ball();
+                balls[i].setCoordinates(new Vector2D(R+rand.nextFloat()*(bounds.getX()-R) - bounds.getX()/2.0f,
+                        R+rand.nextFloat()*(bounds.getY()-R) - bounds.getY()/2.0f));
+                balls[i].setColor(Color.BLACK);
+                balls[i].getSpeed().setY(10 - rand.nextFloat()*30);
+                balls[i].getSpeed().setX(10 - rand.nextFloat()*30);
+                balls[i].setRadius(R-1);
+                System.out.println(balls[i]);
+            }
         }
     }
 
@@ -67,8 +71,8 @@ public class SimpleGame extends Game {
      */
     public void start(){
         stop();
-        Canvas3D c;
-        arrangeBalls(game.getGameScene().getBalls(), game.getGameScene().getBounds());
+        if(!rearrange) rearrange = true;
+        else arrangeBalls(game.getGameScene().getBalls(), game.getGameScene().getBounds());
         thread1 = new Thread(new Runnable() {
             public void run() {
                 try {
@@ -79,7 +83,6 @@ public class SimpleGame extends Game {
                 } catch (InterruptedException ex){}
             }
         });
-        thread1.start();
         thread2 = new Thread(new Runnable() {
             public void run() {
                 try {
@@ -90,8 +93,8 @@ public class SimpleGame extends Game {
                 } catch (InterruptedException ex){}
             }
         });
+        thread1.start();
         thread2.start();
-
     }
 
     /**
