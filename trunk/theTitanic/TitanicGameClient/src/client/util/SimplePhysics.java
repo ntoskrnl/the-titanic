@@ -1,4 +1,4 @@
-package ballsimpact;
+package client.util;
 import titanic.basic.*;
 /**
  *
