@@ -41,26 +41,26 @@ public interface PhysicalBall {
      * Returns vector of the speed.
      * @return Vector of the speed.
      */
-    public Vector2D getSpeed();
+    public Vector3D getSpeed();
 
     /**
      * Sets new speed.
      * @param v New speed.
      */
-    public void setSpeed(Vector2D v);
+    public void setSpeed(Vector3D v);
 
 
     /**
      * Set new coordinates of the ball to a.
      * @param a Radius vector (new coordinates)
      */
-    public void setCoordinates(Vector2D a);
+    public void setCoordinates(Vector3D a);
 
     /**
      * Coordinates of the ball (radius-vector, 2D)
-     * @return Current coordinates of the ball (Vector2D)
+     * @return Current coordinates of the ball (Vector3D)
      */
-    public Vector2D getCoordinates();
+    public Vector3D getCoordinates();
 
     /**
      * Ball is moving?

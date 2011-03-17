@@ -1,26 +1,34 @@
 package titanic.basic;
 
 /**
- * This class represents a 2D vector
+ * This class represents a 3-Dimensional vector
  * and provides basic operations of vector algebra.
  * @author danon
  */
-public class Vector2D {
+public class Vector3D {
 
-    private float x, y;
+    private float x, y, z;
 
-    public Vector2D() {
-        x=0; y=0;
+    public Vector3D() {
+        x=0; y=0; z=0;
     }
 
-    public Vector2D(float x, float y){
+    public Vector3D(float x, float y){
         this.x = x;
         this.y = y;
+        this.z = 0;
     }
 
-    public Vector2D(Vector2D v){
+    public Vector3D(float x, float y, float z){
+        this.x = x;
+        this.y = y;
+        this.z = z;
+    }
+
+    public Vector3D(Vector3D v){
         x = v.getX();
         y = v.getY();
+        z = v.getZ();
     }
 
     /**
@@ -52,27 +60,41 @@ public class Vector2D {
     }
 
     /**
+     * @return the x
+     */
+    public float getZ() {
+        return z;
+    }
+
+    /**
+     * @param x the x to set
+     */
+    public void setZ(float z) {
+        this.z = z;
+    }
+
+    /**
      * Multiply current vector by a scalar float value c.
      * @return The result of multiplication.
      */
-    public Vector2D multiply(float c){
-        return new Vector2D(getX()*c, getY()*c);
+    public Vector3D multiply(float c){
+        return new Vector3D(getX()*c, getY()*c, getZ()*c);
     }
 
     /**
      * Scalar multiplication of this vector and <code>v</code>
      * @return The result of the multiplication.
      */
-    public float multiply(Vector2D v){
-        return v.getX()*getX() + v.getY()*getY();
+    public float multiply(Vector3D v){
+        return v.getX()*getX() + v.getY()*getY() + v.getZ()*getZ();
     }
 
     /**
      * Summ of specified vector v and this vector.
      * @return Result of the summ
      */
-    public Vector2D add(Vector2D v){
-        return new Vector2D(this.getX()+v.getX(), this.getY()+v.getY());
+    public Vector3D add(Vector3D v){
+        return new Vector3D(this.getX()+v.getX(), this.getY()+v.getY(), this.getZ()+v.getZ());
     }
 
     /**
@@ -80,13 +102,13 @@ public class Vector2D {
      * @return norm af the vector
      */
     public double getNorm(){
-        return Math.sqrt(getX()*getX()+getY()*getY());
+        return Math.sqrt(this.multiply(this));
     }
 
     @Override
     public String toString(){
         String s = this.getClass().getName();
-        s+="{x="+getX()+"; y="+getY()+";}";
+        s+="{x="+getX()+"; y="+getY()+"; z=" +getZ()+";}";
         return s;
     }
     

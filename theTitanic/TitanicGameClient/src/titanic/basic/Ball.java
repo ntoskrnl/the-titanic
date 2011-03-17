@@ -9,8 +9,8 @@ import java.awt.Color;
 public class Ball implements PhysicalBall, GraphicalBall {
     private float radius;
     private float mass;
-    private Vector2D speed;
-    private Vector2D coordinates;
+    private Vector3D speed;
+    private Vector3D coordinates;
     private Color color;
     private int id;
     private boolean selected;
@@ -18,9 +18,9 @@ public class Ball implements PhysicalBall, GraphicalBall {
 
     public Ball(){
         color = Color.WHITE;
-        speed = new Vector2D(0, 0);
+        speed = new Vector3D(0, 0);
         id = 0;
-        coordinates = new Vector2D(0, 0);
+        coordinates = new Vector3D(0, 0);
         mass = 0;
         radius = 0;
         selected = false;
@@ -28,9 +28,9 @@ public class Ball implements PhysicalBall, GraphicalBall {
 
     public Ball(float x, float y){
         color = Color.WHITE;
-        speed = new Vector2D(0, 0);
+        speed = new Vector3D(0, 0);
         id = 0;
-        coordinates = new Vector2D(x, y);
+        coordinates = new Vector3D(x, y);
         mass = 0;
         radius = 0;
     }
@@ -51,19 +51,19 @@ public class Ball implements PhysicalBall, GraphicalBall {
         mass = m;
     }
 
-    public Vector2D getSpeed() {
+    public Vector3D getSpeed() {
         return speed;
     }
 
-    public void setSpeed(Vector2D v) {
+    public void setSpeed(Vector3D v) {
         speed = v;
     }
 
-    public void setCoordinates(Vector2D a) {
+    public void setCoordinates(Vector3D a) {
         coordinates = a;
     }
 
-    public Vector2D getCoordinates() {
+    public Vector3D getCoordinates() {
         return coordinates;
     }
 
