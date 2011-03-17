@@ -49,7 +49,7 @@ public class SimpleGame extends Game {
      */
     private void arrangeBalls(Ball[] balls, Vector2D bounds){
         Random rand = new Random(System.currentTimeMillis());
-        float R = 15;
+        float R = 12;
         for(int i=0;i<balls.length;i++){
             balls[i] = new Ball();
             balls[i].setCoordinates(new Vector2D(R+rand.nextFloat()*(bounds.getX()-R) - bounds.getX()/2.0f,
