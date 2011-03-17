@@ -10,8 +10,6 @@ import javax.media.j3d.*;
 import javax.vecmath.*;
 import com.sun.j3d.utils.geometry.Sphere;
 import com.sun.j3d.utils.image.TextureLoader;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import titanic.basic.*;
 
 /**
@@ -31,7 +29,7 @@ public class Graphics3D implements GraphicalEngine {
     public Transform3D[] speedch;
 
     Appearance ap = new Appearance();
-
+    
     final float width = 0.6f;  // ширина стола
     final float high  = 0.85f;  // длина
     private float r; //радиус
@@ -66,12 +64,10 @@ Color3f speculas = new Color3f(1.0f, 1.0f, 1.0f);
     Canvas3D c = new Canvas3D(config);
     u = new SimpleUniverse(c);
     area.add(BorderLayout.CENTER, c);
-  // System.out.println("Canvas " + c);
-   //System.out.println("universe  " + u);
-   //System.out.println("Config " + config);
+ 
 
     scene = createSceneGraph();
-
+    scene.compile();
 
       u.getViewingPlatform().setNominalViewingTransform();
 
@@ -102,7 +98,7 @@ Color3f speculas = new Color3f(1.0f, 1.0f, 1.0f);
     public void SetDrawBalls(){
     int i;
 
-    for(i = 0;i < 16;i++){
+    for(i = 0;i < N;i++){
      if(speedch[i] == null) speedch[i] = new Transform3D();
     speedch[i].setTranslation(mass[i]);
     objTrans[i].setTransform(speedch[i]);
@@ -131,7 +127,7 @@ Color3f speculas = new Color3f(1.0f, 1.0f, 1.0f);
    //---------------------------------------------------------------------------
 
      public void render(Game game) {
-
+        
      BallsArray = game.getGameScene().getBalls();
      SetCoadinates();
      SetDrawBalls();
@@ -176,13 +172,13 @@ public Vector3f[] startmass(Vector3f start){
 
 public void SetStartTransform(Vector3f[] mass, BranchGroup bran){
 
-    TransformGroup[] tr = new TransformGroup[15];
+    TransformGroup[] tr = new TransformGroup[N];
     int i=0;
 
-    Sphere[] ball = new Sphere[15];
-    Transform3D[] pos = new Transform3D[15];
+    Sphere[] ball = new Sphere[N];
+    Transform3D[] pos = new Transform3D[N];
 
-    for(i=0;i<15;i++){
+    for(i=0;i<N-1;i++){
 
         
         tr[i] = new TransformGroup();
@@ -231,27 +227,27 @@ public void SetStartTransform(Vector3f[] mass, BranchGroup bran){
    SetStartTransform(mass, objRoot);
    //---------------------------------------------------------------------------
 
-   mass[15] = new Vector3f(0.0f,0.0f,0.0f);
-   objTrans[15] = new TransformGroup();
-   objTrans[15].setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
-   objRoot.addChild(objTrans[15]);
+   mass[N-1] = new Vector3f(0.0f,0.0f,0.0f);
+   objTrans[N-1] = new TransformGroup();
+   objTrans[N-1].setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+   objRoot.addChild(objTrans[N-1]);
 
    // Create a simple shape leaf node, add it to the scene graph.
    ap.setMaterial(new Material(ambient, emissive, diffuse, speculas, 12000f));
 
    Sphere sphere = new Sphere(r, ap);
 
-   objTrans[15] = new TransformGroup();
-   objTrans[15].setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+   objTrans[N-1] = new TransformGroup();
+   objTrans[N-1].setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+   objTrans[N-1].setCapability(TransformGroup.ALLOW_CHILDREN_WRITE);
    Transform3D pos = new Transform3D();
    pos.setTranslation(new Vector3f(0.0f,-0.4f,0.0f));
 
-
    //1 шар, которым начинается игра---------------------------------------------
-   objTrans[15].setTransform(pos);
-   objTrans[15].addChild(sphere);
-   objRoot.addChild(objTrans[15]);
-
+   objTrans[N-1].setTransform(pos);
+   objTrans[N-1].addChild(sphere);
+   objRoot.addChild(objTrans[N-1]);
+   
    //---------------------------------------------------------------------------
    //-------------------------------Table---------------------------------------
    //---------------------------------------------------------------------------
@@ -275,18 +271,18 @@ public void SetStartTransform(Vector3f[] mass, BranchGroup bran){
 //Создание стола
    com.sun.j3d.utils.geometry.Box box = new Box(width, high, .1f, primflags, table);
 
-   objTrans[16] = new TransformGroup();
-   objTrans[16].setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+   objTrans[N] = new TransformGroup();
+   objTrans[N].setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
    objRoot.addChild(objTrans[16]);
 //НАчальное положение стола
    Transform3D vec = new Transform3D();
    vec.setTranslation(new Vector3f(0.0f,0.0f,(-0.1f - r)));
-   objTrans[16] = new TransformGroup();
-   objTrans[16].setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+   objTrans[N] = new TransformGroup();
+   objTrans[N].setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
 
-   objTrans[16].setTransform(vec);
-   objTrans[16].addChild(box);
-   objRoot.addChild(objTrans[16]);
+   objTrans[N].setTransform(vec);
+   objTrans[N].addChild(box);
+   objRoot.addChild(objTrans[N]);
 
    //---------------------------------------------------------------------------
    //****************************************************************

@@ -7,6 +7,12 @@
 package client.gui;
 
 import client.util.SimpleGame;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Timer;
+import java.util.TimerTask;
+import titanic.basic.Ball;
 
 /**
  * Window with GameScene and some control buttons.
@@ -19,6 +25,18 @@ public class GameWindow extends javax.swing.JFrame {
     public GameWindow() {
         initComponents();
         game = new SimpleGame(gameScenePanel);
+        timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                Ball[] b = game.getGameScene().getBalls();
+                double t = 0;
+                for(int i=0;i<b.length;i++)
+                    t+=b[i].getSpeed().getNorm()*b[i].getSpeed().getNorm();
+                t/=2.0;
+                jLabel2.setText(Math.round(t*100)/100.0d + " J/kg");
+            }
+        }, new Date(), 100);
     }
 
     /** This method is called from within the constructor to
@@ -33,6 +51,8 @@ public class GameWindow extends javax.swing.JFrame {
         buttonPanel = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
         gamePanel = new javax.swing.JPanel();
         gameScenePanel = new javax.swing.JPanel();
 
@@ -60,15 +80,24 @@ public class GameWindow extends javax.swing.JFrame {
             }
         });
 
+        jLabel1.setText("E = ");
+
+        jLabel2.setText("0 J");
+
         javax.swing.GroupLayout buttonPanelLayout = new javax.swing.GroupLayout(buttonPanel);
         buttonPanel.setLayout(buttonPanelLayout);
         buttonPanelLayout.setHorizontalGroup(
             buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(buttonPanelLayout.createSequentialGroup()
                 .addGap(21, 21, 21)
-                .addGroup(buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jButton2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(buttonPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addGap(32, 32, 32)
+                        .addComponent(jLabel2))
+                    .addGroup(buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jButton2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap(25, Short.MAX_VALUE))
         );
         buttonPanelLayout.setVerticalGroup(
@@ -78,7 +107,11 @@ public class GameWindow extends javax.swing.JFrame {
                 .addComponent(jButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton2)
-                .addContainerGap(355, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2))
+                .addContainerGap(328, Short.MAX_VALUE))
         );
 
         getContentPane().add(buttonPanel, java.awt.BorderLayout.LINE_END);
@@ -127,7 +160,10 @@ public class GameWindow extends javax.swing.JFrame {
     private javax.swing.JPanel gameScenePanel;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     // End of variables declaration//GEN-END:variables
 
     private SimpleGame game;
+    private Timer timer;
 }
