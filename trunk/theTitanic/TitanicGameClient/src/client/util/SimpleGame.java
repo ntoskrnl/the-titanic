@@ -9,7 +9,7 @@ import titanic.basic.Game;
 import titanic.basic.GameScene;
 import titanic.basic.GraphicalEngine;
 import titanic.basic.PhysicalEngine;
-import titanic.basic.Vector2D;
+import titanic.basic.Vector3D;
 
 /**
  * Simple implementation of class Game
@@ -47,15 +47,15 @@ public class SimpleGame extends Game {
     /**
      * Arrange balls.
      * @param balls The array with null elements
-     * @param bounds Table bounds Vector2D
+     * @param bounds Table bounds Vector3D
      */
-    private void arrangeBalls(Ball[] balls, Vector2D bounds){
+    private void arrangeBalls(Ball[] balls, Vector3D bounds){
         synchronized(balls){
             Random rand = new Random(System.currentTimeMillis());
             float R = 12;
             for(int i=0;i<balls.length;i++){
                 balls[i] = new Ball();
-                balls[i].setCoordinates(new Vector2D(R+rand.nextFloat()*(bounds.getX()-R) - bounds.getX()/2.0f,
+                balls[i].setCoordinates(new Vector3D(R+rand.nextFloat()*(bounds.getX()-R) - bounds.getX()/2.0f,
                         R+rand.nextFloat()*(bounds.getY()-R) - bounds.getY()/2.0f));
                 balls[i].setColor(Color.BLACK);
                 balls[i].getSpeed().setY(10 - rand.nextFloat()*30);
@@ -137,12 +137,12 @@ public class SimpleGame extends Game {
 class SimpleGameScene extends GameScene {
     private Container renderingArea;
     private Ball[] balls;
-    private Vector2D bounds;
+    private Vector3D bounds;
     
     public SimpleGameScene(Container c, Ball[] b){
         renderingArea = c;
         balls = b;
-        bounds = new Vector2D((float)c.getWidth(), (float)c.getHeight());
+        bounds = new Vector3D((float)c.getWidth(), (float)c.getHeight());
     }
 
     @Override
@@ -151,7 +151,7 @@ class SimpleGameScene extends GameScene {
     }
 
     @Override
-    public Vector2D getBounds() {
+    public Vector3D getBounds() {
         return bounds;
     }
     

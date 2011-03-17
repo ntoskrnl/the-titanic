@@ -52,29 +52,29 @@ public class SimplePhysics implements PhysicalEngine {
 //        System.out.printf("Impact! %d\n",uy);
 //        uy++;
 
-        Vector2D pa = a.getCoordinates();
-        Vector2D pb = b.getCoordinates();
+        Vector3D pa = a.getCoordinates();
+        Vector3D pb = b.getCoordinates();
 
-        Vector2D va = a.getSpeed();
-        Vector2D vb = b.getSpeed();
+        Vector3D va = a.getSpeed();
+        Vector3D vb = b.getSpeed();
 
         // Вектор, соединяющий середины векторов.
-        Vector2D c = new Vector2D();
+        Vector3D c = new Vector3D();
             c.setX( (float) ( pa.getX() - pb.getX() ) );
             c.setY( (float) ( pa.getY() - pb.getY() ) );
         // Расстояние между шарами.
         float ab = c.getX()*c.getX() + c.getY()*c.getY();
 
         // Вектор, ему ортогональный.
-        Vector2D d = new Vector2D();
+        Vector3D d = new Vector3D();
             d.setX( (float) c.getY() );
             d.setY( (float) (-1) * c.getX() );
 
-        Vector2D a2 = new Vector2D();
+        Vector3D a2 = new Vector3D();
             a2 = ( c.multiply(vb.multiply(c)) ).add( d.multiply(va.multiply(d)) )
                    .multiply( (float) (1/(ab)) );
 
-        Vector2D b2 = new Vector2D();
+        Vector3D b2 = new Vector3D();
             b2 = ( c.multiply(va.multiply(c)) ).add( d.multiply(vb.multiply(d)) )
                    .multiply( (float) (1/(ab)) );
 
@@ -112,11 +112,11 @@ public class SimplePhysics implements PhysicalEngine {
             /* Проверяем, не столкнулся ли какой шар со стенкой. */
             /* Очень важно вставить сюда проверку на валидность! */
             for( int i=0; i<BQ; ++i ){
-                Vector2D coord = balls[i].getCoordinates();
+                Vector3D coord = balls[i].getCoordinates();
                 double x = coord.getX();
                 double y = coord.getY();
 
-                Vector2D velo = balls[i].getSpeed();
+                Vector3D velo = balls[i].getSpeed();
                 double vx = velo.getX();
                 double vy = velo.getY();
 
@@ -162,10 +162,10 @@ public class SimplePhysics implements PhysicalEngine {
             for( int i=0; i<BQ; ++i ){
                 for( int j = i+1; j<BQ; ++j ){
                     /* Получаем радиус векторы шаров. */
-                    Vector2D a = balls[i].getCoordinates();
-                    Vector2D b = balls[j].getCoordinates();
+                    Vector3D a = balls[i].getCoordinates();
+                    Vector3D b = balls[j].getCoordinates();
 
-                    Vector2D c = a.add(b.multiply((float)-1));
+                    Vector3D c = a.add(b.multiply((float)-1));
 
                     float x = a.getX() - b.getX();
                     float y = a.getY() - b.getY();
@@ -193,11 +193,11 @@ public class SimplePhysics implements PhysicalEngine {
         } else
         if (SimplePhysicsConst.PhysicsModel==2){
             for( int i=0; i<BQ; ++i ){
-                Vector2D coord = balls[i].getCoordinates();
+                Vector3D coord = balls[i].getCoordinates();
                 double x = coord.getX();
                 double y = coord.getY();
 
-                Vector2D velo = balls[i].getSpeed();
+                Vector3D velo = balls[i].getSpeed();
                 double vx = velo.getX();
                 double vy = velo.getY();
 
@@ -247,9 +247,9 @@ public class SimplePhysics implements PhysicalEngine {
             for( int i=0; i<BQ; ++i ){
                 for( int j = i+1; j<BQ; ++j ){
                     /* Получаем радиус векторы шаров. */
-                    Vector2D a = balls[i].getCoordinates();
-                    Vector2D b = balls[j].getCoordinates();
-                    Vector2D c = a.add(b.multiply((float)-1));
+                    Vector3D a = balls[i].getCoordinates();
+                    Vector3D b = balls[j].getCoordinates();
+                    Vector3D c = a.add(b.multiply((float)-1));
 
                     /* Проверяем шары на столкновение. */
                     if ( (c.getX()*c.getX() + c.getY()*c.getY())< r2 ){
@@ -282,7 +282,7 @@ public class SimplePhysics implements PhysicalEngine {
                 balls[i].setCoordinates( balls[i].getCoordinates().add( balls[i].getSpeed().multiply((float)Delta) )  );
 
                 /* Уменьшаем скорость шаров.  */
-                Vector2D v = balls[i].getSpeed();
+                Vector3D v = balls[i].getSpeed();
                 double x = v.getX();
                 double y = v.getY();
                 /* Этот кусок кода тоже должен быть не здесь. */
@@ -301,7 +301,7 @@ public class SimplePhysics implements PhysicalEngine {
 
             if(SimplePhysicsConst.CorectionEnable==1){
                 for(int i=0; i<BQ; ++i){
-                    Vector2D coord = balls[i].getCoordinates();
+                    Vector3D coord = balls[i].getCoordinates();
                     double x = coord.getX();
                     double y = coord.getY();
 

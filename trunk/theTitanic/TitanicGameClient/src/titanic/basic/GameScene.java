@@ -13,12 +13,12 @@ public abstract class GameScene {
     public abstract Ball[] getBalls();
 
     /**
-     * Returns bounds of the table - Vector2D(x, y),
+     * Returns bounds of the table - Vector3D(x, y),
      * where x,y are positive float values.
      * The center of the table is at the origin.
      *
      * <p style="color: red;">Thowgh, I think this method must be reconstructed.</p>
      * @return bounds vector
      */
-    public abstract Vector2D getBounds();
+    public abstract Vector3D getBounds();
 }

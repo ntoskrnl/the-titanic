@@ -41,13 +41,13 @@ public interface GraphicalBall {
      * Set new coordinates of the ball to a.
      * @param a Radius vector (new coordinates)
      */
-    public void setCoordinates(Vector2D a);
+    public void setCoordinates(Vector3D a);
 
     /**
      * Coordinates of the ball (radius-vector, 2D)
-     * @return Current coordinates of the ball (Vector2D)
+     * @return Current coordinates of the ball (Vector3D)
      */
-    public Vector2D getCoordinates();
+    public Vector3D getCoordinates();
 
     /**
      * Check wether the ball is selected or not (to hit).
