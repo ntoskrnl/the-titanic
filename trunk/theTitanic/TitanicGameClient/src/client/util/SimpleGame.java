@@ -1,10 +1,13 @@
 package client.util;
 
+import client.util.event.GameEvent;
 import java.awt.Color;
 import java.awt.Container;
+import java.util.ArrayList;
 import java.util.Random;
 import javax.media.j3d.Canvas3D;
 import titanic.basic.Ball;
+import titanic.basic.EventPipeLine;
 import titanic.basic.Game;
 import titanic.basic.GameScene;
 import titanic.basic.GraphicalEngine;
@@ -19,8 +22,9 @@ public class SimpleGame extends Game {
     private GameScene scene;
     private PhysicalEngine physics;
     private GraphicalEngine graphics;
-    private Thread thread1, thread2;
+    private Thread thread1, thread2, thread3;
     private Game game;
+    private EventPipeLine events;
 
     private boolean rearrange = false;
 
@@ -33,10 +37,13 @@ public class SimpleGame extends Game {
         scene = new SimpleGameScene(c, balls);
         arrangeBalls(balls, scene.getBounds());
 
+        events = new SimpleEventPipeLine();
+
         physics = new SimplePhysics(this);
         
         graphics = new Graphics3D(this);
         graphics.setRenderingArea(c);
+
 
         game = this;
 
@@ -86,13 +93,24 @@ public class SimpleGame extends Game {
         thread2 = new Thread(new Runnable() {
             public void run() {
                 try {
-                    while(!thread1.isInterrupted()){
+                    while(!thread2.isInterrupted()){
                         physics.compute();
                         Thread.currentThread().sleep(15);
                     }
                 } catch (InterruptedException ex){}
             }
         });
+        thread3 = new Thread(new Runnable() {
+            public void run() {
+                try {
+                    while(!thread3.isInterrupted()){
+                        events.exec();
+                        Thread.currentThread().sleep(15);
+                    }
+                } catch (InterruptedException ex){}
+            }
+        });
+        thread3.start();
         thread1.start();
         thread2.start();
     }
@@ -105,6 +123,8 @@ public class SimpleGame extends Game {
             thread1.interrupt();
         if(thread2!=null)
             thread2.interrupt();
+        if(thread3!=null)
+            thread3.interrupt();
     }
 
     @Override
@@ -125,6 +145,11 @@ public class SimpleGame extends Game {
     @Override
     public PhysicalEngine getPhysicalEngine() {
         return physics;
+    }
+
+    @Override
+    public EventPipeLine getEventPipeLine() {
+        return events;
     }
 
 
@@ -155,4 +180,39 @@ class SimpleGameScene extends GameScene {
         return bounds;
     }
     
+}
+
+
+class SimpleEventPipeLine implements EventPipeLine {
+
+    private final ArrayList<GameEvent> events;
+
+    public SimpleEventPipeLine() {
+        events = new ArrayList<GameEvent>();
+    }
+
+
+    public void add(GameEvent e) {
+        System.out.println("Event: "+e);
+        synchronized(events){
+            events.add(e);
+        }
+    }
+
+    public void exec() {
+        synchronized(events){
+            for(GameEvent event: events){
+                event.execute();
+            }
+        }
+    }
+
+    public void clear() {
+        events.clear();
+    }
+
+    public GameEvent[] getEvents() {
+        return (GameEvent[])events.toArray();
+    }
+
 }

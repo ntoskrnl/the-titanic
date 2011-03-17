@@ -18,6 +18,8 @@ public abstract class Game {
      */
     public abstract int changeStatus(int gameStatus);
 
+    public abstract EventPipeLine getEventPipeLine();
+
     public abstract GraphicalEngine getGraphicalEngine();
     public abstract PhysicalEngine getPhysicalEngine();
 
