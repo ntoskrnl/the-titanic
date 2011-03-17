@@ -1,4 +1,6 @@
 package client.util;
+import client.util.event.GameEvent;
+import client.util.event.ImpactEvent;
 import titanic.basic.*;
 /**
  *
@@ -49,8 +51,8 @@ public class SimplePhysics implements PhysicalEngine {
     /* Обработчик столкновений. */
     private void impact(Ball a, Ball b){
 
-//        System.out.printf("Impact! %d\n",uy);
-//        uy++;
+        game.getEventPipeLine().add(new ImpactEvent(a.getSpeed().add(b.getSpeed()).getNorm()));
+        uy++;
 
         Vector3D pa = a.getCoordinates();
         Vector3D pb = b.getCoordinates();
