@@ -87,6 +87,10 @@ public class SimplePhysics implements PhysicalEngine {
          расположению шаров и их скоростей вычислить их местонахождение
          через квант времени. */
     public void compute() {
+     synchronized(game.getGameScene().getBalls()){
+
+
+
         /* Здесь неплохо бы разместить различные проверки на допустимость,
          но я не представляю себе какие. */
 
@@ -311,6 +315,7 @@ public class SimplePhysics implements PhysicalEngine {
                         y = height/2;
                 }
             }
+        }
     }
 
 }
