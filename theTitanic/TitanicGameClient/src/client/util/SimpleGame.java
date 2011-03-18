@@ -3,9 +3,9 @@ package client.util;
 import client.util.event.GameEvent;
 import java.awt.Color;
 import java.awt.Container;
-import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Random;
-import javax.media.j3d.Canvas3D;
 import titanic.basic.Ball;
 import titanic.basic.EventPipeLine;
 import titanic.basic.Game;
@@ -95,19 +95,19 @@ public class SimpleGame extends Game {
                 try {
                     while(!thread2.isInterrupted()){
                         physics.compute();
-                        Thread.currentThread().sleep(15);
+                        Thread.currentThread().sleep(40);
                     }
                 } catch (InterruptedException ex){}
             }
         });
         thread3 = new Thread(new Runnable() {
             public void run() {
-                try {
+                try{
                     while(!thread3.isInterrupted()){
-                        events.exec();
-                        Thread.currentThread().sleep(15);
+                        while(events.size()!=0) events.getFirst().execute();
+                        Thread.currentThread().sleep(10);
                     }
-                } catch (InterruptedException ex){}
+                } catch(InterruptedException ex){}
             }
         });
         thread3.start();
@@ -185,15 +185,15 @@ class SimpleGameScene extends GameScene {
 
 class SimpleEventPipeLine implements EventPipeLine {
 
-    private final ArrayList<GameEvent> events;
+    private final Queue<GameEvent> events;
 
     public SimpleEventPipeLine() {
-        events = new ArrayList<GameEvent>();
+        events = new LinkedList<GameEvent>();
     }
 
 
     public void add(GameEvent e) {
-        System.out.println("Event: "+e);
+        //System.out.println("Event: "+e);
         synchronized(events){
             events.add(e);
         }
@@ -205,14 +205,31 @@ class SimpleEventPipeLine implements EventPipeLine {
                 event.execute();
             }
         }
-    }
-
-    public void clear() {
         events.clear();
     }
 
+    public void clear() {
+        synchronized(events){
+            events.clear();
+        }
+    }
+
     public GameEvent[] getEvents() {
-        return (GameEvent[])events.toArray();
+        synchronized(events){
+            return (GameEvent[])events.toArray();
+        }
+    }
+
+    public GameEvent getFirst() {
+        synchronized(events){
+                return events.poll();
+        }
+    }
+
+    public int size() {
+        synchronized(events){
+            return events.size();
+        }
     }
 
 }

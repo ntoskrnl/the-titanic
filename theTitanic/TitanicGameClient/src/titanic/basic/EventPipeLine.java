@@ -24,9 +24,20 @@ public interface EventPipeLine {
     public void clear();
 
     /**
+     * First event from the queue
+     * @return GameEvent instance or null if empty
+     */
+    public GameEvent getFirst();
+
+    /**
      * This method can be usefull if you want to know which events are there in the queue.
      * @return all events as GameEvent[] array
      */
     public GameEvent[] getEvents();
+
+    /**
+     * Number of events in the queue
+     */
+    public int size();
     
 }
