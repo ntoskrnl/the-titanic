@@ -1,18 +1,23 @@
 package client.util.event;
 
+import titanic.basic.Game;
+
 /**
  * GameEvent abstract class. All game events must extend this class.
  * @author danon
  */
 public abstract class GameEvent {
     private String type = null;
+    private Game source;
 
     /**
      * Constructs new GameEvent instance with specified event type
+     * @param g Game instance (source of the event)
      * @param type Event type
      */
-    public GameEvent(String type){
+    public GameEvent(Game src, String type){
         this.type = type;
+        source = src;
     }
 
     /**

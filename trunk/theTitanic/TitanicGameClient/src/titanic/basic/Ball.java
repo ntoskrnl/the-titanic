@@ -3,7 +3,7 @@ package titanic.basic;
 import java.awt.Color;
 
 /**
- * This interface describes ball with coordinates and radius
+ * This class represents a ball with coordinates and radius
  * @author danon
  */
 public class Ball implements PhysicalBall, GraphicalBall {
