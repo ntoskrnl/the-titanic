@@ -44,11 +44,6 @@ public class GameWindow extends javax.swing.JFrame {
                 formWindowClosing(evt);
             }
         });
-        addComponentListener(new java.awt.event.ComponentAdapter() {
-            public void componentResized(java.awt.event.ComponentEvent evt) {
-                formComponentResized(evt);
-            }
-        });
 
         buttonPanel.setPreferredSize(new java.awt.Dimension(180, 326));
 
@@ -92,6 +87,8 @@ public class GameWindow extends javax.swing.JFrame {
         gamePanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
         gamePanel.setLayout(new java.awt.BorderLayout());
 
+        gameScenePanel.setBackground(new java.awt.Color(0, 0, 0));
+
         javax.swing.GroupLayout gameScenePanelLayout = new javax.swing.GroupLayout(gameScenePanel);
         gameScenePanel.setLayout(gameScenePanelLayout);
         gameScenePanelLayout.setHorizontalGroup(
@@ -121,10 +118,6 @@ public class GameWindow extends javax.swing.JFrame {
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         if(game!=null) game.stop();
     }//GEN-LAST:event_formWindowClosing
-
-    private void formComponentResized(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentResized
-
-    }//GEN-LAST:event_formComponentResized
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

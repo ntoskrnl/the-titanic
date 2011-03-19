@@ -10,6 +10,10 @@ import javax.media.j3d.*;
 import javax.vecmath.*;
 import com.sun.j3d.utils.geometry.Sphere;
 import com.sun.j3d.utils.image.TextureLoader;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import titanic.basic.*;
 
 /**
@@ -27,6 +31,7 @@ public class Graphics3D implements GraphicalEngine {
     private Vector3f[] mass;
     public Vector3f[] V;
     public Transform3D[] speedch;
+    private Game game;
 
     Appearance ap = new Appearance();
     
@@ -43,6 +48,7 @@ public class Graphics3D implements GraphicalEngine {
     Color3f speculas = new Color3f(1.0f, 1.0f, 1.0f);
 
     public Graphics3D(Game g) {
+        game = g;
         scene = new BranchGroup();
         N = g.getGameScene().getBalls().length;
         mass = new Vector3f[N];
@@ -55,7 +61,43 @@ public class Graphics3D implements GraphicalEngine {
         r = g.getGameScene().getBalls()[0].getRadius()/maxhight*high;
     }
 
+    /** Adds some mouse and key listeners to the component */
+    private void setEventListeners(Component c){
+        /**
+         * Behavour on key pressing
+         */
+        c.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyReleased(KeyEvent evt){
+                int code = evt.getKeyCode();
+                int curBall = game.getBilliardKey().getBall().getId();
+                if(code == KeyEvent.VK_COMMA) 
+                    curBall+=game.getGameScene().getBalls().length-1;
+                else if (code == KeyEvent.VK_PERIOD) 
+                    curBall+=game.getGameScene().getBalls().length+1;
+                curBall%=game.getGameScene().getBalls().length;
+                game.getBilliardKey().changeBall(game.getGameScene().getBalls()[curBall]);
+                //System.out.println(game.getBilliardKey().getBall());
+            }
+        });
 
+        /**
+         * Bahavour at mouse (wheel) click or move
+         */
+        c.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent evt){
+                if(evt.getClickCount()==1){
+                    int curBall = game.getBilliardKey().getBall().getId();
+                    curBall++;
+                    curBall%=game.getGameScene().getBalls().length;
+                    game.getBilliardKey().changeBall(game.getGameScene().getBalls()[curBall]);
+                    //System.out.println(game.getBilliardKey().getBall());
+                }
+            }
+        });
+
+    }
 
     public void setRenderingArea(Container area) {
 
@@ -65,6 +107,11 @@ public class Graphics3D implements GraphicalEngine {
         u = new SimpleUniverse(c);
         area.add(BorderLayout.CENTER, c);
 
+        // Let's add some event listeners to the rendering area!
+        // For example, we can magnify the scene using a mouse wheel
+        // or select ball using '<' and '>'
+        // or just rotate the universe with arrow keys.
+        setEventListeners(c);
 
         scene = createSceneGraph();
         scene.compile();

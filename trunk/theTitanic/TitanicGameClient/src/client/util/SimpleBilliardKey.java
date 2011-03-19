@@ -30,8 +30,11 @@ public class SimpleBilliardKey implements BilliardKey {
         return power;
     }
 
-    public void setBall(Ball b) {
+    public void changeBall(Ball b) {
+        if(ball!=null) ball.setSelected(false);
         ball = b;
+        if(ball!=null)
+            ball.setSelected(true);
     }
 
     public void setAngle(float a) {
