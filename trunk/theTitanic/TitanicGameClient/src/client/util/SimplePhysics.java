@@ -50,10 +50,6 @@ public class SimplePhysics implements PhysicalEngine {
     /* Обработчик столкновений. */
     private void impact(Ball a, Ball b){
 
-<<<<<<< .mine
-=======
-        game.getEventPipeLine().add(new ImpactEvent(game, a.getSpeed().add(b.getSpeed()).getNorm()));
->>>>>>> .r69
         uy++;
 
         Vector3D pa = a.getCoordinates();
@@ -69,7 +65,7 @@ public class SimplePhysics implements PhysicalEngine {
 
         // Создаём событие: шары столкнулись.
         Vector3D pt = a.getSpeed().add(b.getSpeed());
-        game.getEventPipeLine().add(new ImpactEvent( pt.multiply(c) ));
+        game.getEventPipeLine().add(new ImpactEvent( (float) pt.multiply(c) ));
 
         // Расстояние между шарами.
         float ab = c.getX()*c.getX() + c.getY()*c.getY();
@@ -117,11 +113,8 @@ public class SimplePhysics implements PhysicalEngine {
 
         if (SimplePhysicsConst.PhysicsModel==1){
 
-<<<<<<< .mine
         if (((++reject)%SimplePhysicsConst.rej)==0) clean();
-=======
-        if (((++reject)%10)==0) clean();
->>>>>>> .r69
+
             /* Проверяем, не столкнулся ли какой шар со стенкой. */
             /* Очень важно вставить сюда проверку на валидность! */
             for( int i=0; i<BQ; ++i ){
