@@ -1,12 +1,10 @@
 package client.util;
 
-import client.util.event.GameEvent;
 import java.awt.Color;
 import java.awt.Container;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Random;
 import titanic.basic.Ball;
+import titanic.basic.BilliardKey;
 import titanic.basic.EventPipeLine;
 import titanic.basic.Game;
 import titanic.basic.GameScene;
@@ -25,6 +23,7 @@ public class SimpleGame extends Game {
     private Thread thread1, thread2, thread3;
     private Game game;
     private EventPipeLine events;
+    private BilliardKey key;
 
     private boolean rearrange = false;
 
@@ -36,6 +35,8 @@ public class SimpleGame extends Game {
         Ball[] balls = new Ball[16];
         scene = new SimpleGameScene(c, balls);
         arrangeBalls(balls, scene.getBounds());
+
+        key = new SimpleBilliardKey();
 
         events = new SimpleEventPipeLine();
 
@@ -152,77 +153,12 @@ public class SimpleGame extends Game {
         return events;
     }
 
-
-}
-
-/**
- * Simple implementation of class GameScene
- * @author danon
- */
-class SimpleGameScene extends GameScene {
-    private Container renderingArea;
-    private Ball[] balls;
-    private Vector3D bounds;
-    
-    public SimpleGameScene(Container c, Ball[] b){
-        renderingArea = c;
-        balls = b;
-        bounds = new Vector3D((float)c.getWidth(), (float)c.getHeight());
-    }
-
     @Override
-    public Ball[] getBalls() {
-        return balls;
+    public BilliardKey getBilliardKey() {
+        return key;
     }
 
-    @Override
-    public Vector3D getBounds() {
-        return bounds;
-    }
-    
+
 }
 
 
-class SimpleEventPipeLine implements EventPipeLine {
-
-    private final Queue<GameEvent> events;
-
-    public SimpleEventPipeLine() {
-        events = new LinkedList<GameEvent>();
-    }
-
-
-    public void add(GameEvent e) {
-        //System.out.println("Event: "+e);
-        events.add(e);
-    }
-
-    public void exec() {
-        synchronized(events){
-            for(GameEvent event: events){
-                event.execute();
-            }
-        }
-    }
-
-    public void clear() {
-        synchronized(events){
-            events.clear();
-        }
-    }
-
-    public GameEvent[] getEvents() {
-        synchronized(events){
-            return (GameEvent[])events.toArray();
-        }
-    }
-
-    public GameEvent getFirst() {
-            return events.poll();
-    }
-
-    public int size() {
-        return events.size();
-    }
-
-}
