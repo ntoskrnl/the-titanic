@@ -109,7 +109,7 @@ public class SimplePhysics implements PhysicalEngine {
 
         if (SimplePhysicsConst.PhysicsModel==1){
 
-        if (((++reject)%7)==0) clean();
+        if (((++reject)%10)==0) clean();
             /* Проверяем, не столкнулся ли какой шар со стенкой. */
             /* Очень важно вставить сюда проверку на валидность! */
             for( int i=0; i<BQ; ++i ){
@@ -314,6 +314,7 @@ public class SimplePhysics implements PhysicalEngine {
                         y = width/2;
                     if (y<((-1)*height/2-SimplePhysicsConst.CorrectionPenalty))
                         y = height/2;
+                    balls[i].setCoordinates(new Vector3D((float)x,(float)y));
                 }
             }
         }
