@@ -28,6 +28,10 @@ public abstract class GameEvent {
         return type;
     }
 
+    public Object getSource(){
+        return source;
+    }
+
     @Override
     public String toString(){
         return getClass().getName()+"{type=\""+getType()+"\"}";
