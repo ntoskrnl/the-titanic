@@ -19,10 +19,10 @@ public abstract class Game {
     public abstract int changeStatus(int gameStatus);
 
     public abstract EventPipeLine getEventPipeLine();
-
     public abstract GraphicalEngine getGraphicalEngine();
     public abstract PhysicalEngine getPhysicalEngine();
 
+    public abstract BilliardKey getBilliardKey();
 
     /**
      * Waiting for user to make next impact. (no physics)
