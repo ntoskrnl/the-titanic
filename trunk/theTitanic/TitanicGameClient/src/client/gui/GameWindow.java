@@ -7,6 +7,8 @@
 package client.gui;
 
 import client.util.SimpleGame;
+import client.util.event.BallsStopEvent;
+import client.util.event.GameEvent;
 import java.util.Date;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -34,6 +36,9 @@ public class GameWindow extends javax.swing.JFrame {
                         t+=b[i].getSpeed().getNorm()*b[i].getSpeed().getNorm();
                     t/=2.0;
                     jLabel2.setText(Math.round(t*1000)/1000.0d + " J/kg");
+                    if(t<0.0001){
+                        game.getEventPipeLine().add(new BallsStopEvent(game));
+                    }
                 }
             }
         }, new Date(), 100);

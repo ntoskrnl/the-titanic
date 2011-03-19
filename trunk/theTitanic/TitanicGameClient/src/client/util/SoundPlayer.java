@@ -29,7 +29,7 @@ public class SoundPlayer extends Thread {
     /**
      * Play sound file (in new thread) with specified volume
      * @param src URL of the audio file to play;
-     * @param vol Relative volume value [0.0f, 1.0f)
+     * @param vol Relative volume value [0.0f, 1.0f). If the value is more than 1.0f it will be decreased.
      */
     public static void play(URL src, float vol){
         if(vol>=1.0f) vol = 0.999f;
