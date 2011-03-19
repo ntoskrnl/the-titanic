@@ -50,7 +50,10 @@ public class SimplePhysics implements PhysicalEngine {
     /* Обработчик столкновений. */
     private void impact(Ball a, Ball b){
 
+<<<<<<< .mine
+=======
         game.getEventPipeLine().add(new ImpactEvent(game, a.getSpeed().add(b.getSpeed()).getNorm()));
+>>>>>>> .r69
         uy++;
 
         Vector3D pa = a.getCoordinates();
@@ -63,6 +66,11 @@ public class SimplePhysics implements PhysicalEngine {
         Vector3D c = new Vector3D();
             c.setX( (float) ( pa.getX() - pb.getX() ) );
             c.setY( (float) ( pa.getY() - pb.getY() ) );
+
+        // Создаём событие: шары столкнулись.
+        Vector3D pt = a.getSpeed().add(b.getSpeed());
+        game.getEventPipeLine().add(new ImpactEvent( pt.multiply(c) ));
+
         // Расстояние между шарами.
         float ab = c.getX()*c.getX() + c.getY()*c.getY();
 
@@ -109,7 +117,11 @@ public class SimplePhysics implements PhysicalEngine {
 
         if (SimplePhysicsConst.PhysicsModel==1){
 
+<<<<<<< .mine
+        if (((++reject)%SimplePhysicsConst.rej)==0) clean();
+=======
         if (((++reject)%10)==0) clean();
+>>>>>>> .r69
             /* Проверяем, не столкнулся ли какой шар со стенкой. */
             /* Очень важно вставить сюда проверку на валидность! */
             for( int i=0; i<BQ; ++i ){
@@ -309,13 +321,18 @@ public class SimplePhysics implements PhysicalEngine {
                     if (x>(width/2+SimplePhysicsConst.CorrectionPenalty))
                         x = width/2;
                     if (x<((-1)*width/2-SimplePhysicsConst.CorrectionPenalty))
-                        x = width/2;
+                        x = (-1)*width/2;
                     if (y>(height/2+SimplePhysicsConst.CorrectionPenalty))
                         y = width/2;
                     if (y<((-1)*height/2-SimplePhysicsConst.CorrectionPenalty))
-                        y = height/2;
+                        y = (-1)*height/2;
                     balls[i].setCoordinates(new Vector3D((float)x,(float)y));
                 }
+            }
+
+            //Детекция падения в лузу.
+            if(SimplePhysicsConst.BallGetDown==1){
+                
             }
         }
     }
