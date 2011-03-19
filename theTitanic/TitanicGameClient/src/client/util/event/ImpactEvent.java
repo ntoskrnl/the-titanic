@@ -1,7 +1,7 @@
 package client.util.event;
 
-import sun.audio.AudioPlayer;
-import sun.audio.AudioStream;
+import client.util.SoundPlayer;
+import javax.sound.sampled.DataLine.*;
 import titanic.basic.Game;
 
 /**
@@ -17,13 +17,8 @@ public class ImpactEvent extends GameEvent {
     }
 
     public void execute() {
-        // play sound of impact (use sun.audio.AudioPlayer)
-        try{
-            AudioStream as = new AudioStream(getClass().getResourceAsStream("/client/res/event/click.wav"));
-            AudioPlayer.player.start(as);
-        } catch(Exception ex){
-            System.err.println(getClass().getName()+": Failed to play audio file.\n"+ex.getLocalizedMessage());
-        }
+        // play sound of impact (use client.util.SoundPlayer.play(URL))
+        SoundPlayer.play(getClass().getResource("/client/res/event/click.wav"), (float)speed/20);
     }
 
     @Override
