@@ -7,12 +7,7 @@
 package client.gui;
 
 import client.util.SimpleGame;
-import client.util.event.BallsStopEvent;
-import client.util.event.GameEvent;
-import java.util.Date;
 import java.util.Timer;
-import java.util.TimerTask;
-import titanic.basic.Ball;
 
 /**
  * Window with GameScene and several control buttons.
@@ -25,23 +20,6 @@ public class GameWindow extends javax.swing.JFrame {
     public GameWindow() {
         initComponents();
         game = new SimpleGame(gameScenePanel);
-        timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                Ball[] b = game.getGameScene().getBalls();
-                synchronized(b){
-                    double t = 0;
-                    for(int i=0;i<b.length;i++)
-                        t+=b[i].getSpeed().getNorm()*b[i].getSpeed().getNorm();
-                    t/=2.0;
-                    jLabel2.setText(Math.round(t*1000)/1000.0d + " J/kg");
-                    if(t<0.0001){
-                        game.getEventPipeLine().add(new BallsStopEvent(game));
-                    }
-                }
-            }
-        }, new Date(), 100);
     }
 
     /** This method is called from within the constructor to

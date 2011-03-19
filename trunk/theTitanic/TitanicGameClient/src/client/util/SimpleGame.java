@@ -194,9 +194,7 @@ class SimpleEventPipeLine implements EventPipeLine {
 
     public void add(GameEvent e) {
         //System.out.println("Event: "+e);
-        synchronized(events){
-            events.add(e);
-        }
+        events.add(e);
     }
 
     public void exec() {
@@ -205,7 +203,6 @@ class SimpleEventPipeLine implements EventPipeLine {
                 event.execute();
             }
         }
-        events.clear();
     }
 
     public void clear() {
@@ -221,15 +218,11 @@ class SimpleEventPipeLine implements EventPipeLine {
     }
 
     public GameEvent getFirst() {
-        synchronized(events){
-                return events.poll();
-        }
+            return events.poll();
     }
 
     public int size() {
-        synchronized(events){
-            return events.size();
-        }
+        return events.size();
     }
 
 }

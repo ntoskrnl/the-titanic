@@ -16,6 +16,9 @@ public class SoundPlayer extends Thread {
     private URL soundFile;
     private float soundVolume;
 
+    /** Print exception messages? */
+    private static final boolean quiet = true;
+
     public SoundPlayer(URL src){
         soundFile = src;
         soundVolume = 0.999f;
@@ -57,9 +60,9 @@ public class SoundPlayer extends Thread {
             audioInputStream = AudioSystem.getAudioInputStream(soundFile);
             format = audioInputStream.getFormat();
         } catch (UnsupportedAudioFileException e) {
-            System.err.println(e.getMessage());
+            if(!quiet) System.err.println(e.getMessage());
         } catch (IOException e) {
-            System.err.println(e.getMessage());
+             if(!quiet) System.err.println(e.getMessage());
         }
 
         DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
@@ -68,13 +71,17 @@ public class SoundPlayer extends Thread {
             line = (SourceDataLine) AudioSystem.getLine(info);
             line.open(format);
         } catch (LineUnavailableException e) {
-            System.err.println(e.getMessage());
+             if(!quiet) System.err.println(e.getMessage());
         }
 
         line.start();
 
-        FloatControl volume = (FloatControl)line.getControl(FloatControl.Type.VOLUME);
-        volume.setValue(volume.getMaximum()*soundVolume);
+        try{
+            FloatControl volume = (FloatControl)line.getControl(FloatControl.Type.VOLUME);
+            volume.setValue(volume.getMaximum()*soundVolume);
+        } catch (Exception e){
+             if(!quiet) System.err.println(e.getLocalizedMessage());
+        }
 
         int nBytesRead = 0;
         byte[] abData = new byte[EXTERNAL_BUFFER_SIZE];
@@ -86,7 +93,7 @@ public class SoundPlayer extends Thread {
                 { line.write(abData, 0, nBytesRead); }
             }
         } catch (IOException e) {
-           System.err.println(e.getMessage());
+            if(!quiet) System.err.println(e.getMessage());
             return;
         } finally {
             line.drain();
