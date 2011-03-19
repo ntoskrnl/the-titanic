@@ -37,6 +37,7 @@ public class SimpleGame extends Game {
         arrangeBalls(balls, scene.getBounds());
 
         key = new SimpleBilliardKey();
+        key.setBall(balls[0]);
 
         events = new SimpleEventPipeLine();
 
@@ -66,11 +67,10 @@ public class SimpleGame extends Game {
                 balls[i].setCoordinates(new Vector3D(R+rand.nextFloat()*(bounds.getX()-R) - bounds.getX()/2.0f,
                         R+rand.nextFloat()*(bounds.getY()-R) - bounds.getY()/2.0f));
                 balls[i].setColor(Color.BLACK);
-                balls[i].getSpeed().setY(10 - rand.nextFloat()*30);
-                balls[i].getSpeed().setX(10 - rand.nextFloat()*30);
                 balls[i].setRadius(R-1);
-                System.out.println(balls[i]);
+                balls[i].setId(i);
             }
+            balls[0].setSpeed(new Vector3D(rand.nextFloat()*200-100, rand.nextFloat()*200-100));
         }
     }
 

@@ -65,7 +65,7 @@ public class SimplePhysics implements PhysicalEngine {
 
         // Создаём событие: шары столкнулись.
         Vector3D pt = a.getSpeed().add(b.getSpeed());
-        game.getEventPipeLine().add(new ImpactEvent( (float) pt.multiply(c) ));
+        game.getEventPipeLine().add(new ImpactEvent(game, (float) pt.multiply(c) ));
 
         // Расстояние между шарами.
         float ab = c.getX()*c.getX() + c.getY()*c.getY();

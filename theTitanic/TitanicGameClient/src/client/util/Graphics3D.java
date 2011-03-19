@@ -37,10 +37,10 @@ public class Graphics3D implements GraphicalEngine {
     private float maxhight;
     private SimpleUniverse u;
 
-Color3f ambient = new Color3f(0.5f, 0.5f, 0.5f);
-Color3f emissive = new Color3f(0.0f, 0.0f, 0.0f);
-Color3f diffuse = new Color3f(0.0f, .0f, 1.0f);
-Color3f speculas = new Color3f(1.0f, 1.0f, 1.0f);
+    Color3f ambient = new Color3f(0.5f, 0.5f, 0.5f);
+    Color3f emissive = new Color3f(0.0f, 0.0f, 0.0f);
+    Color3f diffuse = new Color3f(0.0f, .0f, 1.0f);
+    Color3f speculas = new Color3f(1.0f, 1.0f, 1.0f);
 
     public Graphics3D(Game g) {
         scene = new BranchGroup();
@@ -59,19 +59,19 @@ Color3f speculas = new Color3f(1.0f, 1.0f, 1.0f);
 
     public void setRenderingArea(Container area) {
 
-       area.setLayout(new BorderLayout());
-    GraphicsConfiguration config = SimpleUniverse.getPreferredConfiguration();
-    Canvas3D c = new Canvas3D(config);
-    u = new SimpleUniverse(c);
-    area.add(BorderLayout.CENTER, c);
- 
+        area.setLayout(new BorderLayout());
+        GraphicsConfiguration config = SimpleUniverse.getPreferredConfiguration();
+        Canvas3D c = new Canvas3D(config);
+        u = new SimpleUniverse(c);
+        area.add(BorderLayout.CENTER, c);
 
-    scene = createSceneGraph();
-    scene.compile();
 
-      u.getViewingPlatform().setNominalViewingTransform();
+        scene = createSceneGraph();
+        scene.compile();
 
-      //                        --------------Вращение вселенной------------
+        u.getViewingPlatform().setNominalViewingTransform();
+
+        //                        --------------Вращение вселенной------------
         Vector3f viewTranslation = new Vector3f();
         Transform3D viewTransform = new Transform3D();
 

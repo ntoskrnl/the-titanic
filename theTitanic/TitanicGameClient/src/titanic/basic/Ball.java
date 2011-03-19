@@ -89,4 +89,12 @@ public class Ball implements PhysicalBall, GraphicalBall {
     public boolean isSelected(){
         return selected;
     }
+
+    public int getId(){
+        return id;
+    }
+
+    public void setId(int id){
+        this.id = id;
+    }
 }
