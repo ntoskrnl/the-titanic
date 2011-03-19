@@ -1,5 +1,7 @@
 package titanic.basic;
 
+import javax.vecmath.Vector3f;
+
 /**
  * This class represents a 3-Dimensional vector
  * and provides basic operations of vector algebra.
@@ -111,5 +113,32 @@ public class Vector3D {
         s+="{x="+getX()+"; y="+getY()+"; z=" +getZ()+";}";
         return s;
     }
-    
+
+    /**
+     * Converts current vector to Java3D Vector3f
+     * @return Vector3f object that is equal to current vector
+     */
+    public Vector3f vector3f(){
+        return new Vector3f(getX(), getY(), getZ());
+    }
+
+    @Override
+    public boolean equals(Object o){
+        if(o instanceof Vector3D){
+            Vector3D v = (Vector3D)o;
+            if(v.getX()!=getX()) return false;
+            if(v.getY()!=getY()) return false;
+            if(v.getZ()!=getZ()) return false;
+            return true;
+        } else return false;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 83 * hash + Float.floatToIntBits(this.x);
+        hash = 83 * hash + Float.floatToIntBits(this.y);
+        hash = 83 * hash + Float.floatToIntBits(this.z);
+        return hash;
+    }
 }

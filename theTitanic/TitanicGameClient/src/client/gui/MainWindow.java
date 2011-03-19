@@ -1,9 +1,4 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
  * MainWindow.java
  *
  * Created on Mar 13, 2011, 8:28:00 PM

@@ -37,7 +37,7 @@ public class SimpleGame extends Game {
         arrangeBalls(balls, scene.getBounds());
 
         key = new SimpleBilliardKey();
-        key.setBall(balls[0]);
+        key.changeBall(balls[0]);
 
         events = new SimpleEventPipeLine();
 

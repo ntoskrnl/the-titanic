@@ -78,7 +78,8 @@ public class Ball implements PhysicalBall, GraphicalBall {
     @Override
     public String toString(){
         String s = this.getClass().getName();
-        s+="{R="+getRadius()+"; (x,y)="+getCoordinates()+"; velocity="+getSpeed()+"; color="+getColor()+";}";
+        s+="{id="+getId()+"; R="+getRadius()+"; (x,y,z)="+getCoordinates()+
+                "; velocity="+getSpeed()+"; color="+getColor()+";}";
         return s;
     }
 
@@ -88,6 +89,10 @@ public class Ball implements PhysicalBall, GraphicalBall {
 
     public boolean isSelected(){
         return selected;
+    }
+
+    public void setSelected(boolean state){
+        selected = state;
     }
 
     public int getId(){
