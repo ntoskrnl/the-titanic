@@ -1,0 +1,55 @@
+#summary Server Command Protocol specifications
+#labels Phase-Implementation,Featured
+
+= Introduction =
+
+Our server interacts with client applications via Java Sockets. All the information transmitted as a plain text. We use simple commands to control the server and to get or change the status.
+
+= Details =
+
+== Command Syntax ==
+Commands have two parts: *command name* and *command arguments*.
+Each command name should take a separate line and may consist of one or several words. The register of the characters is not important.
+After the command name there can be one or more arguments - just strings.
+
+*Example 1*:
+
+<code>
+1    authorize
+2    login
+3    password
+</code>
+
+This command is used for authentication. As we can see we send login and password to the server as strings in separate lines. Line 1 contains a command name, lines 2, 3 - arguments. So, the command *authorize* requires 2 arguments (login and password).
+
+*Example 2*:
+
+<code>
+1    list users
+2    online
+3    secret code
+</code>
+
+Request for online users.
+
+== Server response ==
+
+If the command is sent to the server (do not forget FLUSH()), we have to get the result.
+
+The result may contain one or several lines. The first line always contain the server status: FAIL - the command is refused, SUCCESS - it is all OK.
+
+If it is all OK (SUCCESS), there may be several lines containing required information (e.g. list of users). The list is always ends with one empty line.
+
+= Supported Commands =
+
+Current version of the server supports the following commands:
+  * AUTHOSIZE
+  * LIST USERS
+  * EXIT
+This list will be extended soon.
+
+<hr>
+Add your content here.  Format your content with:
+  * Text in *bold* or _italic_
+  * Headings, paragraphs, and lists
+  * Automatic links to other wiki pages
