@@ -21,8 +21,10 @@ public class MainWindow extends javax.swing.JFrame {
         Main.server.command("list users", "online", "secret");
         DefaultListModel model = (DefaultListModel)jList1.getModel();
         model.clear();
-        String line = null;
         try{
+            String res = Main.server.br.readLine();
+            if(res==null || !res.equals("SUCCESS")) return;
+            String line = null;
             while(!(line=Main.server.br.readLine()).equals("")){
                 model.addElement(line);
             }

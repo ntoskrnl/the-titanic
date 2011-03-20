@@ -45,9 +45,10 @@ public class TitanicServer {
         }
         try{
            command("authorize",login, password);
-           String secret = br.readLine();
-           String res = br.readLine();
+           String res = br.readLine(); 
            if(res==null||!res.equals("SUCCESS")) return false;
+           String secret = br.readLine();
+           br.readLine();
         } catch (Exception ex){
             status="WAITING";
             System.err.println("AUTHOSIZE: "+ex.getLocalizedMessage());
