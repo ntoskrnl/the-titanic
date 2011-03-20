@@ -1,24 +1,73 @@
 package client.util;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
+import java.util.Locale;
+
 /**
  * This class is used for communication with Server
  * @author danon
  */
 public class TitanicServer {
     public String status = "none";
+    public String host;
+    public int port;
+
+    private BufferedReader br;
+    private PrintWriter pw;
+    private Socket socket;
+
+    public TitanicServer() {
+        host = "danon-laptop.campus.mipt.ru";
+        port = 10000;
+        try{
+            socket = new Socket(host, port);
+            socket.setSoTimeout(3000);
+            br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            pw = new PrintWriter(socket.getOutputStream());
+        } catch (Exception ex){
+            System.err.println("CONNECT: "+ex.getLocalizedMessage());
+        }
+    }
+
+    
 
     /**
      * Authentication method.
      * @return TRUE if authentication performed, and FALSE otherwise.
      */
-    public boolean authorize(){
+    public boolean authorize(String login, String password){
         status = "Authentication";
+        if(socket==null||!socket.isConnected()){
+            System.err.println("AUTH: Not connected.");
+            return false;
+        }
         try{
-            Thread.sleep(1000);
+           command("authorize",login, password);
+           String secret = br.readLine();
+           String res = br.readLine();
+           if(res==null||!res.equals("SUCCESS")) return false;
         } catch (Exception ex){
-            
+            status="WAITING";
+            System.err.println("AUTHOSIZE: "+ex.getLocalizedMessage());
+            return false;
         }
         return true;
+    }
+
+    public void command(String command, String... args){
+        String pstatus = status;
+        String cmd = command.trim().toUpperCase();
+        status = cmd;
+        pw.println(cmd);
+        for(String arg : args){
+            pw.println(arg.trim());
+        }
+        pw.flush();
+        status = pstatus;
     }
 
 }

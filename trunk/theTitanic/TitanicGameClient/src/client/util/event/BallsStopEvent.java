@@ -1,7 +1,6 @@
 package client.util.event;
 
 import client.util.SimpleGame;
-import client.util.SoundPlayer;
 import javax.sound.sampled.DataLine.*;
 import titanic.basic.Game;
 
