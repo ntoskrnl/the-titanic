@@ -91,14 +91,15 @@ class ClientHandlerRunnable implements Runnable {
 
     private void processCommand(String command){
         if(command==null) return;
-
-        String cmd = command.toLowerCase();
+        boolean result = false;
+        String cmd = command.toLowerCase().trim();
         try{
             // Connection stop
             if(cmd.equals("exit")){
                 System.out.println("Client sent terminal command.");
                 try{
                     socket.close();
+                    return;
                 } catch(Exception ex){}
             }
             // Authentication
@@ -106,12 +107,10 @@ class ClientHandlerRunnable implements Runnable {
                 String login = br.readLine();
                 String pwd = br.readLine();
                 if(authorize(login, pwd)){
-                    pw.println("secret");
                     pw.println("SUCCESS");
-                }
-                else{
-                    pw.println("secret-failed");
-                    pw.println("FAIL");
+                    pw.println("secret");
+                    pw.println();
+                    result = true;
                 }
             }
 
@@ -120,12 +119,16 @@ class ClientHandlerRunnable implements Runnable {
                 String which = br.readLine();
                 String secret = br.readLine();
                 if(which.trim().toLowerCase().equals("online")){
+                    pw.println("SUCCESS");
                     pw.println("user1");
                     pw.println("user2");
                     pw.println("user3");
                     pw.println();
+                    result = true;
                 }
             }
+
+            if(!result) pw.println("FAIL");
 
             // send buffered data to the client
             pw.flush();
