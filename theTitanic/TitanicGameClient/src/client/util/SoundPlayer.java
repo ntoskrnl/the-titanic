@@ -51,7 +51,7 @@ public class SoundPlayer extends Thread {
 
     @Override
     public void run() {
-
+    try{
         AudioInputStream audioInputStream = null;
         AudioFormat format = null;
         SourceDataLine line = null;
@@ -99,5 +99,6 @@ public class SoundPlayer extends Thread {
             line.drain();
             line.close();
         }
+    } catch(Exception e){}
     }
 }

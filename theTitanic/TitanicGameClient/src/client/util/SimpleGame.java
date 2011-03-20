@@ -96,7 +96,7 @@ public class SimpleGame extends Game {
                 try {
                     while(!thread2.isInterrupted()){
                         physics.compute();
-                        Thread.currentThread().sleep(40);
+                        Thread.currentThread().sleep(30);
                     }
                 } catch (InterruptedException ex){}
             }
