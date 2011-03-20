@@ -1,7 +1,10 @@
 package util;
 
 import java.io.BufferedReader;
+import java.io.FileWriter;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.Socket;
 
 
@@ -54,27 +57,25 @@ class ClientHandlerRunnable implements Runnable {
     private Socket socket;
     private ClientHandler clientHandler;
     private BufferedReader br;
+    private PrintWriter pw;
 
     public ClientHandlerRunnable(ClientHandler clientHandler) {
         this.clientHandler = clientHandler;
         socket = clientHandler.getSocket();
         try{
             br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            pw = new PrintWriter(socket.getOutputStream());
         } catch (Exception ex) {
             clientHandler.disconnect();
         }
     }
 
-    public boolean authorize(){
+    public boolean authorize(String login, String password){
         return true;
     }
 
     public void run(){
         String s;
-        if(!authorize()){
-            clientHandler.disconnect("Authorization problem.");
-            return;
-        }
         while(true){
             try{
                 s = br.readLine();
@@ -83,15 +84,53 @@ class ClientHandlerRunnable implements Runnable {
                 System.out.println("Client has disconected from server.");
                 break;
             }
-            if(s.equals("exit")){
+            processCommand(s);
+        }
+        clientHandler.disconnect();
+    }
+
+    private void processCommand(String command){
+        if(command==null) return;
+
+        String cmd = command.toLowerCase();
+        try{
+            // Connection stop
+            if(cmd.equals("exit")){
                 System.out.println("Client sent terminal command.");
                 try{
                     socket.close();
                 } catch(Exception ex){}
-                break;
             }
-            System.out.println(s);
+            // Authentication
+            if(cmd.equals("authorize")){
+                String login = br.readLine();
+                String pwd = br.readLine();
+                if(authorize(login, pwd)){
+                    pw.println("secret");
+                    pw.println("SUCCESS");
+                }
+                else{
+                    pw.println("secret-failed");
+                    pw.println("FAIL");
+                }
+            }
+
+            // User List Request (secret required)
+            if(cmd.equals("list users")){
+                String which = br.readLine();
+                String secret = br.readLine();
+                if(which.trim().toLowerCase().equals("online")){
+                    pw.println("user1");
+                    pw.println("user2");
+                    pw.println("user3");
+                    pw.println();
+                }
+            }
+
+            // send buffered data to the client
+            pw.flush();
+        } catch(Exception ex) {
+            System.err.println("COMMAND: "+ex.getLocalizedMessage());
         }
-        clientHandler.disconnect();
     }
 }
