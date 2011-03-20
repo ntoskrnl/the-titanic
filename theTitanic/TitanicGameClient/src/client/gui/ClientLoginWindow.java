@@ -8,6 +8,7 @@ package client.gui;
 
 import client.Main;
 import client.util.TitanicServer;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -47,6 +48,18 @@ public class ClientLoginWindow extends javax.swing.JFrame {
         jLabel1.setText("Login:");
 
         jLabel2.setText("Password:");
+
+        loginTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                loginTextFieldActionPerformed(evt);
+            }
+        });
+
+        pwdTextField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                pwdTextFieldActionPerformed(evt);
+            }
+        });
 
         jButton1.setText("Sign in");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -151,8 +164,18 @@ public class ClientLoginWindow extends javax.swing.JFrame {
         if(Main.server.authorize(loginTextField.getText(), new String(pwdTextField.getPassword()))){
             setVisible(false);
             new MainWindow().setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(this, "Can not connect to the server.");
         }
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void pwdTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pwdTextFieldActionPerformed
+        jButton1ActionPerformed(evt);
+    }//GEN-LAST:event_pwdTextFieldActionPerformed
+
+    private void loginTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginTextFieldActionPerformed
+        jButton1ActionPerformed(evt);
+    }//GEN-LAST:event_loginTextFieldActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
