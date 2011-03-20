@@ -6,6 +6,9 @@
 
 package client.gui;
 
+import client.Main;
+import javax.swing.DefaultListModel;
+
 /**
  *
  * @author danon
@@ -15,6 +18,17 @@ public class MainWindow extends javax.swing.JFrame {
     /** Creates new form MainWindow */
     public MainWindow() {
         initComponents();
+        Main.server.command("list users", "online", "secret");
+        DefaultListModel model = (DefaultListModel)jList1.getModel();
+        model.clear();
+        String line = null;
+        try{
+            while(!(line=Main.server.br.readLine()).equals("")){
+                model.addElement(line);
+            }
+        } catch (Exception ex){
+            System.err.println("user list: "+ex.getLocalizedMessage());
+        }
     }
 
     /** This method is called from within the constructor to
@@ -40,11 +54,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2), "Players online:"));
 
-        jList1.setModel(new javax.swing.AbstractListModel() {
-            String[] strings = { "User 1", "User 2", "User 3", "...", "User N" };
-            public int getSize() { return strings.length; }
-            public Object getElementAt(int i) { return strings[i]; }
-        });
+        jList1.setModel(new DefaultListModel());
         jScrollPane1.setViewportView(jList1);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
