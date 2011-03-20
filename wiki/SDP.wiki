@@ -8,7 +8,7 @@
 
 ==Algorithm and logic==
 
-Server supports database (_SQLite DB_) of registered users and provides access to the database via _Java Socket_. Client software interacts with server through specific protocol (see [ServerProtocol|Server protocol] for details).
+Server supports database (_SQLite DB_) of registered users and provides access to the database via _Java Socket_. Client software interacts with server through specific protocol (see [http://code.google.com/p/the-titanic/wiki/ServerProtocol| Server protocol] for details).
 
 During entire process of the game one client sends commands to the server (e.g. to inform about a change in the game), and server processes the data and redirects requests to another client (if needed). 
 
