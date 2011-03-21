@@ -1,5 +1,8 @@
 <?php
-    require_once("Smarty.class.php");
+
+    $smarty_path = "./lib/smarty/libs/";
+
+    require_once($smarty_path."Smarty.class.php");
     include('configs/config.php');
 
     $registry = new Registry();
