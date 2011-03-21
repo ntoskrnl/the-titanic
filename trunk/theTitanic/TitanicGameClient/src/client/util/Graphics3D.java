@@ -59,6 +59,7 @@ public class Graphics3D implements GraphicalEngine {
         maxhight = g.getGameScene().getBounds().getY();
         maxwidth = g.getGameScene().getBounds().getX();
         r = g.getGameScene().getBalls()[0].getRadius()/maxhight*high;
+      //  BallsArray = game.getGameScene().getBalls();
     }
 
     /** Adds some mouse and key listeners to the component */
@@ -77,7 +78,7 @@ public class Graphics3D implements GraphicalEngine {
                     curBall+=game.getGameScene().getBalls().length+1;
                 curBall%=game.getGameScene().getBalls().length;
                 game.getBilliardKey().changeBall(game.getGameScene().getBalls()[curBall]);
-                //System.out.println(game.getBilliardKey().getBall());
+                System.out.println(game.getBilliardKey().getBall());
             }
         });
 
@@ -92,7 +93,7 @@ public class Graphics3D implements GraphicalEngine {
                     curBall++;
                     curBall%=game.getGameScene().getBalls().length;
                     game.getBilliardKey().changeBall(game.getGameScene().getBalls()[curBall]);
-                    System.out.println(game.getBilliardKey().getBall());
+                    //System.out.println(game.getBilliardKey().getBall());
                 }
             }
         });
@@ -114,6 +115,10 @@ public class Graphics3D implements GraphicalEngine {
         setEventListeners(c);
 
         scene = createSceneGraph();
+        //TransformGroup trsc = new TransformGroup();   с помощью этого будем все вращать))
+          //      trsc.addChild(scene);
+                
+
         scene.compile();
 
         u.getViewingPlatform().setNominalViewingTransform();
@@ -142,7 +147,7 @@ public class Graphics3D implements GraphicalEngine {
       
     }
 
-    public void SetDrawBalls(){
+    private void SetDrawBalls(){
     int i;
 
     for(i = 0;i < N;i++){
@@ -152,7 +157,7 @@ public class Graphics3D implements GraphicalEngine {
     }
 }
 
-    public void SetCoadinates(){
+    private void SetCoadinates(){
     int i;
     for(i=0;i<N;i++){
 
@@ -193,6 +198,7 @@ public class Graphics3D implements GraphicalEngine {
 public Vector3f[] startmass(Vector3f start){
     mass[0] = start;
 
+    
     int k = 5,i,x=5;
     for(i=1; i<=14; i++){
       Vector3f a = new Vector3f();
@@ -213,17 +219,25 @@ public Vector3f[] startmass(Vector3f start){
        // System.out.println("i: "+i+" x: "+mass[i].x+" y: "+mass[i].y);
 
     }
+/*
+    int i;
 
+    for(i=0;i<N;i++){
+        mass[i] = new Vector3f();
+    }
+    */
     return mass;
 }
 
-public void SetStartTransform(Vector3f[] mass, BranchGroup bran){
+
+// не делать
+private void SetStartTransform(Vector3f[] mass, BranchGroup bran){
 
     TransformGroup[] tr = new TransformGroup[N];
     int i=0;
 
-    Shape3D[] ball = new Shape3D[15];
-   // Sphere[] ball = new Sphere[N];
+   // Shape3D[] ball = new Shape3D[15];
+    Sphere[] ball = new Sphere[N];
     Transform3D[] pos = new Transform3D[N];
 
     for(i=0;i<N-1;i++){
@@ -237,8 +251,7 @@ public void SetStartTransform(Vector3f[] mass, BranchGroup bran){
         tr[i] =  new TransformGroup();
         
         tr[i].setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
-        MyGeometry geom = new MyGeometry();
-        ball[i] = new Shape3D(geom.mySphere(r, 500),ballapp);
+        ball[i] = new Sphere(r);
 
         pos[i] = new Transform3D();
 
@@ -273,11 +286,13 @@ public void SetStartTransform(Vector3f[] mass, BranchGroup bran){
    //---------------------------------------------------------------------------
 
    //--------------Устанавливаем шары-------------------------------------------
+   
    mass = startmass(new Vector3f(0.0f,0.0f,0.0f));
+   //mass = startmass();
    SetStartTransform(mass, objRoot);
    //---------------------------------------------------------------------------
 
-   mass[N-1] = new Vector3f(0.0f,0.0f,0.0f);
+
    objTrans[N-1] = new TransformGroup();
    objTrans[N-1].setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
    objRoot.addChild(objTrans[N-1]);
@@ -286,10 +301,10 @@ public void SetStartTransform(Vector3f[] mass, BranchGroup bran){
    startballapp.setMaterial(new Material(ambient, emissive, diffuse, speculas, 12000f));
    ballapp.setMaterial(new Material(ambient, emissive, new Color3f(0.3f, 0.3f, 0.3f), speculas, 12000f));
 
-   MyGeometry geom = new MyGeometry();
-   Shape3D sphere = new Shape3D(geom.mySphere(r, 1000),startballapp);
+   //MyGeometry geom = new MyGeometry();
+  // Shape3D sphere = new Shape3D(geom.mySphere(r, 1000),startballapp);
    
-  // Sphere sphere = new Sphere(r, ap);
+   Sphere sphere = new Sphere(r, startballapp);
 
    objTrans[N-1] = new TransformGroup();
    objTrans[N-1].setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
