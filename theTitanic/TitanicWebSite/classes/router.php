@@ -4,6 +4,8 @@ class Router {
 	private $registry;
 	private $path;
 	private $args = array();
+        private $controller;
+        private $action;
 
 	function __construct($registry) {
 		$this->registry = $registry;
@@ -44,6 +46,11 @@ class Router {
                 die ('404 Not Found');
         }
         // Выполняем действие
+
+        $this->args = $args;
+        $this->controller = $controller;
+        $this->action = $action;
+        
         $controller->$action($args);
 	}
 	
