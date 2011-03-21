@@ -25,6 +25,10 @@ public class Main {
      */
     static ServerSocket server;
 
+    public static DataBaseAccess usersDB = null;
+    public static DataBaseAccess serviceDB = null;
+
+
     /**
      * Program entry point
      * @param args the command line arguments
@@ -82,8 +86,14 @@ class MainServerThread implements Runnable {
             System.setProperty("socksProxyPort",""+ServerConfiguration.proxyPort);
             System.out.println("Using proxy server: "+ServerConfiguration.proxyHost+":"+ServerConfiguration.proxyPort);
         }
-        connections = new ConnectionContainer();
+
         try{
+            System.out.println("Connecting to databases...");
+
+            Main.usersDB = new DataBaseAccess("titanic_users.db");
+            
+            connections = new ConnectionContainer();
+        
             server = new ServerSocket(ServerConfiguration.serverPort);
             server.setSoTimeout(1000);
             System.out.println("Waiting for incoming connections...");
@@ -101,11 +111,12 @@ class MainServerThread implements Runnable {
             }
         }catch(Exception ex){
             //Error
-            System.out.println("Error!");
+            System.err.println("Error!");
             System.err.println(ex);
         }
         try {
             server.close();
+            Main.usersDB.close();
         } catch (IOException ex) {
             Logger.getLogger(MainServerThread.class.getName()).log(Level.SEVERE, null, ex);
         }
