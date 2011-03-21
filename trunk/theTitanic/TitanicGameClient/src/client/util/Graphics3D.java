@@ -4,6 +4,7 @@ package client.util;
 
 import java.awt.*;
 import com.sun.j3d.utils.geometry.Box;
+import com.sun.j3d.utils.geometry.Cone;
 import com.sun.j3d.utils.geometry.Primitive;
 import com.sun.j3d.utils.universe.*;
 import javax.media.j3d.*;
@@ -32,6 +33,8 @@ public class Graphics3D implements GraphicalEngine {
     public Vector3f[] V;
     public Transform3D[] speedch;
     private Game game;
+    private TransformGroup Keytrans;
+    private Transform3D Keyposition;
 
     Appearance startballapp = new Appearance();
     Appearance ballapp = new Appearance();
@@ -60,6 +63,8 @@ public class Graphics3D implements GraphicalEngine {
         maxwidth = g.getGameScene().getBounds().getX();
         r = game.getGameScene().getBalls()[0].getRadius()/maxhight*high;
       //  BallsArray = game.getGameScene().getBalls();
+
+
     }
 
     /** Adds some mouse and key listeners to the component */
@@ -79,6 +84,14 @@ public class Graphics3D implements GraphicalEngine {
                 curBall%=game.getGameScene().getBalls().length;
                 game.getBilliardKey().changeBall(game.getGameScene().getBalls()[curBall]);
                 System.out.println(game.getBilliardKey().getBall());
+
+                if(Keyposition == null) Keyposition = new Transform3D();
+                Vector3f pos = new Vector3f();
+                pos.setX(game.getBilliardKey().getBall().getCoordinates().getX()/maxwidth*2*width*0.8f);
+                pos.setY(game.getBilliardKey().getBall().getCoordinates().getY()/maxhight*2*high*0.87f-0.4f);
+                pos.setZ(game.getBilliardKey().getBall().getCoordinates().getZ());
+                  Keyposition.setTranslation(pos);
+                  Keytrans.setTransform(Keyposition);
             }
         });
 
@@ -393,6 +406,19 @@ private void SetStartTransform(Vector3f[] mass, BranchGroup bran){
    AmbientLight ambientLightNode = new AmbientLight(ambientColor);
    ambientLightNode.setInfluencingBounds(bounds);
    objRoot.addChild(ambientLightNode);
+
+   Cone con = new Cone(r/3, 0.8f);
+   Transform3D let = new Transform3D();
+   Transform3D key = new Transform3D();
+   key.setTranslation(new Vector3f(-.7f,-0.8f,0.0f));
+   let.rotX(Math.PI/2);
+   Keytrans = new TransformGroup();
+   Keytrans.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+   Keytrans.setTransform(let);
+   Keytrans.setTransform(key);
+   Keytrans.addChild(con);
+
+   objRoot.addChild(Keytrans);
 
    return objRoot;
 
