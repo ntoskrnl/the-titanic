@@ -33,8 +33,8 @@ public class Graphics3D implements GraphicalEngine {
     public Transform3D[] speedch;
     private Game game;
 
-    Appearance ap = new Appearance();
-    
+    Appearance startballapp = new Appearance();
+    Appearance ballapp = new Appearance();
     final float width = 0.6f;  // ширина стола
     final float high  = 0.85f;  // длина
     private float r; //радиус
@@ -92,7 +92,7 @@ public class Graphics3D implements GraphicalEngine {
                     curBall++;
                     curBall%=game.getGameScene().getBalls().length;
                     game.getBilliardKey().changeBall(game.getGameScene().getBalls()[curBall]);
-                    //System.out.println(game.getBilliardKey().getBall());
+                    System.out.println(game.getBilliardKey().getBall());
                 }
             }
         });
@@ -222,7 +222,8 @@ public void SetStartTransform(Vector3f[] mass, BranchGroup bran){
     TransformGroup[] tr = new TransformGroup[N];
     int i=0;
 
-    Sphere[] ball = new Sphere[N];
+    Shape3D[] ball = new Shape3D[15];
+   // Sphere[] ball = new Sphere[N];
     Transform3D[] pos = new Transform3D[N];
 
     for(i=0;i<N-1;i++){
@@ -236,7 +237,9 @@ public void SetStartTransform(Vector3f[] mass, BranchGroup bran){
         tr[i] =  new TransformGroup();
         
         tr[i].setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
-        ball[i] = new Sphere(r);
+        MyGeometry geom = new MyGeometry();
+        ball[i] = new Shape3D(geom.mySphere(r, 500),ballapp);
+
         pos[i] = new Transform3D();
 
         pos[i].setTranslation(mass[i]);
@@ -280,9 +283,13 @@ public void SetStartTransform(Vector3f[] mass, BranchGroup bran){
    objRoot.addChild(objTrans[N-1]);
 
    // Create a simple shape leaf node, add it to the scene graph.
-   ap.setMaterial(new Material(ambient, emissive, diffuse, speculas, 12000f));
+   startballapp.setMaterial(new Material(ambient, emissive, diffuse, speculas, 12000f));
+   ballapp.setMaterial(new Material(ambient, emissive, new Color3f(0.3f, 0.3f, 0.3f), speculas, 12000f));
 
-   Sphere sphere = new Sphere(r, ap);
+   MyGeometry geom = new MyGeometry();
+   Shape3D sphere = new Shape3D(geom.mySphere(r, 1000),startballapp);
+   
+  // Sphere sphere = new Sphere(r, ap);
 
    objTrans[N-1] = new TransformGroup();
    objTrans[N-1].setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
