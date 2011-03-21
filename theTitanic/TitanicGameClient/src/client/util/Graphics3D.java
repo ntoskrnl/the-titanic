@@ -58,7 +58,7 @@ public class Graphics3D implements GraphicalEngine {
 
         maxhight = g.getGameScene().getBounds().getY();
         maxwidth = g.getGameScene().getBounds().getX();
-        r = g.getGameScene().getBalls()[0].getRadius()/maxhight*high;
+        r = game.getGameScene().getBalls()[0].getRadius()/maxhight*high;
       //  BallsArray = game.getGameScene().getBalls();
     }
 
@@ -195,8 +195,8 @@ public class Graphics3D implements GraphicalEngine {
    //---------------------------------------------------------------------------
 
      
-public Vector3f[] startmass(Vector3f start){
-    mass[0] = start;
+public Vector3f[] startmass(){
+   /* mass[0] = start;
 
     
     int k = 5,i,x=5;
@@ -219,13 +219,19 @@ public Vector3f[] startmass(Vector3f start){
        // System.out.println("i: "+i+" x: "+mass[i].x+" y: "+mass[i].y);
 
     }
-/*
+    * */
+
+
     int i;
 
     for(i=0;i<N;i++){
         mass[i] = new Vector3f();
+        mass[i].setX(game.getGameScene().getBalls()[i].getCoordinates().getX()/maxwidth*2*width*0.8f);
+        mass[i].setY(game.getGameScene().getBalls()[i].getCoordinates().getY()/maxhight*2*high*0.87f);
+        mass[i].setZ(-0.01f);
+
     }
-    */
+   
     return mass;
 }
 
@@ -287,11 +293,10 @@ private void SetStartTransform(Vector3f[] mass, BranchGroup bran){
 
    //--------------Устанавливаем шары-------------------------------------------
    
-   mass = startmass(new Vector3f(0.0f,0.0f,0.0f));
-   //mass = startmass();
+   mass = startmass();
    SetStartTransform(mass, objRoot);
    //---------------------------------------------------------------------------
-
+   
 
    objTrans[N-1] = new TransformGroup();
    objTrans[N-1].setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
@@ -310,7 +315,7 @@ private void SetStartTransform(Vector3f[] mass, BranchGroup bran){
    objTrans[N-1].setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
    objTrans[N-1].setCapability(TransformGroup.ALLOW_CHILDREN_WRITE);
    Transform3D pos = new Transform3D();
-   pos.setTranslation(new Vector3f(0.0f,-0.4f,0.0f));
+   pos.setTranslation(mass[N-1]);
 
    //1 шар, которым начинается игра---------------------------------------------
    objTrans[N-1].setTransform(pos);
