@@ -2,6 +2,7 @@ package client;
 
 import client.gui.ClientLoginWindow;
 import client.util.TitanicServer;
+import javax.swing.JFrame;
 import javax.swing.UIManager;
 
 /**
@@ -11,6 +12,8 @@ import javax.swing.UIManager;
 public class Main {
 
     public static TitanicServer server = null;
+    public static JFrame loginWindow = null;
+
 
     public static void main(String[] args) {
         System.out.println("");
@@ -19,12 +22,8 @@ public class Main {
         } catch(Exception ex){
             System.err.println("Failed to apply LookAndFeel theme.");
         }
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new ClientLoginWindow().setVisible(true);
-            }
-        }
-        );
+        loginWindow = new ClientLoginWindow();
+        loginWindow.setVisible(true);
     }
 
 }

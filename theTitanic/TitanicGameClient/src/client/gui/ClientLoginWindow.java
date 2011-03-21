@@ -148,15 +148,14 @@ public class ClientLoginWindow extends javax.swing.JFrame {
         // TODO add your handling code here:
         if(evt.getClickCount()==1)
             try{
-                Runtime.getRuntime().exec("explorer http://code.google.com/p/the-titanic/");
+                Runtime.getRuntime().exec("iexplore http://code.google.com/p/the-titanic/");
             } catch(Exception ex){
                 System.out.println("Go to the project web-site: http://code.google.com/p/the-titanic/");
             }
     }//GEN-LAST:event_jLabel3MouseClicked
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-        System.out.println("Not implemented :)");
+        new ClientSetupWindow().setVisible(true);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed

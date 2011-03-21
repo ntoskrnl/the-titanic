@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 
 /**
  * This class is used for communication with Server
@@ -17,10 +18,15 @@ public class TitanicServer {
     public static BufferedReader br;
     public static PrintWriter pw;
     private Socket socket;
+    private boolean connected = false;
 
     public TitanicServer() {
         host = "danon-laptop.campus.mipt.ru";
         port = 10000;
+        connect();
+    }
+
+    public final void connect(){
         try{
             socket = new Socket(host, port);
             socket.setSoTimeout(3000);
@@ -28,10 +34,14 @@ public class TitanicServer {
             pw = new PrintWriter(socket.getOutputStream());
         } catch (Exception ex){
             System.err.println("CONNECT: "+ex.getLocalizedMessage());
+            connected = false;
         }
     }
 
-    
+    public boolean isConnected(){
+        if(socket==null) return false;
+        return connected && socket.isConnected();
+    }
 
     /**
      * Authentication method.
@@ -41,19 +51,21 @@ public class TitanicServer {
         status = "Authentication";
         if(socket==null||!socket.isConnected()){
             System.err.println("AUTH: Not connected.");
+            connected = false;
             return false;
         }
         try{
            command("authorize",login, password);
-           String res = br.readLine(); 
-           if(res==null||!res.equals("SUCCESS")) return false;
-           String secret = br.readLine();
-           br.readLine();
+           String[] res = getResponse();
+           if(!res[0].equals("SUCCESS")) return false;
+           String secret = res[1];
         } catch (Exception ex){
             status="WAITING";
             System.err.println("AUTHOSIZE: "+ex.getLocalizedMessage());
+            connected = false;
             return false;
         }
+        connected = true;
         return true;
     }
 
@@ -67,6 +79,43 @@ public class TitanicServer {
         }
         pw.flush();
         status = pstatus;
+    }
+
+    public String[] getResponse(){
+        ArrayList<String> res = new ArrayList<String>();
+        try{
+            res.add(br.readLine());
+            if(res.get(0)==null || !res.get(0).equals("SUCCESS")) 
+                return (String[])res.toArray();
+        
+            String line;
+            while(!(line=br.readLine()).equals(""))
+                res.add(line);
+
+        } catch(Exception ex){
+            connected = false;
+            System.err.println("getResponse: Connection problem or strange server response (incompatable versions).\nDisconnected");
+        }
+
+        if(res.isEmpty())
+            res.add("FAIL");
+
+        String[] r = new String[res.size()];
+        res.toArray(r);
+        return r;
+    }
+
+    public void disconnect(){
+        try{
+            if(pw!=null) pw.close();
+            if(br!=null) br.close();
+            if(socket!=null)
+                socket.close();
+            socket = null;
+            pw = null;
+            br = null;
+        } catch (Exception ex) {}
+        connected = false;
     }
 
 }

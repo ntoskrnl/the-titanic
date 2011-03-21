@@ -7,7 +7,11 @@
 package client.gui;
 
 import client.Main;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
+import javax.swing.Timer;
 
 /**
  *
@@ -18,18 +22,48 @@ public class MainWindow extends javax.swing.JFrame {
     /** Creates new form MainWindow */
     public MainWindow() {
         initComponents();
+        checkConnectionTimer = new Timer(1000, new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                checkConnection();
+            }
+        });
+        userUpdateTimer = new Timer(500, new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                updateUserList(e);
+            }
+        });
+        userUpdateTimer.start();
+        checkConnectionTimer.start();
+    }
+
+    private void updateUserList(ActionEvent e){
         Main.server.command("list users", "online", "secret");
         DefaultListModel model = (DefaultListModel)jList1.getModel();
+        Object sel = jList1.getSelectedValue();
         model.clear();
-        try{
-            String res = Main.server.br.readLine();
-            if(res==null || !res.equals("SUCCESS")) return;
-            String line = null;
-            while(!(line=Main.server.br.readLine()).equals("")){
-                model.addElement(line);
+        if(Main.server.isConnected())
+            try{
+                String res[] = Main.server.getResponse();
+                if(res[0]==null || !res[0].equals("SUCCESS"))
+                    return;
+                for(int i=1; i<res.length; i++)
+                    model.addElement(res[i]);
+            } catch (Exception ex){
+                System.err.println("user list: "+ex.getLocalizedMessage());
             }
-        } catch (Exception ex){
-            System.err.println("user list: "+ex.getLocalizedMessage());
+        jList1.setSelectedValue(sel, true);
+    }
+
+    private void checkConnection(){
+        if(!Main.server.isConnected()){
+            checkConnectionTimer.stop();
+            int res = JOptionPane.showConfirmDialog(rootPane, "There is a connection problem. You have to authorize again.\nClick Yes to return back to the login window or No to ignore the problem.",
+                    "Oops...", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            if(res==JOptionPane.YES_OPTION){
+                Main.loginWindow.setVisible(true);
+                this.dispose();
+            }
         }
     }
 
@@ -51,8 +85,13 @@ public class MainWindow extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
         jMenu3 = new javax.swing.JMenu();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Let's play the pool!");
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2), "Players online:"));
 
@@ -121,6 +160,13 @@ public class MainWindow extends javax.swing.JFrame {
         new GameWindow().setVisible(true);
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        Main.server.disconnect();
+        Main.loginWindow.setVisible(true);
+        checkConnectionTimer.stop();
+        userUpdateTimer.stop();
+    }//GEN-LAST:event_formWindowClosing
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JList jList1;
@@ -132,4 +178,8 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 
+    private Timer checkConnectionTimer, userUpdateTimer;
+
 }
+
+
