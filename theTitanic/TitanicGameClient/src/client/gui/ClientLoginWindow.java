@@ -49,6 +49,7 @@ public class ClientLoginWindow extends javax.swing.JFrame {
 
         jLabel2.setText("Password:");
 
+        loginTextField.setText("anton.danshin@frtk.ru");
         loginTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 loginTextFieldActionPerformed(evt);

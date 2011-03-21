@@ -6,6 +6,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -71,7 +75,15 @@ class ClientHandlerRunnable implements Runnable {
     }
 
     public boolean authorize(String login, String password){
-        return true;
+        try {
+            System.out.println(login+" "+password);
+            ResultSet r = Main.usersDB.doQouery("SELECT * FROM profiles WHERE login LIKE '" + login + "' AND password LIKE '" + password + "'");
+            if(!r.next()) return false;
+            return true;
+        } catch (SQLException ex) {
+            Logger.getLogger(ClientHandlerRunnable.class.getName()).log(Level.SEVERE, null, ex);
+            return false;
+        }
     }
 
     public void run(){
@@ -104,8 +116,8 @@ class ClientHandlerRunnable implements Runnable {
             }
             // Authentication
             if(cmd.equals("authorize")){
-                String login = br.readLine();
-                String pwd = br.readLine();
+                String login = br.readLine().trim();
+                String pwd = br.readLine().trim();
                 if(authorize(login, pwd)){
                     pw.println("SUCCESS");
                     pw.println("secret");
@@ -118,14 +130,17 @@ class ClientHandlerRunnable implements Runnable {
             if(cmd.equals("list users")){
                 String which = br.readLine();
                 String secret = br.readLine();
-                if(which.trim().toLowerCase().equals("online")){
-                    pw.println("SUCCESS");
-                    pw.println("user1");
-                    pw.println("user2");
-                    pw.println("user3");
-                    pw.println();
-                    result = true;
-                }
+                System.out.println("COMMAND: list users");
+                if("secret".equals(secret.trim()))
+                    if(which.trim().toLowerCase().equals("online")){
+                        pw.println("SUCCESS");
+                        ResultSet r = Main.usersDB.doQouery("SELECT * FROM profiles;");
+                        while(r.next()){
+                            pw.println(r.getString("pub_nickname"));
+                        }
+                        pw.println();
+                        result = true;
+                    }
             }
 
             if(!result) pw.println("FAIL");

@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 
 /**
@@ -51,18 +52,21 @@ public class TitanicServer {
         status = "Authentication";
         if(socket==null||!socket.isConnected()){
             System.err.println("AUTH: Not connected.");
-            connected = false;
+            disconnect();
             return false;
         }
         try{
-           command("authorize",login, password);
-           String[] res = getResponse();
-           if(!res[0].equals("SUCCESS")) return false;
-           String secret = res[1];
+            command("authorize",login, Crypto.md5(password));
+            String[] res = getResponse();
+            if(!res[0].equals("SUCCESS")) {
+                disconnect();
+                return false;
+            }
+            String secret = res[1];
         } catch (Exception ex){
             status="WAITING";
             System.err.println("AUTHOSIZE: "+ex.getLocalizedMessage());
-            connected = false;
+            disconnect();
             return false;
         }
         connected = true;
