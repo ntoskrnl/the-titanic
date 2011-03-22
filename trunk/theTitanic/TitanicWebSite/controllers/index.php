@@ -2,6 +2,7 @@
 
 class Controller_Index extends Controller_Base {
     function index($args) {
+        global $lang;
 //        if(isset($_SESSION['login']) && $_SESSION['login']==true){
 //          $redir = "user/name/".$_SESSION['user_name'];
 //          $this->registry['router']->deligate($redir);
@@ -10,8 +11,7 @@ class Controller_Index extends Controller_Base {
 //        $this->registry['smarty']->assign("args", $args);
 //        $this->registry['smarty']->assign("controller", "Default");
 //        $this->registry['smarty']->assign("action", "index");
-//        $this->registry['smarty']->display("ru/index.tpl");
-        phpinfo();
+        $this->registry['smarty']->display("$lang/index.tpl");
     }
 
 
