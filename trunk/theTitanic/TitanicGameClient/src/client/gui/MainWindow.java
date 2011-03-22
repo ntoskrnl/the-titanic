@@ -37,34 +37,47 @@ public class MainWindow extends javax.swing.JFrame {
         checkConnectionTimer.start();
     }
 
+    private void showLostConnectionMessage(){
+        checkConnectionTimer.stop();
+        userUpdateTimer.stop();
+        int res = JOptionPane.showConfirmDialog(rootPane, "There is a connection problem. You have to authorize again.\nClick Yes to return back to the login window or No to ignore the problem.",
+                "Oops...", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        if(res==JOptionPane.YES_OPTION){
+            Main.loginWindow.setVisible(true);
+            this.dispose();
+        } else {
+            userUpdateTimer.start();
+            checkConnectionTimer.start();
+        }
+    }
+
     private void updateUserList(ActionEvent e){
-        Main.server.command("list users", "online", "secret");
         DefaultListModel model = (DefaultListModel)jList1.getModel();
         Object sel = jList1.getSelectedValue();
         model.clear();
-        if(Main.server.isConnected())
-            try{
-                String res[] = Main.server.getResponse();
-                if(res[0]==null || !res[0].equals("SUCCESS"))
-                    return;
-                for(int i=1; i<res.length; i++)
-                    model.addElement(res[i]);
-            } catch (Exception ex){
-                System.err.println("user list: "+ex.getLocalizedMessage());
-            }
+
+        synchronized(Main.server){
+            Main.server.command("list users", "online", Main.server.secret);
+            if(Main.server.isConnected())
+                try{
+                    String res[] = Main.server.getResponse();
+                    if(res[0]==null || !res[0].equals("SUCCESS")){
+                        showLostConnectionMessage();
+                    }
+                    for(int i=1; i<res.length; i++)
+                        model.addElement(res[i]);
+                } catch (Exception ex){
+                    System.err.println("user list: "+ex.getLocalizedMessage());
+                }
+        }
         jList1.setSelectedValue(sel, true);
     }
 
     private void checkConnection(){
         if(!Main.server.isConnected()){
-            checkConnectionTimer.stop();
-            int res = JOptionPane.showConfirmDialog(rootPane, "There is a connection problem. You have to authorize again.\nClick Yes to return back to the login window or No to ignore the problem.",
-                    "Oops...", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-            if(res==JOptionPane.YES_OPTION){
-                Main.loginWindow.setVisible(true);
-                this.dispose();
-            }
+            showLostConnectionMessage();
         }
+
     }
 
     /** This method is called from within the constructor to

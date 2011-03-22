@@ -1,6 +1,7 @@
 package client.util;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -20,6 +21,7 @@ public class TitanicServer {
     public static PrintWriter pw;
     private Socket socket;
     private boolean connected = false;
+    public String secret = null;
 
     public TitanicServer() {
         host = "danon-laptop.campus.mipt.ru";
@@ -62,7 +64,8 @@ public class TitanicServer {
                 disconnect();
                 return false;
             }
-            String secret = res[1];
+            secret = res[1];
+            if(secret!=null) secret = secret.trim();
         } catch (Exception ex){
             status="WAITING";
             System.err.println("AUTHOSIZE: "+ex.getLocalizedMessage());
@@ -79,7 +82,8 @@ public class TitanicServer {
         status = cmd;
         pw.println(cmd);
         for(String arg : args){
-            pw.println(arg.trim());
+            if(arg!=null) pw.println(arg.trim());
+            else pw.println();
         }
         pw.flush();
         status = pstatus;
@@ -97,8 +101,7 @@ public class TitanicServer {
                 res.add(line);
 
         } catch(Exception ex){
-            connected = false;
-            System.err.println("getResponse: Connection problem or strange server response (incompatable versions).\nDisconnected");
+            System.err.println("getResponse: Connection problem or strange server response.");
         }
 
         if(res.isEmpty())
@@ -111,7 +114,10 @@ public class TitanicServer {
 
     public void disconnect(){
         try{
-            if(pw!=null) pw.close();
+            if(pw!=null){
+                pw.println("exit");
+                pw.close();
+            }
             if(br!=null) br.close();
             if(socket!=null)
                 socket.close();

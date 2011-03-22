@@ -10,6 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.UUID;
 
 
 /**
@@ -23,6 +24,8 @@ public class ClientHandler implements Comparable<ClientHandler>{
     private static int _id=0;
     private int id;
     private ConnectionContainer container = null;
+
+    public String secret = null;
 
     public ClientHandler(ConnectionContainer container, Socket s) {
         socket = s;
@@ -120,7 +123,9 @@ class ClientHandlerRunnable implements Runnable {
                 String pwd = br.readLine().trim();
                 if(authorize(login, pwd)){
                     pw.println("SUCCESS");
-                    pw.println("secret");
+                    UUID uuid = UUID.randomUUID();
+                    clientHandler.secret = uuid.toString();
+                    pw.println(clientHandler.secret);
                     pw.println();
                     result = true;
                 }
@@ -131,7 +136,7 @@ class ClientHandlerRunnable implements Runnable {
                 String which = br.readLine();
                 String secret = br.readLine();
                 System.out.println("COMMAND: list users");
-                if("secret".equals(secret.trim()))
+                if(clientHandler.secret!=null && clientHandler.secret.equals(secret.trim()))
                     if(which.trim().toLowerCase().equals("online")){
                         pw.println("SUCCESS");
                         ResultSet r = Main.usersDB.doQouery("SELECT * FROM profiles;");
