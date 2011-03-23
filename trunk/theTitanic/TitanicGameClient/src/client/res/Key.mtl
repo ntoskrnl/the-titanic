@@ -1,0 +1,40 @@
+# 3ds Max Wavefront OBJ Exporter v0.94b - (c)2007 guruware
+# File Created: 23.03.2011 19:30:27
+
+newmtl KEU_BITMAP
+	Ns 52.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 1.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.0000 0.0000 0.0000
+	Ks 1.0000 1.0000 1.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka D:\Мои документы\Documents\NetBeansProjects\Animation\47_GY0\Keu.gif
+	map_Kd D:\Мои документы\Documents\NetBeansProjects\Animation\47_GY0\Keu.gif
+
+newmtl GOLD__LIGHT_
+	Ns 75.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 1.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.6941 0.6118 0.2549
+	Ks 0.7700 0.7700 0.7700
+	Ke 0.0000 0.0000 0.0000
+
+newmtl BLUE_MATTE
+	Ns 5.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 1.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.0000 0.0000 0.0000
+	Kd 0.0980 0.1333 0.8392
+	Ks 0.2400 0.2400 0.2400
+	Ke 0.0000 0.0000 0.0000
