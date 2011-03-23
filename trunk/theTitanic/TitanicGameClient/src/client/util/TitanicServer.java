@@ -102,6 +102,7 @@ public class TitanicServer {
 
         } catch(Exception ex){
             System.err.println("getResponse: Connection problem or strange server response.");
+            if(!res.isEmpty()) System.err.println(res.get(0));
         }
 
         if(res.isEmpty())

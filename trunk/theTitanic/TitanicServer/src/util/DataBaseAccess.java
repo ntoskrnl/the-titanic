@@ -8,7 +8,7 @@ import java.sql.*;
  */
 public class DataBaseAccess {
 
-    Connection connection = null;
+    private Connection connection = null;
 
     /**
      * Constructs new instance and connects to the db
@@ -46,6 +46,19 @@ public class DataBaseAccess {
         Statement s = connection.createStatement();
         ResultSet r = s.executeQuery(sql);
         return r;
+    }
+
+
+    public int doUpdate(String sql){
+        try{
+            Statement s = connection.createStatement();
+            int r = s.executeUpdate(sql);
+            //connection.commit();
+            return r;
+        } catch (Exception ex) {
+            System.err.println("DB.doUpdate"+ex.getMessage());
+            return -1;
+        }
     }
 
     public void close(){

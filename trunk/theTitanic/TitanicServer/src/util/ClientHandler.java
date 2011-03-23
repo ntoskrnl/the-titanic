@@ -2,6 +2,7 @@ package util;
 
 import java.io.BufferedReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -21,21 +22,31 @@ public class ClientHandler implements Comparable<ClientHandler>{
     @SuppressWarnings("CallToThreadStartDuringObjectConstruction")
 
     private Socket socket = null;
-    private static int _id=0;
-    private int id;
+    private static int _id=0; // id counter
+    private int id; // internal user id (for server only)
     private ConnectionContainer container = null;
+    private User user;
 
-    public String secret = null;
+    private BufferedReader br;
+    private PrintWriter pw;
 
-    public ClientHandler(ConnectionContainer container, Socket s) {
+    public ClientHandler(ConnectionContainer container, Socket s) throws IOException{
         socket = s;
         id=_id++;
         this.container = container;
+        user = new User(this);
+
+        br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        pw = new PrintWriter(socket.getOutputStream());
+
         new Thread(new ClientHandlerRunnable(this)).start();
     }
 
     public void disconnect(){
         container.remove(this);
+        String sql = "DELETE FROM online_users WHERE user_id = "+user.getId();
+        System.out.println(sql);
+        Main.usersDB.doUpdate(sql);
         System.out.println(container.getCount()+" clients are still here!");
     }
 
@@ -52,6 +63,18 @@ public class ClientHandler implements Comparable<ClientHandler>{
         return id;
     }
 
+    public User getUser(){
+        return user;
+    }
+
+    public BufferedReader getSocketReader(){
+        return br;
+    }
+
+    public PrintWriter getSocketWriter(){
+        return pw;
+    }
+
     public int compareTo(ClientHandler o) {
         if(this.getId()>o.getId()) return 1;
         if(this.getId()<o.getId()) return -1;
@@ -60,100 +83,3 @@ public class ClientHandler implements Comparable<ClientHandler>{
     
 }
 
-class ClientHandlerRunnable implements Runnable {
-    private Socket socket;
-    private ClientHandler clientHandler;
-    private BufferedReader br;
-    private PrintWriter pw;
-
-    public ClientHandlerRunnable(ClientHandler clientHandler) {
-        this.clientHandler = clientHandler;
-        socket = clientHandler.getSocket();
-        try{
-            br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            pw = new PrintWriter(socket.getOutputStream());
-        } catch (Exception ex) {
-            clientHandler.disconnect();
-        }
-    }
-
-    public boolean authorize(String login, String password){
-        try {
-            System.out.println(login+" "+password);
-            ResultSet r = Main.usersDB.doQouery("SELECT * FROM profiles WHERE login LIKE '" + login + "' AND password LIKE '" + password + "'");
-            if(!r.next()) return false;
-            return true;
-        } catch (SQLException ex) {
-            Logger.getLogger(ClientHandlerRunnable.class.getName()).log(Level.SEVERE, null, ex);
-            return false;
-        }
-    }
-
-    public void run(){
-        String s;
-        while(true){
-            try{
-                s = br.readLine();
-            } catch (Exception ex){ s=null; }
-            if(s==null) {
-                System.out.println("Client has disconected from server.");
-                break;
-            }
-            processCommand(s);
-        }
-        clientHandler.disconnect();
-    }
-
-    private void processCommand(String command){
-        if(command==null) return;
-        boolean result = false;
-        String cmd = command.toLowerCase().trim();
-        try{
-            // Connection stop
-            if(cmd.equals("exit")){
-                System.out.println("Client sent terminal command.");
-                try{
-                    socket.close();
-                    return;
-                } catch(Exception ex){}
-            }
-            // Authentication
-            if(cmd.equals("authorize")){
-                String login = br.readLine().trim();
-                String pwd = br.readLine().trim();
-                if(authorize(login, pwd)){
-                    pw.println("SUCCESS");
-                    UUID uuid = UUID.randomUUID();
-                    clientHandler.secret = uuid.toString();
-                    pw.println(clientHandler.secret);
-                    pw.println();
-                    result = true;
-                }
-            }
-
-            // User List Request (secret required)
-            if(cmd.equals("list users")){
-                String which = br.readLine();
-                String secret = br.readLine();
-                System.out.println("COMMAND: list users");
-                if(clientHandler.secret!=null && clientHandler.secret.equals(secret.trim()))
-                    if(which.trim().toLowerCase().equals("online")){
-                        pw.println("SUCCESS");
-                        ResultSet r = Main.usersDB.doQouery("SELECT * FROM profiles;");
-                        while(r.next()){
-                            pw.println(r.getString("pub_nickname"));
-                        }
-                        pw.println();
-                        result = true;
-                    }
-            }
-
-            if(!result) pw.println("FAIL");
-
-            // send buffered data to the client
-            pw.flush();
-        } catch(Exception ex) {
-            System.err.println("COMMAND: "+ex.getLocalizedMessage());
-        }
-    }
-}
