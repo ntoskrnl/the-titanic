@@ -1,5 +1,6 @@
 package util;
 
+import java.io.IOException;
 import java.net.Socket;
 import java.util.TreeSet;
 
@@ -25,7 +26,11 @@ public class ConnectionContainer {
      * @param s Socket to add
      */
     public void add(Socket s){
-        con.add(new ClientHandler(this, s));
+        try{
+            con.add(new ClientHandler(this, s));
+        } catch(IOException ex) {
+            System.err.println("Can't accept new connection. (IOException)!");
+        }
     }
 
     /**
