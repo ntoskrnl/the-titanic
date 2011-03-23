@@ -17,6 +17,12 @@
                         <li><a href="#">Section page 3</a></li>
                         <li><a href="#">Section page 4</a></li>
                     </ul>
+                    <div>&nbsp;</div>
+                    <div>
+                        <h3>Ссылки:</h3>
+                        Здесь будет список быстрых ссылок (скачать последнюю версию программы,
+                        документация, а также где необходимые библиотеки)
+                    </div>
                 </div>
                 <!-- LEFT SIDE NAVIGATION end -->
                 <!-- MAIN CONTENT begin -->
@@ -37,14 +43,7 @@
                 </div>
                 <!-- MAIN CONTENT end -->
                 <!-- RIGHT SIDE begin -->
-                <div id="aside">
-                    <h3>
-                        Aside heading
-                    </h3>
-                    <p>
-                        Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan.
-                    </p>
-                </div>
+                {include file="ru/aside.tpl"}
                 <!-- RIGTH SIDE end -->
             </div>
             <!-- FOOTER begin -->

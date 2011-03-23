@@ -19,8 +19,11 @@ body {
     background-position: bottom right;
 }
 
-div {
+div, fieldset{
     display: block;
+    margin: 0px;
+    border-style: none;
+    border-width: 0px;
 }
 
 #container {
@@ -79,6 +82,11 @@ div {
     display: inline;
 }
 
+#section-navigation h3 {
+    margin: 0;
+    margin-bottom: 8px;
+}
+
 #section-navigation ul {
     margin: 0;
     padding: 0;
@@ -106,7 +114,10 @@ div {
     display: inline;
 }
 
-#aside h3 { margin: 0; }
+#aside h3 { 
+    margin: 0;
+    margin-bottom: 8px;
+}
 
 #footer {
     clear: both;
@@ -136,4 +147,12 @@ div {
 .clear {
     clear: left;
     clear: right;
+}
+
+.align_l {
+    text-align: left;
+}
+
+.align_r {
+    text-align: right;
 }
