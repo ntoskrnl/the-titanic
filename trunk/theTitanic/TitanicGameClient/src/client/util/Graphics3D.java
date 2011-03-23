@@ -17,6 +17,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import titanic.basic.*;
 
+
+import com.sun.j3d.loaders.objectfile.ObjectFile;
+import com.sun.j3d.loaders.ParsingErrorException;
+import com.sun.j3d.loaders.IncorrectFormatException;
+import com.sun.j3d.loaders.Scene;
+import java.io.*;
 /**
  *
  * @author 7
@@ -38,8 +44,8 @@ public class Graphics3D implements GraphicalEngine {
 
     Appearance startballapp = new Appearance();
     Appearance ballapp = new Appearance();
-    final float width = 0.6f;  // ширина стола
-    final float high  = 0.85f;  // длина
+    final float width = 0.59f;  // ширина стола
+    final float high  = 0.86f;  // длина
     private float r; //радиус
     private float maxwidth;
     private float maxhight;
@@ -88,7 +94,7 @@ public class Graphics3D implements GraphicalEngine {
                 if(Keyposition == null) Keyposition = new Transform3D();
                 Vector3f pos = new Vector3f();
                 pos.setX(game.getBilliardKey().getBall().getCoordinates().getX()/maxwidth*2*width*0.8f);
-                pos.setY(game.getBilliardKey().getBall().getCoordinates().getY()/maxhight*2*high*0.87f-0.4f);
+                pos.setY(game.getBilliardKey().getBall().getCoordinates().getY()/maxhight*2*high*0.87f);
                 pos.setZ(game.getBilliardKey().getBall().getCoordinates().getZ());
                   Keyposition.setTranslation(pos);
                   Keytrans.setTransform(Keyposition);
@@ -369,7 +375,7 @@ private void SetStartTransform(Vector3f[] mass, BranchGroup bran){
 
    objTrans[N].setTransform(vec);
    objTrans[N].addChild(box);
-   objRoot.addChild(objTrans[N]);
+   //objRoot.addChild(objTrans[N]);
 
    //---------------------------------------------------------------------------
    //****************************************************************
@@ -407,7 +413,7 @@ private void SetStartTransform(Vector3f[] mass, BranchGroup bran){
    ambientLightNode.setInfluencingBounds(bounds);
    objRoot.addChild(ambientLightNode);
 
-   Cone con = new Cone(r/3, 0.8f);
+   //НАконецто кий из 3Ds MAX!!!!
    Transform3D let = new Transform3D();
    Transform3D key = new Transform3D();
    key.setTranslation(new Vector3f(-.7f,-0.8f,0.0f));
@@ -416,10 +422,50 @@ private void SetStartTransform(Vector3f[] mass, BranchGroup bran){
    Keytrans.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
    Keytrans.setTransform(let);
    Keytrans.setTransform(key);
-   Keytrans.addChild(con);
+   
 
+
+
+   ObjectFile gamekey = new ObjectFile();
+   Scene skey = null;
+   ObjectFile MAXtable = new ObjectFile();
+   Scene stable = null;
+
+   try {
+
+       skey = gamekey.load(getClass().getResource("/client/res/key.obj"));
+       stable = MAXtable.load(getClass().getResource("/client/res/tablep.obj"));
+         }
+   catch (FileNotFoundException e){
+       System.err.println(e);
+       System.exit(1);
+   }
+
+   catch (IncorrectFormatException e){
+       System.err.println(e);
+       System.exit(1);
+   }
+    catch (ParsingErrorException e){
+       System.err.println(e);
+       System.exit(1);
+   }
+
+   Keytrans.addChild(skey.getSceneGroup());
    objRoot.addChild(Keytrans);
 
+   TransformGroup tabletransform = new TransformGroup();
+   Transform3D settable = new Transform3D();
+   settable.setTranslation(new Vector3d(-0.177,0.045,-0.14));
+   settable.setScale(new Vector3d(1.5,1.15,1.0));
+   
+  
+   tabletransform.addChild(stable.getSceneGroup());
+    tabletransform.setTransform(settable);
+
+ 
+
+   objRoot.addChild(tabletransform);
+   
    return objRoot;
 
 }
