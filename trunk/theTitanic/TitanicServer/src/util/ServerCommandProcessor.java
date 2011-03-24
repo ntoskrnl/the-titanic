@@ -78,6 +78,10 @@ public class ServerCommandProcessor {
 
                 result = registerUser(u, login, password, firstName, surName, pubNickName,
                         pubEmail, sex, age, location);
+                if(result){
+                    pw.println("SUCCESS");
+                    pw.println();
+                }
             }
 
             if(cmd.equals("profile by id")){
@@ -157,14 +161,20 @@ public class ServerCommandProcessor {
 
         int id = -1;
         try{
-            ResultSet r = Main.usersDB.doQouery("SELECT * FROM profiles WHERE lofin LIKE '"+login+"'");
+            ResultSet r = Main.usersDB.doQouery("SELECT * FROM profiles WHERE login LIKE '"+login+"'");
             if(!r.next()) return false;
             id = r.getInt("id");
         } catch (SQLException ex){
+            System.err.println(ex.getMessage());
             return false;
         }
         
         sql = "INSERT INTO rating (user_id) VALUES (" + id + ")";
-        return(Main.usersDB.doUpdate(sql)>=0);
+        System.out.println(sql);
+        boolean r = (Main.usersDB.doUpdate(sql)>=0);
+        if(!r){
+            Main.usersDB.doUpdate("DELETE FROM profiles WHERE id = '"+id+"'");
+        }
+        return r;
     }
 }
