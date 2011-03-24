@@ -43,9 +43,12 @@ If it is all OK (SUCCESS), there may be several lines containing required inform
 = Supported Commands =
 
 Current version of the server supports the following commands:
-  * AUTHOSIZE
-  * LIST USERS
-  * EXIT
+  * [commandAuthorize AUTHOSIZE]
+  * [commandListUsers LIST USERS]
+  * [commandProfileById PROFILE BY ID]
+  * [commandRegister REGISTER]
+  * [commandRegistered REGISTERED]
+  * [commandExit EXIT]
 This list will be extended soon.
 
 <hr>
