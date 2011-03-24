@@ -1,0 +1,6 @@
+#summary Server Command EXIT.
+#labels Phase-Support
+
+==EXIT==
+
+The command EXIT terminates a connection.
