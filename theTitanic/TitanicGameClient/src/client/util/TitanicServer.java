@@ -35,6 +35,7 @@ public class TitanicServer {
             socket.setSoTimeout(3000);
             br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             pw = new PrintWriter(socket.getOutputStream());
+            connected = true;
         } catch (Exception ex){
             System.err.println("CONNECT: "+ex.getLocalizedMessage());
             connected = false;

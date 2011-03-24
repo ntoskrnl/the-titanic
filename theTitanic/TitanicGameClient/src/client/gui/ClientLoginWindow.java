@@ -148,11 +148,7 @@ public class ClientLoginWindow extends javax.swing.JFrame {
     private void jLabel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseClicked
         // TODO add your handling code here:
         if(evt.getClickCount()==1)
-            try{
-                Runtime.getRuntime().exec("iexplore http://code.google.com/p/the-titanic/");
-            } catch(Exception ex){
-                System.out.println("Go to the project web-site: http://code.google.com/p/the-titanic/");
-            }
+            new RegistrationForm().setVisible(true);
     }//GEN-LAST:event_jLabel3MouseClicked
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
