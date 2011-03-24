@@ -64,8 +64,14 @@ public class MainWindow extends javax.swing.JFrame {
                     if(res[0]==null || !res[0].equals("SUCCESS")){
                         showLostConnectionMessage();
                     }
-                    for(int i=1; i<res.length; i++)
-                        model.addElement(res[i]);
+
+                    for(int i=1; i<res.length; i++){
+                        Main.server.command("profile by id", res[i], Main.server.secret);
+                        String r[] = Main.server.getResponse();
+                        if(r[0]==null || !r[0].equals("SUCCESS")) continue;
+                        StringBuilder sb = new StringBuilder(r[7]);
+                        model.addElement(sb.delete(0, 1).toString());
+                    }
                 } catch (Exception ex){
                     System.err.println("user list: "+ex.getLocalizedMessage());
                 }

@@ -56,7 +56,7 @@ public class ServerCommandProcessor {
                         pw.println("SUCCESS");
                         ResultSet r = Main.usersDB.doQouery("SELECT * FROM online_users;");
                         while(r.next()){
-                            pw.println("#"+r.getString("user_id") + ": " + r.getString("status"));
+                            pw.println(r.getString("user_id"));
                         }
                         pw.println();
                         result = true;
@@ -78,6 +78,26 @@ public class ServerCommandProcessor {
 
                 result = registerUser(u, login, password, firstName, surName, pubNickName,
                         pubEmail, sex, age, location);
+            }
+
+            if(cmd.equals("profile by id")){
+               String id = br.readLine().trim();
+               String secret = br.readLine().trim();
+               if(secret.equals(u.getSecret())){
+                   String sql = "SELECT * FROM profiles WHERE id = " + id;
+                   ResultSet r = Main.usersDB.doQouery(sql);
+                   if(r.next()){
+                       pw.println("SUCCESS");
+                       pw.println(10);
+                       for(int i=1;i<=10;i++){
+                           String s = r.getString(i);
+                           if(s==null) s = "";
+                           pw.println("\\"+s);
+                       }
+                       pw.println();
+                       result = true;
+                   }
+               }
             }
 
             if(!result) pw.println("FAIL");
