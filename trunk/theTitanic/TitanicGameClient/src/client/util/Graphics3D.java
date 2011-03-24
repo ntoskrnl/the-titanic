@@ -433,7 +433,7 @@ private void SetStartTransform(Vector3f[] mass, BranchGroup bran){
 
    try {
 
-       skey = gamekey.load(getClass().getResource("/client/res/key.obj"));
+       skey = gamekey.load(getClass().getResource("/client/res/Key.obj"));
        stable = MAXtable.load(getClass().getResource("/client/res/tablep.obj"));
          }
    catch (FileNotFoundException e){
