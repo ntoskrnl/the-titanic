@@ -6,8 +6,8 @@
 This command prints IDs of users with specified status (online, offline, all, playing, waiting)
 
 *Arguments:*
-* status alias: online, offline, all, playing, waiting
-* secret key (returned by AUTHORIZE)
+  * status alias: online, offline, all, playing, waiting
+  * secret key (returned by AUTHORIZE)
 
 *Returns:*
 
