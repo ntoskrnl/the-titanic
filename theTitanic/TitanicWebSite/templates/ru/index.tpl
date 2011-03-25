@@ -1,12 +1,13 @@
+<!DOCTYPE html>
 <html>
     {config_load file="global.ini" section="main"}
     <!-- HTML HEADER begin -->
-    {include file="ru/html_header.tpl"}
+    {include file="{$lang}/html_header.tpl"}
     <!-- HTML HEADER end -->
     <body>
         <div id="container">
             <!-- PAGE HEADER begin -->
-            {include file="ru/page_header.tpl"}
+            {include file="{$lang}/page_header.tpl"}
             <!-- PAGE HEADER end -->
             <div id="content-container">
                 <!-- LEFT SIDE NAVIGATION begin -->
@@ -18,17 +19,13 @@
                         <li><a href="#">Section page 4</a></li>
                     </ul>
                     <div>&nbsp;</div>
-                    <div>
-                        <h3>Ссылки:</h3>
-                        Здесь будет список быстрых ссылок (скачать последнюю версию программы,
-                        документация, а также где необходимые библиотеки)
-                    </div>
+                    {include file="{$lang}/left_side_static.tpl"}
                 </div>
                 <!-- LEFT SIDE NAVIGATION end -->
                 <!-- MAIN CONTENT begin -->
                 <div id="content">
                     <h2>
-                        Titanic Home Page
+                        Titanic &ndash; Интернет-бильярд 3D
                     </h2>
                     <img src="./images/girl.jpg" width="200" class="img_r" />
                     <p>
@@ -43,7 +40,7 @@
                 </div>
                 <!-- MAIN CONTENT end -->
                 <!-- RIGHT SIDE begin -->
-                {include file="ru/aside.tpl"}
+                {include file="{$lang}/aside.tpl"}
                 <!-- RIGTH SIDE end -->
             </div>
             <!-- FOOTER begin -->

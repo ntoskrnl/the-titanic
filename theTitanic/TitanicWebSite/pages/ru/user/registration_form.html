@@ -1,0 +1,68 @@
+<h2>Регистрация пользователя</h2>
+<div>
+    <p>Чтобы зарегистрироваться на игровом сервере, необходимо заполнить все
+        обязательные поля формы и нажать кнопку <b>Регистрация</b>. В любом случае,
+        спасибо, что посетили наш сайт. Надеемся, что вы хорошо проведете время.</p>
+    <form action="user/register/post" method="post">
+        <fieldset>
+            <table style="margin-left: 10%;">
+                <tr>
+                    <td>
+                        <b>Логин:</b>
+                    </td>
+                    <td>
+                        <input type="text" name="login" value="" style="width:150px" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>Пароль:</b>
+                    </td>
+                    <td>
+                        <input type="password" name="password" value="" style="width:150px" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>Повторите пароль:</b>
+                    </td>
+                    <td>
+                        <input type="password" name="password_retype" value="" style="width:150px" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>Ваше имя:</b>
+                    </td>
+                    <td>
+                        <input type="text" name="first_name" value="" style="width:150px" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>Фамилия:</b>
+                    </td>
+                    <td>
+                        <input type="text" name="surname" value="" style="width:150px" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>Псевдоним:</b>
+                    </td>
+                    <td>
+                        <input type="text" name="pub_nickname" value="" style="width:150px" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <div class="align_c">
+                            <input type="submit" value="Зарегистрироваться" />
+                        </div>
+                    </td>
+                </tr>
+            </table>
+
+        </fieldset>
+    </form>
+</div>
