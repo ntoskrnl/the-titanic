@@ -4,9 +4,9 @@ package client.util;
 
 import java.awt.*;
 import com.sun.j3d.utils.geometry.Box;
-import com.sun.j3d.utils.geometry.Cone;
 import com.sun.j3d.utils.geometry.Primitive;
 import com.sun.j3d.utils.universe.*;
+import java.awt.event.MouseWheelEvent;
 import javax.media.j3d.*;
 import javax.vecmath.*;
 import com.sun.j3d.utils.geometry.Sphere;
@@ -22,6 +22,8 @@ import com.sun.j3d.loaders.objectfile.ObjectFile;
 import com.sun.j3d.loaders.ParsingErrorException;
 import com.sun.j3d.loaders.IncorrectFormatException;
 import com.sun.j3d.loaders.Scene;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseWheelListener;
 import java.io.*;
 /**
  *
@@ -32,7 +34,11 @@ public class Graphics3D implements GraphicalEngine {
     
     Ball[] BallsArray;
     private BranchGroup scene;
-
+    private TransformGroup scenetransform;
+    private float phi = 0, psi = 0;
+    private int dragX, dragY;
+    boolean drag;
+    
     private int N;
     private TransformGroup[] objTrans;
     private Vector3f[] mass;
@@ -50,6 +56,7 @@ public class Graphics3D implements GraphicalEngine {
     private float maxwidth;
     private float maxhight;
     private SimpleUniverse u;
+
 
     Color3f ambient = new Color3f(0.5f, 0.5f, 0.5f);
     Color3f emissive = new Color3f(0.0f, 0.0f, 0.0f);
@@ -80,24 +87,68 @@ public class Graphics3D implements GraphicalEngine {
          */
         c.addKeyListener(new KeyAdapter() {
             @Override
-            public void keyReleased(KeyEvent evt){
+            public void keyPressed(KeyEvent evt){
                 int code = evt.getKeyCode();
                 int curBall = game.getBilliardKey().getBall().getId();
-                if(code == KeyEvent.VK_COMMA) 
-                    curBall+=game.getGameScene().getBalls().length-1;
-                else if (code == KeyEvent.VK_PERIOD) 
-                    curBall+=game.getGameScene().getBalls().length+1;
-                curBall%=game.getGameScene().getBalls().length;
-                game.getBilliardKey().changeBall(game.getGameScene().getBalls()[curBall]);
-                System.out.println(game.getBilliardKey().getBall());
+                
+                if(code==KeyEvent.VK_COMMA || code == KeyEvent.VK_PERIOD) {
 
-                if(Keyposition == null) Keyposition = new Transform3D();
-                Vector3f pos = new Vector3f();
-                pos.setX(game.getBilliardKey().getBall().getCoordinates().getX()/maxwidth*2*width*0.8f);
-                pos.setY(game.getBilliardKey().getBall().getCoordinates().getY()/maxhight*2*high*0.87f);
-                pos.setZ(game.getBilliardKey().getBall().getCoordinates().getZ());
-                  Keyposition.setTranslation(pos);
-                  Keytrans.setTransform(Keyposition);
+                    if(code == KeyEvent.VK_COMMA)
+                        curBall+=game.getGameScene().getBalls().length-1;
+                    else if (code == KeyEvent.VK_PERIOD)
+                        curBall+=game.getGameScene().getBalls().length+1;
+                    curBall%=game.getGameScene().getBalls().length;
+                    game.getBilliardKey().changeBall(game.getGameScene().getBalls()[curBall]);
+
+                    if(Keyposition == null) Keyposition = new Transform3D();
+                    Vector3f pos = new Vector3f();
+                    pos.setX(game.getBilliardKey().getBall().getCoordinates().getX()/maxwidth*2*width*0.8f);
+                    pos.setY(game.getBilliardKey().getBall().getCoordinates().getY()/maxhight*2*high*0.87f);
+                    pos.setZ(game.getBilliardKey().getBall().getCoordinates().getZ());
+                      Keyposition.setTranslation(pos);
+                      Keytrans.setTransform(Keyposition);
+                }
+
+                if(code == KeyEvent.VK_LEFT){
+                    phi = phi + 0.01f;
+                    Transform3D t = new Transform3D();
+                    t.rotZ(phi);
+                    Transform3D setscenerot = new Transform3D();
+                    setscenerot.rotX(psi);
+                    setscenerot.mul(t);
+                    scenetransform.setTransform(setscenerot);
+                }
+
+                 if(code == KeyEvent.VK_RIGHT){
+                    phi = phi - 0.01f;
+                    Transform3D t = new Transform3D();
+                    t.rotZ(phi);
+                    Transform3D setscenerot = new Transform3D();
+                    setscenerot.rotX(psi);
+                    setscenerot.mul(t);
+                    scenetransform.setTransform(setscenerot);
+                }
+
+                 if(code == KeyEvent.VK_UP){
+                    Transform3D t = new Transform3D();
+                    t.rotZ(phi);
+                    psi = psi - 0.01f;
+                    Transform3D setscenerot = new Transform3D();
+                    setscenerot.rotX(psi);
+                    setscenerot.mul(t);
+                    scenetransform.setTransform(setscenerot);
+                }
+
+                if(code == KeyEvent.VK_DOWN){
+                    Transform3D t = new Transform3D();
+                    t.rotZ(phi);
+                    psi = psi + 0.01f;
+                    Transform3D setscenerot = new Transform3D();
+                    setscenerot.rotX(psi);
+                    setscenerot.mul(t);
+                    scenetransform.setTransform(setscenerot);
+                }
+
             }
         });
 
@@ -106,14 +157,35 @@ public class Graphics3D implements GraphicalEngine {
          */
         c.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent evt){
-                if(evt.getClickCount()==1){
-                    int curBall = game.getBilliardKey().getBall().getId();
-                    curBall++;
-                    curBall%=game.getGameScene().getBalls().length;
-                    game.getBilliardKey().changeBall(game.getGameScene().getBalls()[curBall]);
-                    //System.out.println(game.getBilliardKey().getBall());
-                }
+            public void mousePressed(MouseEvent evt){
+                    dragX = evt.getX();
+                    dragY = evt.getY();
+                    drag = true;
+            }
+
+            @Override
+            public void mouseMoved(MouseEvent evt){
+                int dx = evt.getX()-dragX;
+                int dy = evt.getY()-dragY;
+                if(drag)
+                System.out.println(dx+" "+dy);
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent evt){
+                drag=false;
+            }
+
+            @Override
+            public void mouseExited(MouseEvent evt){
+                drag=false;
+            }
+        });
+
+        c.addMouseWheelListener(new MouseWheelListener() {
+
+            public void mouseWheelMoved(MouseWheelEvent e) {
+                
             }
         });
 
@@ -132,8 +204,16 @@ public class Graphics3D implements GraphicalEngine {
         // or select ball using '<' and '>'
         // or just rotate the universe with arrow keys.
         setEventListeners(c);
+        BranchGroup scene1;
+        scene1 = createSceneGraph();
 
-        scene = createSceneGraph();
+       if(scenetransform==null) scenetransform = new TransformGroup();
+        scenetransform.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+
+       scenetransform.addChild(scene1);
+
+        //scene = createSceneGraph();
+        scene.addChild(scenetransform);
         //TransformGroup trsc = new TransformGroup();   с помощью этого будем все вращать))
           //      trsc.addChild(scene);
                 
@@ -393,7 +473,7 @@ private void SetStartTransform(Vector3f[] mass, BranchGroup bran){
    PointLight light2 = new PointLight(ambient, one, one);
    light2.setInfluencingBounds(bounds);
 
-   Point3f two = new Point3f(0.0f,0.8f,0.8f);
+   Point3f two = new Point3f(0.0f,0.8f,-0.8f);
    PointLight light3 = new PointLight(ambient, two, two);
    light3.setInfluencingBounds(bounds);
 
