@@ -92,6 +92,7 @@ public class RegistrationForm extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Titanic :: Registration...");
+        setResizable(false);
 
         jButton1.setText("Sign up!");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
