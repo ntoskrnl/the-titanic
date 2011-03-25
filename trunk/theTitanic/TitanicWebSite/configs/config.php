@@ -17,6 +17,9 @@
             die ('PHP5.1 or higher!');
     }
 
+    ob_implicit_flush();
+    ob_end_flush();
+
     // langugage
     $lang = get_from_session("lang", "ru");
 

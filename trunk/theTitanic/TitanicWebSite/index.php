@@ -1,9 +1,11 @@
 <?php
-
+    $start_time = microtime(true);
     $smarty_path = "./lib/smarty/libs/";
 
     require_once($smarty_path."Smarty.class.php");
     include('configs/config.php');
+
+    $_SESSION['start_time'] = $start_time;
 
     $registry = new Registry();
 
@@ -19,6 +21,8 @@
     $smarty->cache_lifetime = 120;
     $smarty->template_dir = site_path."templates".DIRSEP;
     $smarty->config_dir = site_path."configs".DIRSEP;
+
+    $smarty->assign("lang", $lang);
 
     $registry['smarty'] = $smarty;
 
