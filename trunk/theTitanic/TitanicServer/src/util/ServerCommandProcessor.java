@@ -22,6 +22,7 @@ public class ServerCommandProcessor {
         boolean result = false;
         String cmd = command.toLowerCase().trim();
 
+        System.out.println("CMMAND: "+cmd);
         try{
             // Connection stop
             if(cmd.equals("exit")){
@@ -29,7 +30,10 @@ public class ServerCommandProcessor {
                 try{
                     socket.close();
                     return;
-                } catch(Exception ex){}
+                } catch(Exception ex){
+                    System.err.println(ex.getMessage());
+                }
+                return;
             }
 
             // Authentication
@@ -39,7 +43,6 @@ public class ServerCommandProcessor {
                 if(authorize(u, login, pwd)){
                     pw.println("SUCCESS");
                     pw.println(u.getSecret());
-                    pw.println();
 
                     u.setAuthorized(true);
                     result = true;
@@ -50,7 +53,6 @@ public class ServerCommandProcessor {
             if(cmd.equals("list users")){
                 String which = br.readLine();
                 String secret = br.readLine();
-                System.out.println("COMMAND: list users");
                 if(u.getSecret()!=null && u.getSecret().equals(secret.trim()))
                     if(which.trim().toLowerCase().equals("online")){
                         pw.println("SUCCESS");
@@ -58,10 +60,7 @@ public class ServerCommandProcessor {
                         while(r.next()){
                             pw.println(r.getString("user_id"));
                         }
-                        pw.println();
                         result = true;
-                        //r.close();
-                        //Main.serviceDB.closeQuery();
                     }
             }
 
@@ -80,7 +79,6 @@ public class ServerCommandProcessor {
                         pubEmail, sex, age, location);
                 if(result){
                     pw.println("SUCCESS");
-                    pw.println();
                 }
             }
 
@@ -98,18 +96,28 @@ public class ServerCommandProcessor {
                            if(s==null) s = "";
                            pw.println("\\"+s);
                        }
-                       pw.println();
                        result = true;
                    }
                }
             }
 
+            if(cmd.equals("registered")){
+                String login = br.readLine().trim();
+                ResultSet r = Main.usersDB.doQouery("SELECT id FROM profiles WHERE login like '"+login+"'");
+                if(r.next()){
+                    pw.println("SUCCESS");
+                    result = true;
+                }
+            }
+
             if(!result) pw.println("FAIL");
+            else pw.println();
 
             // send buffered data to the client
             pw.flush();
         } catch(Exception ex) {
             System.err.println("COMMAND: "+ex.getLocalizedMessage());
+            pw.println("FAIL");
         }
     }
 
@@ -153,12 +161,11 @@ public class ServerCommandProcessor {
                                     String age, String location){
 
         String sql = "INSERT INTO profiles (login, password, first_name, surname, " +
-                "pub_nickname, pub_email, sex, age, location) VALUES('" +
-                login + "','" + password + "','" + firstName + "','" + surName +
-                "','" + pubNickName + "','" + pubEmail + "','" + sex + "','" + age + "', '" + location + "')";
-        System.out.println(sql);
-        if(Main.usersDB.doUpdate(sql)<1) return false;
-
+                "pub_nickname, pub_email, sex, age, location) VALUES(?,?,?,?,?,?,?,?,?);";
+        int numRows = Main.usersDB.doPreparedUpdate(sql, login, password, firstName, surName,
+                    pubNickName, pubEmail, sex, age, location);
+        if(numRows!=1) return false;
+        
         int id = -1;
         try{
             ResultSet r = Main.usersDB.doQouery("SELECT * FROM profiles WHERE login LIKE '"+login+"'");
