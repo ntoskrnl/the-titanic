@@ -18,7 +18,7 @@ public class ImpactEvent extends GameEvent {
 
     public void execute() {
         // play sound of impact (use client.util.SoundPlayer.play(URL))
-        SoundPlayer.play(getClass().getResource("/client/res/event/click.wav"), (float)speed/20);
+        SoundPlayer.play(getClass().getResource("/client/res/event/click.wav"), (float)(speed/500.0));
     }
 
     @Override
