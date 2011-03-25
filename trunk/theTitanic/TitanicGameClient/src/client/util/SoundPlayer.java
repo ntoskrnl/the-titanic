@@ -17,11 +17,11 @@ public class SoundPlayer extends Thread {
     private float soundVolume;
 
     /** Print exception messages? */
-    private static final boolean quiet = true;
+    private static final boolean quiet = false;
 
     public SoundPlayer(URL src){
         soundFile = src;
-        soundVolume = 0.999f;
+        soundVolume = 0.99f;
     }
 
     public SoundPlayer(URL src, float vol){
@@ -35,7 +35,7 @@ public class SoundPlayer extends Thread {
      * @param vol Relative volume value [0.0f, 1.0f). If the value is more than 1.0f it will be decreased.
      */
     public static void play(URL src, float vol){
-        if(vol>=1.0f) vol = 0.999f;
+        if(vol>=0.99f) vol = 0.99f;
         Thread t = new SoundPlayer(src, vol);
         t.start();
     }
@@ -78,6 +78,7 @@ public class SoundPlayer extends Thread {
 
         try{
             FloatControl volume = (FloatControl)line.getControl(FloatControl.Type.VOLUME);
+            System.out.println("Trying to set volume ratio "+soundVolume);
             volume.setValue(volume.getMaximum()*soundVolume);
         } catch (Exception e){
              if(!quiet) System.err.println(e.getLocalizedMessage());
