@@ -48,6 +48,7 @@ Current version of the server supports the following commands:
   * [commandProfileById PROFILE BY ID]
   * [commandRegister REGISTER]
   * [commandRegistered REGISTERED]
+  * [commandCheckPassword CHECK PASSWORD]
   * [commandExit EXIT]
 This list will be extended soon.
 
