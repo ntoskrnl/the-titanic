@@ -41,7 +41,7 @@ public class SimpleGame extends Game {
 
         events = new SimpleEventPipeLine();
 
-        physics = new SimplePhysics(this);
+        physics = new yukiEngine(this);
         
         graphics = new Graphics3D(this);
         graphics.setRenderingArea(c);
