@@ -125,6 +125,13 @@ public class ServerCommandProcessor {
                     }
                 }
             }
+            
+            if(cmd.equals("server online")){
+                if(Main.usersDB.isConnected()){
+                    result = true;
+                    pw.println("SUCCESS");
+                }
+            }
 
             if(!result) pw.println("FAIL");
             else pw.println();
