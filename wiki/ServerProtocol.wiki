@@ -134,7 +134,6 @@ try{
             
         String command = "SERVER ONLINE"; // your command
         String cmd = command.trim().toUpperCase();
-        status = cmd;
         pw.println(cmd);
         
         //Send arguments:
