@@ -53,6 +53,68 @@ Current version of the server supports the following commands:
   * [commandExit EXIT]
 This list will be extended soon.
 
+= How to connect and send commands =
+
+Servers listens port 10000 on the host machine, so first of all you need to create a socket connection between client ans server machines. This, of cause, depends on programming language and platform.
+
+== PHP ==
+
+<code lang="php">
+<?php
+
+$address = gethostbyname("localhost");
+$port = 10000;
+$online = false;
+
+try {
+    set_time_limit(5);
+
+    // create socket
+    $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
+    if ($socket < 0) {
+        throw new Exception('socket_create() failed: ' . socket_strerror(socket_last_error()) . "\n");
+    }
+
+    //connect socket
+    $result = socket_connect($socket, $address, $port);
+    if ($result === false) {
+        throw new Exception('socket_connect() failed: ' . socket_strerror(socket_last_error()) . "\n");
+    }
+
+    $msg = "SERVER ONLINE\n";
+    socket_write($socket, $msg);
+
+    $ans = socket_read($socket, 1024);
+    if ($ans === FALSE) {
+        throw new Exception("socket_read failed.");
+    }
+
+    $ans = trim($ans);
+    if (strcasecmp($ans, "SUCCESS") != 0) {
+        throw new Exception("Сервер не активен. <br />Попробуйте позже.");
+    }
+
+    $online = true;
+
+    $msg = "EXIT\n";
+    socket_write($socket, $msg);
+} catch (Exception $e) {
+    $online = false;
+}
+
+if (isset($socket)) {
+    socket_close($socket);
+}
+
+?>
+</code>
+
+== Java ==
+
+<code lang="java">
+
+</code>
+
 <hr>
 Add your content here.  Format your content with:
   * Text in *bold* or _italic_
