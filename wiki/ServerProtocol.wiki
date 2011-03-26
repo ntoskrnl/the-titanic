@@ -43,6 +43,7 @@ If it is all OK (SUCCESS), there may be several lines containing required inform
 = Supported Commands =
 
 Current version of the server supports the following commands:
+  * [commandServerOnline SERVER ONLINE]
   * [commandAuthorize AUTHOSIZE]
   * [commandListUsers LIST USERS]
   * [commandProfileById PROFILE BY ID]
