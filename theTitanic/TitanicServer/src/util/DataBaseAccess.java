@@ -93,7 +93,7 @@ public class DataBaseAccess {
             int r = s.executeUpdate(sql);
             return r;
         } catch (Exception ex) {
-            System.err.println("DB.doUpdate"+ex.getMessage());
+            System.err.println("DB.doUpdate: "+ex.getMessage());
             return -1;
         }
     }
@@ -106,7 +106,7 @@ public class DataBaseAccess {
                 s.setString(i+1, values[i]);
             return s.executeUpdate();
         } catch (Exception ex) {
-            System.err.println("DB.doPreparedUpdate"+ex.getMessage());
+            System.err.println("DB.doPreparedUpdate: "+ex.getMessage());
             return -1;
         } 
     }
