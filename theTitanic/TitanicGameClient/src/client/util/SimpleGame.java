@@ -61,16 +61,16 @@ public class SimpleGame extends Game {
     private void arrangeBalls(Ball[] balls, Vector3D bounds){
         synchronized(balls){
             Random rand = new Random(System.currentTimeMillis());
-            float R = 12;
+            float R = 0.04f;
             for(int i=0;i<balls.length;i++){
                 balls[i] = new Ball();
                 balls[i].setCoordinates(new Vector3D(R+rand.nextFloat()*(bounds.getX()-R) - bounds.getX()/2.0f,
                         R+rand.nextFloat()*(bounds.getY()-R) - bounds.getY()/2.0f));
                 balls[i].setColor(Color.BLACK);
-                balls[i].setRadius(R-1);
+                balls[i].setRadius(R);
                 balls[i].setId(i);
             }
-            balls[0].setSpeed(new Vector3D(rand.nextFloat()*200-100, rand.nextFloat()*200-100));
+            balls[0].setSpeed(new Vector3D(rand.nextFloat()*1-0.5f, rand.nextFloat()*1-0.5f));
         }
     }
 

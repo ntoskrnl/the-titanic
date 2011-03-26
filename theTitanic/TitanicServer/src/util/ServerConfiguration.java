@@ -23,7 +23,7 @@ public class ServerConfiguration {
     public static Preferences userPreferences = null;
 
     public static void savePreferences() {
-        System.out.println("Saving preferences...");
+        Main.logs.info("Saving preferences...");
 
         userPreferences = Preferences.userRoot().node("theTitanic").node("server");
 
@@ -35,7 +35,7 @@ public class ServerConfiguration {
     }
 
     public static void loadPreferences(){
-        System.out.println("Loading user preferences...");
+        Main.logs.info("Loading user preferences...");
 
         userPreferences = Preferences.userRoot().node("theTitanic").node("server");
 

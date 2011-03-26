@@ -1,5 +1,7 @@
 package util;
 
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.sql.*;
 
 /**
@@ -23,10 +25,12 @@ public class DataBaseAccess {
         anonymous = true;
         this.dbfile = dbfile;
         try{
+            DriverManager.setLogWriter(new PrintWriter(System.err));
+            
             connection = DriverManager.getConnection("jdbc:sqlite:"+dbfile);
             connection.setAutoCommit(true);
         } catch (SQLException e){
-            System.err.println("DataBaseAccess: "+e.getLocalizedMessage());
+            Main.logs.warning("DataBaseAccess: "+e.getLocalizedMessage());
         }
     }
 
@@ -41,14 +45,13 @@ public class DataBaseAccess {
         anonymous = false;
         this.password = password;
         this.user = user;
-        this.dbfile = dbfile;
-        
-               
+        this.dbfile = dbfile;    
         try{
+            DriverManager.setLogWriter(new PrintWriter(System.err));
             connection = DriverManager.getConnection("jdbc:sqlite:"+dbfile, user, password);
             connection.setAutoCommit(true);
         } catch (SQLException e){
-            System.err.println("DataBaseAccess: "+e.getLocalizedMessage());
+            Main.logs.warning("DataBaseAccess: "+e.getLocalizedMessage());
         }
     }
 
@@ -68,7 +71,7 @@ public class DataBaseAccess {
             else connection = DriverManager.getConnection("jdbc:sqlite:"+dbfile);
             connection.setAutoCommit(true);
         } catch (SQLException e){
-            System.err.println("DataBaseAccess: "+e.getLocalizedMessage());
+            Main.logs.warning("DataBaseAccess: "+e.getLocalizedMessage());
         }
         return isConnected();
     }
@@ -93,7 +96,7 @@ public class DataBaseAccess {
             int r = s.executeUpdate(sql);
             return r;
         } catch (Exception ex) {
-            System.err.println("DB.doUpdate: "+ex.getMessage());
+            Main.logs.warning("DB.doUpdate: "+ex.getMessage());
             return -1;
         }
     }
@@ -106,7 +109,7 @@ public class DataBaseAccess {
                 s.setString(i+1, values[i]);
             return s.executeUpdate();
         } catch (Exception ex) {
-            System.err.println("DB.doPreparedUpdate: "+ex.getMessage());
+            Main.logs.warning("DB.doPreparedUpdate: "+ex.getMessage());
             return -1;
         } 
     }
@@ -123,7 +126,7 @@ public class DataBaseAccess {
         try{
             connection.close();
         } catch(SQLException ex){
-            System.err.println(ex.getMessage());
+            Main.logs.warning(ex.getMessage());
         }
     }
 }

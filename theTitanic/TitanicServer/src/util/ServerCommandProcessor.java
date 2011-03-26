@@ -22,16 +22,16 @@ public class ServerCommandProcessor {
         boolean result = false;
         String cmd = command.toLowerCase().trim();
 
-        System.out.println("CMMAND: "+cmd);
+        Main.logs.info("CMMAND: "+cmd);
         try{
             // Connection stop
             if(cmd.equals("exit")){
-                System.out.println("Client sent terminal command.");
+                Main.logs.info("Client sent terminal command.");
                 try{
                     socket.close();
                     return;
                 } catch(Exception ex){
-                    System.err.println(ex.getMessage());
+                    Main.logs.warning(ex.getMessage());
                 }
                 return;
             }
@@ -139,7 +139,7 @@ public class ServerCommandProcessor {
             // send buffered data to the client
             pw.flush();
         } catch(Exception ex) {
-            System.err.println("COMMAND: "+ex.getLocalizedMessage());
+            Main.logs.warning("COMMAND: "+ex.getLocalizedMessage());
             pw.println("FAIL");
         }
     }
@@ -157,7 +157,6 @@ public class ServerCommandProcessor {
             if(!r.next()){
                 return false;
             }
-            if(r.next()) return false;
             
             u.setId(r.getInt("id"));
             u.setPubNickname(r.getString("pub_nickname"));
@@ -165,11 +164,14 @@ public class ServerCommandProcessor {
             sql = "INSERT INTO online_users " +
                             " (user_id, status)" +
                             " VALUES ("+u.getId()+", 'WAIT')";
-
+            
+            if(r.next())
+                throw new Exception("Trying to hack?");
+            
             if(Main.usersDB.doUpdate(sql)==1) result = true;
             else result = false;
         } catch (Exception ex) {
-            System.err.println("authorize: "+ex.getLocalizedMessage());
+            Main.logs.warning("authorize: "+ex.getLocalizedMessage());
             result = false;
         }
 
@@ -198,12 +200,12 @@ public class ServerCommandProcessor {
             if(!r.next()) return false;
             id = r.getInt("id");
         } catch (SQLException ex){
-            System.err.println(ex.getMessage());
+            Main.logs.warning(ex.getMessage());
             return false;
         }
         
         sql = "INSERT INTO rating (user_id) VALUES (" + id + ")";
-        System.out.println(sql);
+        Main.logs.info(sql);
         boolean r = (Main.usersDB.doUpdate(sql)>=0);
         if(!r){
             Main.usersDB.doUpdate("DELETE FROM profiles WHERE id = '"+id+"'");
