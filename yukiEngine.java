@@ -86,22 +86,29 @@ public class yukiEngine implements PhysicalEngine {
                         < (4*r*r)
                    ){
 
-                   if ( (impList[i]!=q+1) && (impList[q]!=i+1) ){
-                       impList[i] = q+1;
-                       impList[q] = i+1;
+//                   if ( (impList[i]!=q+1) && (impList[q]!=i+1) ){
+//                       impList[i] = q+1;
+//                       impList[q] = i+1;
                        impact( i , q );
                    }
-
-                } else
-                   if ( (impList[i]==q+1) && (impList[q]==i+1) ){
-                       impList[i] = 0;
-                       impList[q] = 0;
-                   }
+//
+//                } else
+//                   if ( (impList[i]==q+1) && (impList[q]==i+1) ){
+//                       impList[i] = 0;
+//                       impList[q] = 0;
+//                   }
             }
     }
 
     /* Процедура, реагирующая на столкновение со стенками. */
     private void testWallCollisions(){
+        for( int i=0; i<bQuant; ++i){
+            if ( ( abs(bPos[i][0])>(width/2-r)) && ((bPos[i][0]*bVel[i][0])>0) )
+                    bVel[i][0] *= (-1);
+            if ( ( abs(bPos[i][1])>(height/2-r) ) && ((bPos[i][1]*bVel[i][1])>0) )
+                    bVel[i][1] *= (-1);
+        }
+/*
         for( int i=0; i<bQuant; ++i){
             if (bPos[i][0]>(width/2-r)){
                 if (impList[i]!=-1)
@@ -127,6 +134,7 @@ public class yukiEngine implements PhysicalEngine {
             } else if (impList[i]==-4)
                 impList[i] = 0;
         }
+ */
     }
 
     /* Процедура, перемещающая шары. */
@@ -166,9 +174,26 @@ public class yukiEngine implements PhysicalEngine {
         float v1 = x*bVel[b1][0] + y*bVel[b1][1] + z*bVel[b1][2];
         float v2 = x*bVel[b2][0] + y*bVel[b2][1] + z*bVel[b2][2];
 
+        float p = v2-v1;
+
         //Получаем скорости после столкновения.
-        bVel[b1][0] += (v2-v1)*x; bVel[b2][0] += (v1-v2)*x;
-        bVel[b1][1] += (v2-v1)*y; bVel[b2][1] += (v1-v2)*y;
-        bVel[b1][2] += (v2-v1)*z; bVel[b2][2] += (v1-v2)*z;
+        if (p>0){
+            bVel[b1][0] += p*x; bVel[b2][0] -= p*x;
+            bVel[b1][1] += p*y; bVel[b2][1] -= p*y;
+            bVel[b1][2] += p*z; bVel[b2][2] -= p*z;
+        }
+    }
+
+    /* Модуль. */
+    private float abs(float a){
+        if (a<0) return (-1)*a;
+        return a;
+    }
+
+    /* Сигнум. */
+    private float sgn(float a){
+        if (a<0) return -1;
+        if (a>0) return 1;
+        return 0;
     }
 }
