@@ -111,9 +111,54 @@ if (isset($socket)) {
 
 == Java ==
 
-TBD
+In Java you should use standard java.net.Socket class to connect to the server. Do not forget to flush after sending a command.
+
 <code lang="java">
-// TODO
+boolean online = false;
+try{
+        socket = new Socket(host, port);
+        socket.setSoTimeout(3000);
+        br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+        pw = new PrintWriter(socket.getOutputStream());
+            
+        String command = "SERVER ONLINE"; // your command
+        String cmd = command.trim().toUpperCase();
+        status = cmd;
+        pw.println(cmd);
+        
+        //Send arguments:
+        //for(String arg : args){
+        //    if(arg!=null) pw.println(arg.trim());
+        //    else pw.println();
+        //}
+        
+        pw.flush();
+
+        //Get response
+        String res = br.readLine();
+        
+        if(res!=null && res.trim().toLowerCase().equals("success")){
+           online = true;
+           do {
+               res = br.readline();
+           }while(res!=null || !res.trim().equals(""));
+        }
+        
+        pw.println("EXIT");
+        pw.flush();
+
+} catch (Exception ex){
+        System.err.println("Server: "+ex.getLocalizedMessage());
+        online = false;
+}
+
+if(online) System.out.println("Server: OK");
+else System.out.println("Server: FAIL");
+
+try {
+     if(socket!=null) socket.close();
+} catch (Exception ex) {}
+
 </code>
 
 <hr>
