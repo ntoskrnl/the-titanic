@@ -13,12 +13,19 @@ Abstract Class Controller_Base {
 	function redirect($redir, $t, $reason){
 		$registry['controllers'] = "off";
 		if(!isset($t)) $t = 0;
-		if(!isset($reason)) $reason = "N/A";
-		$this->registry['smarty']->assign("redir", $redir);
-		$this->registry['smarty']->assign("time", $t);
-		$this->registry['smarty']->assign("reason", $reason);
-		$this->registry['smarty']->display("etc/redirect.tpl");
+		if(!isset($reason)) $reason = "Reason is not given.";
+		$this->message($reason, "Redirecting...", $redir, $t);
 	}
+        
+        function message($text, $title, $redirect, $timeout){
+        global $lang;
+        
+        $this->registry['smarty']->assign("msg_text", $text);
+        $this->registry['smarty']->assign("msg_title", $title);
+        $this->registry['smarty']->assign("redirect", $redirect);
+        $this->registry['smarty']->assign("redirect_timeout", $timeout);
+        $this->registry['smarty']->display("$lang/message.tpl");
+    }
 
 }
 
