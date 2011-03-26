@@ -25,6 +25,15 @@ class Controller_Register extends Controller_Base {
         $surname = $_POST['surname'];
         $pub_nickname = $_POST['pub_nickname'];
         
+        $m = preg_match("/[A-Za-z0-9@._-]{5,30}$/", $login, $mathces);
+        if($m===FALSE || $m == 0){
+            $this->message("Обнаружены недопустимые символы в поле Логин. Допустимые символы:
+                'A' ... 'Z', 'a' ... 'z', '0' ... '9', '@', '.', '-', '_'. <br />
+                Логин должен содержать от 5 до 30 символов.", 
+                    "Ошибка ввода данных", "user/register", 5);
+            return false;
+        }
+        
         if(strcmp($password, $retype)!=0){
             $this->message("Пароли не совпадают. Проверьте правильность заполнения полей.", 
                     "Ошибка ввода данных", "user/register", 5);
@@ -37,8 +46,40 @@ class Controller_Register extends Controller_Base {
             return false;
         }
         
-        if(empty($first_name)||empty ($surname) || empty ($pub_nickname)){
+        $m = preg_match("/.{4,30}$/", $password, $mathces);
+        if($m===FALSE || $m == 0){
+            $this->message("Обнаружены недопустимые символы в поле Пароль. <br />
+                Пароль должен содержать от 4 до 30 символов.", 
+                    "Ошибка ввода данных", "user/register", 5);
+            return false;
+        }
+        
+        if(empty($first_name)||empty ($surname) || empty ($pub_nickname) || empty($login)){
             $this->message("Необходимо заполнить все поля формы регистрации.", 
+                    "Ошибка ввода данных", "user/register", 5);
+            return false;
+        }
+        
+        $m = preg_match("/.{3,30}$/", $pub_nickname, $mathces);
+        if($m===FALSE || $m == 0){
+            $this->message("Обнаружены недопустимые символы в поле Псевдоним. <br />
+                Псевдоним должен содержать от 3 до 30 символов.", 
+                    "Ошибка ввода данных", "user/register", 5);
+            return false;
+        }
+        
+        $m = preg_match("/\w+$/", $first_name, $mathces);
+        if($m===FALSE || $m == 0){
+            $this->message("Обнаружены недопустимые символы в поле Имя. <br />
+                Разрешены только буквы, цифры и знак подчеркивания.", 
+                    "Ошибка ввода данных", "user/register", 5);
+            return false;
+        }
+        
+        $m = preg_match("/\w+$/", $surname, $mathces);
+        if($m===FALSE || $m == 0){
+            $this->message("Обнаружены недопустимые символы в поле Фамилия. <br />
+                Разрешены только буквы, цифры и знак подчеркивания.", 
                     "Ошибка ввода данных", "user/register", 5);
             return false;
         }
@@ -131,15 +172,6 @@ class Controller_Register extends Controller_Base {
         return $registered;
     }
     
-    private function message($text, $title, $redirect, $timeout){
-        global $lang;
-        
-        $this->registry['smarty']->assign("msg_text", $text);
-        $this->registry['smarty']->assign("msg_title", $title);
-        $this->registry['smarty']->assign("redirect", $redirect);
-        $this->registry['smarty']->assign("redirect_timeout", $timeout);
-        $this->registry['smarty']->display("$lang/message.tpl");
-    }
 }
 
 ?>
