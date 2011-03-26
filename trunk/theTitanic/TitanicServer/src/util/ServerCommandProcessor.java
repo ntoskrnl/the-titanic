@@ -105,8 +105,24 @@ public class ServerCommandProcessor {
                 String login = br.readLine().trim();
                 ResultSet r = Main.usersDB.doQouery("SELECT id FROM profiles WHERE login like '"+login+"'");
                 if(r.next()){
-                    pw.println("SUCCESS");
-                    result = true;
+                    if(!r.next()){
+                        pw.println("SUCCESS");
+                        result = true;
+                    }
+                }
+            }
+            
+            if(cmd.equals("check password")){
+                String login = br.readLine().trim();
+                String password = br.readLine().trim();
+                String sql = "SELECT * FROM profiles WHERE login LIKE '" + login + "' AND password LIKE '" + password + "'";
+
+                ResultSet r = Main.usersDB.doQouery(sql);
+                if(r.next()){
+                    if(!r.next()){
+                        pw.println("SUCCESS");
+                        result = true;
+                    }
                 }
             }
 
@@ -127,12 +143,15 @@ public class ServerCommandProcessor {
         u.setAuthorized(false);
         u.setId(-1);
         try {
-            String sql = "SELECT * FROM profiles WHERE login LIKE '" + login + "' AND password LIKE '" + password + "'";
+            String sql = "SELECT * FROM profiles WHERE login LIKE '" + login 
+                    + "' AND password LIKE '" + password + "'";
 
             ResultSet r = Main.usersDB.doQouery(sql);
             if(!r.next()){
                 return false;
             }
+            if(r.next()) return false;
+            
             u.setId(r.getInt("id"));
             u.setPubNickname(r.getString("pub_nickname"));
 
