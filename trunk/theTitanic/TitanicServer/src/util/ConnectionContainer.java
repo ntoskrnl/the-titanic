@@ -29,7 +29,7 @@ public class ConnectionContainer {
         try{
             con.add(new ClientHandler(this, s));
         } catch(IOException ex) {
-            System.err.println("Can't accept new connection. (IOException)!");
+            Main.logs.warning("Can't accept new connection. (IOException)!");
         }
     }
 

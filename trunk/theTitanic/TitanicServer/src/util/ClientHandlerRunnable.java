@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package util;
 
 import java.io.BufferedReader;
@@ -34,7 +29,7 @@ public class ClientHandlerRunnable implements Runnable {
                 s = br.readLine();
             } catch (Exception ex){ s=null; }
             if(s==null) {
-                System.out.println("Client has disconected from server.");
+                Main.logs.info("Client has disconected from server.");
                 break;
             }
             Main.cmd.processCommand(s, clientHandler.getUser());

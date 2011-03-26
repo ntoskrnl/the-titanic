@@ -4,8 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Date;
 
 /**
  *
@@ -26,16 +25,16 @@ public class MainServerThread implements Runnable {
     }
 
     public static void startServer(){
-        System.out.println("Starting the Titanic game server on port "+ServerConfiguration.serverPort+"...");
+        Main.logs.info("Starting the Titanic game server on port "+ServerConfiguration.serverPort+"...");
 
         if(ServerConfiguration.proxyType==2||ServerConfiguration.proxyType==1){
             System.setProperty("socksProxyHost",ServerConfiguration.proxyHost);
             System.setProperty("socksProxyPort",""+ServerConfiguration.proxyPort);
-            System.out.println("Using proxy server: "+ServerConfiguration.proxyHost+":"+ServerConfiguration.proxyPort);
+            Main.logs.info("Using proxy server: "+ServerConfiguration.proxyHost+":"+ServerConfiguration.proxyPort);
         }
 
         try{
-            System.out.println("Connecting to databases...");
+            Main.logs.info("Connecting to databases...");
 
             Main.usersDB = new DataBaseAccess("titanic_users.db");
 
@@ -46,7 +45,7 @@ public class MainServerThread implements Runnable {
 
             Main.cmd = new ServerCommandProcessor();
 
-            System.out.println("Waiting for incoming connections...");
+            Main.logs.info("Waiting for incoming connections...");
             while(true){
                 Socket newClient = null;
                 try{
@@ -55,14 +54,15 @@ public class MainServerThread implements Runnable {
                    if(Thread.currentThread().isInterrupted()) break;
                    else continue;
                 }
-
+                
+                String ip = newClient.getInetAddress().getHostAddress();
                 connections.add(newClient);
-                System.out.println(System.currentTimeMillis()+"\tNew client has just connected to the server!");
+                String now = new Date().toString();
+                Main.logs.info(now+"\tNew client "+ip+" has just connected to the server!");
             }
         }catch(Exception ex){
             //Error
-            System.err.println("Error!");
-            System.err.println(ex);
+            Main.logs.warning(ex.getMessage());
         }
 
         try {
@@ -70,9 +70,9 @@ public class MainServerThread implements Runnable {
             Main.usersDB.doUpdate("DELETE FROM online_users WHERE 1=1");
             Main.usersDB.close();
         } catch (IOException ex) {
-            Logger.getLogger(MainServerThread.class.getName()).log(Level.SEVERE, null, ex);
+            Main.logs.warning(ex.getMessage());
         }
-        System.out.println("Server stopped.");
+        Main.logs.info("Server stopped.");
     }
 
 }

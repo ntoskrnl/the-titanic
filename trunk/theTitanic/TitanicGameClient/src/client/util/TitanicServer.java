@@ -93,11 +93,13 @@ public class TitanicServer {
     public String[] getResponse(){
         ArrayList<String> res = new ArrayList<String>();
         try{
-            res.add(br.readLine());
-            if(res.get(0)==null || !res.get(0).equals("SUCCESS")) 
+            String line = br.readLine();
+            if(line==null) line = "FAIL";
+            res.add(line);
+           
+            if(!res.get(0).equals("SUCCESS")) 
                 return (String[])res.toArray();
-        
-            String line;
+            
             while(!(line=br.readLine()).equals(""))
                 res.add(line);
 

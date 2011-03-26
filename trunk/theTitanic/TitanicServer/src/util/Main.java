@@ -1,10 +1,7 @@
 package util;
 
 import gui.ServerConfigWindow;
-import java.io.IOException;
 import java.net.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
 import java.util.prefs.Preferences;
@@ -26,7 +23,7 @@ public class Main {
     static ServerSocket server;
 
     public static DataBaseAccess usersDB = null;
-    public static DataBaseAccess serviceDB = null;
+    public static Log logs = null;
     public static ServerCommandProcessor cmd = null;
 
 
@@ -35,6 +32,9 @@ public class Main {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        logs = new Log();
+        logs.info("Starting game server");
+        
         ServerConfiguration.loadPreferences();
         applyLookAndFeel(ServerConfiguration.lookAndFeel);
 
@@ -51,7 +51,7 @@ public class Main {
         try {
             UIManager.setLookAndFeel(l);
         } catch (Exception ex){
-            System.err.println("Could not find "+l);
+            Main.logs.warning("Could not find "+l);
         }
     }
 

@@ -12,12 +12,12 @@ import titanic.basic.Vector3D;
 class SimpleGameScene extends GameScene {
     private Container renderingArea;
     private Ball[] balls;
-    private Vector3D bounds;
+    private final Vector3D bounds;
 
     public SimpleGameScene(Container c, Ball[] b){
         renderingArea = c;
         balls = b;
-        bounds = new Vector3D((float)c.getWidth(), (float)c.getHeight());
+        bounds = new Vector3D(2.530f, 1.410f);
     }
 
     @Override
