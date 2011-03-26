@@ -1,3 +1,13 @@
+
+        <div>
+            <h3>
+                Состояние сервера:
+            </h3>
+            <p>
+            <b>Статус:</b> {php} include "pages/util/server_status.php"; {/php}
+            </p>
+        </div>
+        <hr />
         <div>
             <h3>
                 Сейчас играют:

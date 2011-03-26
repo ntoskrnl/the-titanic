@@ -10,8 +10,10 @@ class Controller_Login extends Controller_Base {
         }
         if($this->check_login()){
             $this->do_login();
-            $this->message("Добро пожаловать на сайт, ".$_POST['login'], "Вход выполнен",
-                    $_POST['redirect'], 0);
+            $redir = $_POST['redirect'];
+            $this->message("Добро пожаловать на сайт, ".$_POST['login'].
+                    "Желаем приятного времяпрепровождения. :)", "Вход выполнен",
+                    $_POST['redirect']);
         }
     }
     
