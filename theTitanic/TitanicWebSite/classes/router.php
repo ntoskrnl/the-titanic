@@ -33,7 +33,7 @@ class Router {
 	else $this->getControllerByPath($path, $file, $controller, $action, $args);
 		 // Файл доступен?
         if (is_readable($file) == false) {
-                die ($file.':404 Not Found');
+            die("404. File not found.\n<br />".$file);
         }
         // Подключаем файл
         include ($file);
@@ -43,7 +43,8 @@ class Router {
         $controller = new $class($this->registry);
         // Действие доступно?
         if (is_callable(array($controller, $action)) == false) {
-                die ('404 Not Found');
+                $controller->message("File not found on the server. Check address and retry again.", "404. Not Found", "index");    
+                return;
         }
         // Выполняем действие
 

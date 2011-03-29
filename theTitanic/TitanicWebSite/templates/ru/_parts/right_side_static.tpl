@@ -29,15 +29,4 @@
             </ol>
             <p class="align_r"><a href="#">Полный рейтинг...</a></p>
         </div>
-        <hr />
-        <div>
-            <h3>
-                Google Code:
-            </h3>
-            <div>
-                Наш проект размещен в SVN репозитории GoogleCode. Будьте в курсе последних
-                изменений и дополнений. Вы также можете стать участником проекта.
-
-            </div>
-            <p class="align_r"><a href="http://code.google.com/p/the-titanic/" target="_blank">Перейти...</a></p>
-        </div>
+        

@@ -7,7 +7,7 @@
     <title>The Titanic :: Playing Russian Billiard via the Internet</title>
     
     {if isset($redirect_timeout)} 
-    <meta http-equiv="Refresh" content="{$redirect_timeout};{$redirect}" />
+    <meta http-equiv="Refresh" content="{$redirect_timeout}; url={$redirect}" />
     {/if}   
     <meta name="description" content="Сайт проекта Titanic - кросс-платформенной игры Русский бильярд 3D. Играйте в бильярд через Интернет!">
     
