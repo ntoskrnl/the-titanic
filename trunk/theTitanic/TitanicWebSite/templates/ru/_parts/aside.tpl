@@ -27,6 +27,6 @@
         </form>
         {/if}
     </div>
-    {include file="{$lang}/right_side_static.tpl"}
+    {include file="{$lang}/_parts/right_side_static.tpl"}
     <p></p>
 </div>

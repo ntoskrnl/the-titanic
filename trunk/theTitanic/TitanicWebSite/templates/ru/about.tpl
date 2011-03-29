@@ -12,7 +12,7 @@
             <div id="content-container">
                 <!-- LEFT SIDE NAVIGATION begin -->
                 <div id="section-navigation">
-                    {include file="$lang/_parts/nav/index_nav.tpl"}
+                    {include file="$lang/_parts/nav/about_nav.tpl"}
                     <div>&nbsp;</div>
                     {include file="{$lang}/_parts/left_side_static.tpl"}
                 </div>
@@ -20,7 +20,7 @@
                 <!-- MAIN CONTENT begin -->
                 <div id="content">
                     <h2>
-                        Titanic &ndash; Интернет-бильярд 3D
+                        О проекте Titanic
                     </h2>
                     <img src="./images/girl.jpg" width="200" class="img_r" />
                     <p>

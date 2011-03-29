@@ -1,9 +1,16 @@
 <?php
     $start_time = microtime(true);
+    
+    set_time_limit(20);
+    
     $smarty_path = "./lib/smarty/libs/";
 
     require_once($smarty_path."Smarty.class.php");
     include('configs/config.php');
+    
+    define('BASE_PATH',realpath('.'));
+    define('BASE_URL', dirname($_SERVER["SCRIPT_NAME"]));
+
 
     $_SESSION['start_time'] = $start_time;
 

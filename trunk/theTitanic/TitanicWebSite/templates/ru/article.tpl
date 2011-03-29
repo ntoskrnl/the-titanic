@@ -12,26 +12,26 @@
             <div id="content-container">
                 <!-- LEFT SIDE NAVIGATION begin -->
                 <div id="section-navigation">
+                    {if isset($navigation_file)}
+                        {include file="$navigation_file"}
+                    <div>&nbsp;</div>
+                    {/if}
                     {include file="{$lang}/_parts/left_side_static.tpl"}
                 </div>
                 <!-- LEFT SIDE NAVIGATION end -->
                 <!-- MAIN CONTENT begin -->
                 <div id="content">
-                    <h2>{$msg_title}</h2>
-                    <div>
-                        <p>{$msg_text}</p>
-                    </div>
-                    {if isset($redirect)}
-                    <div>
-                        <p>
-                            Вы можете перейти на страницу <a href="{$redirect}">{$redirect}</a>
-                            {if isset($redirect_timeout)} Либо вы будете автоматически на неё перенаправлены через {$redirect_timeout} секунд.{/if}
+                    {if isset($content_file)&&is_readable($content_file)} 
+                        {include file="$content_file"}
+                        {if isset($content_file_date)}
+                        <p class="align_r" style="font-size: smaller;">
+                            Последнее изменение: {$content_file_date}
                         </p>
-                    </div> 
-                    {/if}
-                    <p>
-                        Вы также можете <a href="javascript:history.back(1)">вернуться</a> на предыдущую страницу.
-                    </p>
+                        {/if}
+                    {else}
+                        <h2>Пустая статья</h2>
+                        <p>Здесь могла быть ваша реклама =)</p>
+                     {/if}
                 </div>
                 <!-- MAIN CONTENT end -->
                 <!-- RIGHT SIDE begin -->

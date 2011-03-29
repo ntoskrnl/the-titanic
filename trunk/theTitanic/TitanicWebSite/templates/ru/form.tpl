@@ -2,24 +2,17 @@
 <html>
     {config_load file="global.ini" section="main"}
     <!-- HTML HEADER begin -->
-    {include file="{$lang}/html_header.tpl"}
+    {include file="{$lang}/_parts/html_header.tpl"}
     <!-- HTML HEADER end -->
     <body>
         <div id="container">
             <!-- PAGE HEADER begin -->
-            {include file="{$lang}/page_header.tpl"}
+            {include file="{$lang}/_parts/page_header.tpl"}
             <!-- PAGE HEADER end -->
             <div id="content-container">
                 <!-- LEFT SIDE NAVIGATION begin -->
                 <div id="section-navigation">
-                    <ul>
-                        <li><a href="#">Section page 1</a></li>
-                        <li><a href="#">Section page 2</a></li>
-                        <li><a href="#">Section page 3</a></li>
-                        <li><a href="#">Section page 4</a></li>
-                    </ul>
-                    <div>&nbsp;</div>
-                    {include file="{$lang}/left_side_static.tpl"}
+                    {include file="{$lang}/_parts/left_side_static.tpl"}
                 </div>
                 <!-- LEFT SIDE NAVIGATION end -->
                 <!-- MAIN CONTENT begin -->
@@ -28,7 +21,7 @@
                 </div>
                 <!-- MAIN CONTENT end -->
                 <!-- RIGHT SIDE begin -->
-                {include file="{$lang}/aside.tpl"}
+                {include file="{$lang}/_parts/aside.tpl"}
                 <!-- RIGTH SIDE end -->
             </div>
             <!-- FOOTER begin -->

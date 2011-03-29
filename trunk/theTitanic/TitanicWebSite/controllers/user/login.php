@@ -12,7 +12,7 @@ class Controller_Login extends Controller_Base {
             $this->do_login();
             $redir = $_POST['redirect'];
             $this->message("Добро пожаловать на сайт, ".$_POST['login'].
-                    "Желаем приятного времяпрепровождения. :)", "Вход выполнен",
+                    ".\nЖелаем приятного времяпрепровождения. :)", "Вход выполнен",
                     $_POST['redirect']);
         }
     }
