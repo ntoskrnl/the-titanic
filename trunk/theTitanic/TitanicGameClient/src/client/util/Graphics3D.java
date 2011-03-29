@@ -148,7 +148,16 @@ public class Graphics3D implements GraphicalEngine {
                     setscenerot.mul(t);
                     scenetransform.setTransform(setscenerot);
                 }
-
+                
+                if(code == KeyEvent.VK_ESCAPE){
+                    phi = 0; psi = 0;
+                    Transform3D t = new Transform3D();
+                    t.rotZ(phi);
+                    Transform3D setscenerot = new Transform3D();
+                    setscenerot.rotX(psi);
+                    setscenerot.mul(t);
+                    scenetransform.setTransform(setscenerot);
+                }
             }
         });
 
