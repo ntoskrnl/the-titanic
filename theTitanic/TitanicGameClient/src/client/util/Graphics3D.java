@@ -93,21 +93,35 @@ public class Graphics3D implements GraphicalEngine {
                 int curBall = game.getBilliardKey().getBall().getId();
                 
                 if(code==KeyEvent.VK_COMMA || code == KeyEvent.VK_PERIOD) {
+                    if(code == KeyEvent.VK_COMMA)        curBall+=game.getGameScene().getBalls().length-1;
+                    else if (code == KeyEvent.VK_PERIOD) curBall+=game.getGameScene().getBalls().length+1;
 
-                    if(code == KeyEvent.VK_COMMA)
-                        curBall+=game.getGameScene().getBalls().length-1;
-                    else if (code == KeyEvent.VK_PERIOD)
-                        curBall+=game.getGameScene().getBalls().length+1;
                     curBall%=game.getGameScene().getBalls().length;
                     game.getBilliardKey().changeBall(game.getGameScene().getBalls()[curBall]);
 
-                    if(Keyposition == null) Keyposition = new Transform3D();
+                       if(Keyposition == null) {
+                       Keyposition = new Transform3D();
+                       Keyposition.rotX(-Math.PI/24);
+                       Transform3D rotk = new Transform3D();
+                       rotk.rotZ(game.getBilliardKey().getAngle());
+                       Keyposition.mul(rotk);
+
+                    }
+
                     Vector3f pos = new Vector3f();
                     pos.setX(game.getBilliardKey().getBall().getCoordinates().getX()/maxwidth*2*width*0.8f);
                     pos.setY(game.getBilliardKey().getBall().getCoordinates().getY()/maxhight*2*high*0.87f);
                     pos.setZ(game.getBilliardKey().getBall().getCoordinates().getZ());
                       Keyposition.setTranslation(pos);
+                     
                       Keytrans.setTransform(Keyposition);
+                }
+
+                if(code == KeyEvent.VK_END){
+                      Transform3D key = new Transform3D();
+                      key.setTranslation(new Vector3f(-.7f, 0.0f,0.0f));
+                      Keytrans.setTransform(key);
+                      
                 }
 
                 if(code == KeyEvent.VK_LEFT){
@@ -545,7 +559,7 @@ private void SetStartTransform(Vector3f[] mass, BranchGroup bran){
    //НАконецто кий из 3Ds MAX!!!!
    Transform3D let = new Transform3D();
    Transform3D key = new Transform3D();
-   key.setTranslation(new Vector3f(-.7f,-0.8f,0.0f));
+   key.setTranslation(new Vector3f(-.7f,0.0f,0.0f));
    let.rotX(Math.PI/2);
    Keytrans = new TransformGroup();
    Keytrans.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
