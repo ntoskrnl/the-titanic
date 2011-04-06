@@ -34,8 +34,9 @@ public class Graphics3D implements GraphicalEngine {
     
     Ball[] BallsArray;
     private BranchGroup scene;
-    private TransformGroup scenetransform;
+    private TransformGroup Gamescenegroup;
     private float phi = 0, psi = 0;
+    private Vector3d scale = new Vector3d(1, 1, 1);
     private int dragX, dragY;
     boolean drag;
     
@@ -116,7 +117,8 @@ public class Graphics3D implements GraphicalEngine {
                     Transform3D setscenerot = new Transform3D();
                     setscenerot.rotX(psi);
                     setscenerot.mul(t);
-                    scenetransform.setTransform(setscenerot);
+                    setscenerot.setScale(scale);
+                    Gamescenegroup.setTransform(setscenerot);
                 }
 
                  if(code == KeyEvent.VK_RIGHT){
@@ -126,7 +128,8 @@ public class Graphics3D implements GraphicalEngine {
                     Transform3D setscenerot = new Transform3D();
                     setscenerot.rotX(psi);
                     setscenerot.mul(t);
-                    scenetransform.setTransform(setscenerot);
+                    setscenerot.setScale(scale);
+                    Gamescenegroup.setTransform(setscenerot);
                 }
 
                  if(code == KeyEvent.VK_UP){
@@ -136,7 +139,8 @@ public class Graphics3D implements GraphicalEngine {
                     Transform3D setscenerot = new Transform3D();
                     setscenerot.rotX(psi);
                     setscenerot.mul(t);
-                    scenetransform.setTransform(setscenerot);
+                    setscenerot.setScale(scale);
+                    Gamescenegroup.setTransform(setscenerot);
                 }
 
                 if(code == KeyEvent.VK_DOWN){
@@ -146,18 +150,54 @@ public class Graphics3D implements GraphicalEngine {
                     Transform3D setscenerot = new Transform3D();
                     setscenerot.rotX(psi);
                     setscenerot.mul(t);
-                    scenetransform.setTransform(setscenerot);
+                    setscenerot.setScale(scale);
+                    Gamescenegroup.setTransform(setscenerot);
                 }
                 
                 if(code == KeyEvent.VK_ESCAPE){
-                    phi = 0; psi = 0;
+                    phi = 0; psi = 0; 
+                    scale.x = 1;
+                    scale.y = 1;
+                    scale.z = 1;
                     Transform3D t = new Transform3D();
                     t.rotZ(phi);
                     Transform3D setscenerot = new Transform3D();
                     setscenerot.rotX(psi);
                     setscenerot.mul(t);
-                    scenetransform.setTransform(setscenerot);
+                    setscenerot.setScale(scale);
+                    Gamescenegroup.setTransform(setscenerot);
                 }
+                
+                 if(code == KeyEvent.VK_0){
+                     scale.setX(scale.getX() + scale.getX()/50);
+                     scale.setY(scale.getY() + scale.getY()/50);
+                     scale.setZ(scale.getZ() + scale.getZ()/50);
+                                      
+                     Transform3D t = new Transform3D();
+                     t.rotZ(phi);
+                     Transform3D setscenerot = new Transform3D();
+                     setscenerot.rotX(psi);
+                     setscenerot.mul(t);
+                     setscenerot.setScale(scale);
+                     Gamescenegroup.setTransform(setscenerot);
+                                        
+                     
+                 }
+                 if(code == KeyEvent.VK_9){
+                     scale.setX(scale.getX() - scale.getX()/50);
+                     scale.setY(scale.getY() - scale.getY()/50);
+                     scale.setZ(scale.getZ() - scale.getZ()/50);
+                                      
+                     Transform3D t = new Transform3D();
+                     t.rotZ(phi);
+                     Transform3D setscenerot = new Transform3D();
+                     setscenerot.rotX(psi);
+                     setscenerot.mul(t);
+                     setscenerot.setScale(scale);
+                     Gamescenegroup.setTransform(setscenerot);
+                                        
+                     
+                 }
             }
         });
 
@@ -213,16 +253,16 @@ public class Graphics3D implements GraphicalEngine {
         // or select ball using '<' and '>'
         // or just rotate the universe with arrow keys.
         setEventListeners(c);
-        BranchGroup scene1;
-        scene1 = createSceneGraph();
+        BranchGroup Gamescene;
+        Gamescene = createSceneGraph();
 
-       if(scenetransform==null) scenetransform = new TransformGroup();
-        scenetransform.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+       if(Gamescenegroup==null) Gamescenegroup = new TransformGroup();
+        Gamescenegroup.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
 
-       scenetransform.addChild(scene1);
+       Gamescenegroup.addChild(Gamescene);
 
         //scene = createSceneGraph();
-        scene.addChild(scenetransform);
+        scene.addChild(Gamescenegroup);
         //TransformGroup trsc = new TransformGroup();   с помощью этого будем все вращать))
           //      trsc.addChild(scene);
                 
@@ -273,7 +313,7 @@ public class Graphics3D implements GraphicalEngine {
 
         mass[i].setX(BallsArray[i].getCoordinates().getX()/maxwidth*2*width*0.8f);
         mass[i].setY(BallsArray[i].getCoordinates().getY()/maxhight*2*high*0.87f);
-        mass[i].setZ(-0.01f);
+        mass[i].setZ(BallsArray[i].getCoordinates().getZ()-0.005f);
 
 
             }
@@ -308,7 +348,7 @@ public Vector3f[] startmass(){
 
     
     int k = 5,i,x=5;
-    for(i=1; i<=14; i++){
+    for(i=1; i<15; i++){
       Vector3f a = new Vector3f();
       mass[i] = a;
 
@@ -336,7 +376,7 @@ public Vector3f[] startmass(){
         mass[i] = new Vector3f();
         mass[i].setX(game.getGameScene().getBalls()[i].getCoordinates().getX()/maxwidth*2*width*0.8f);
         mass[i].setY(game.getGameScene().getBalls()[i].getCoordinates().getY()/maxhight*2*high*0.87f);
-        mass[i].setZ(-0.01f);
+        mass[i].setZ(game.getGameScene().getBalls()[i].getCoordinates().getZ()-0.005f);
 
     }
    
