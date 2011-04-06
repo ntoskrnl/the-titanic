@@ -92,21 +92,29 @@ public class Graphics3D implements GraphicalEngine {
                 int code = evt.getKeyCode();
                 int curBall = game.getBilliardKey().getBall().getId();
                 
-                if(code==KeyEvent.VK_COMMA || code == KeyEvent.VK_PERIOD) {
-                    if(code == KeyEvent.VK_COMMA)        curBall+=game.getGameScene().getBalls().length-1;
-                    else if (code == KeyEvent.VK_PERIOD) curBall+=game.getGameScene().getBalls().length+1;
-
+                if(code==KeyEvent.VK_COMMA || code == KeyEvent.VK_PERIOD || code ==KeyEvent.VK_A ||  code ==KeyEvent.VK_D) {
+                    if(code == KeyEvent.VK_COMMA)  {
+                        curBall+=game.getGameScene().getBalls().length-1;
+                        game.getBilliardKey().setAngle(0);
+                      }
+                    if(code == KeyEvent.VK_PERIOD) {
+                        curBall+=game.getGameScene().getBalls().length+1;
+                        game.getBilliardKey().setAngle(0);
+                    }
+                    if(code == KeyEvent.VK_A) game.getBilliardKey().setAngle(game.getBilliardKey().getAngle() - (float)Math.PI/50);
+                    if(code == KeyEvent.VK_D) game.getBilliardKey().setAngle(game.getBilliardKey().getAngle() + (float)Math.PI/50);
+                    
                     curBall%=game.getGameScene().getBalls().length;
                     game.getBilliardKey().changeBall(game.getGameScene().getBalls()[curBall]);
 
-                       if(Keyposition == null) {
+                     // if(Keyposition == null) {
                        Keyposition = new Transform3D();
                        Keyposition.rotX(-Math.PI/24);
                        Transform3D rotk = new Transform3D();
                        rotk.rotZ(game.getBilliardKey().getAngle());
                        Keyposition.mul(rotk);
 
-                    }
+                    // }
 
                     Vector3f pos = new Vector3f();
                     pos.setX(game.getBilliardKey().getBall().getCoordinates().getX()/maxwidth*2*width*0.8f);
