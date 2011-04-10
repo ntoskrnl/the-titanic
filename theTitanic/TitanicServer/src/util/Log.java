@@ -1,6 +1,8 @@
 package util;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.Writer;
 import java.net.URL;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
@@ -67,5 +69,9 @@ public class Log {
         } catch (Exception ex){
             System.err.println("Logger: " + ex.getMessage());
         }
+    }
+    
+    public Writer getDefaultWriter(){
+        return new PrintWriter(System.err);
     }
 }

@@ -46,7 +46,6 @@ public class MainServerThread implements Runnable {
                 public void actionPerformed(ActionEvent e) {
                     try{
                         Main.usersDB.reconnect();
-                        Main.logs.info("DB: reconnect");
                     } catch(Exception ex){
                         Main.logs.warning("commitTimer: "+ex.getMessage());
                     }
