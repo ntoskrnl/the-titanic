@@ -101,17 +101,18 @@ public class Graphics3D implements GraphicalEngine {
                         curBall+=game.getGameScene().getBalls().length+1;
                         game.getBilliardKey().setAngle(0);
                     }
-                    if(code == KeyEvent.VK_A) game.getBilliardKey().setAngle(game.getBilliardKey().getAngle() - (float)Math.PI/50);
-                    if(code == KeyEvent.VK_D) game.getBilliardKey().setAngle(game.getBilliardKey().getAngle() + (float)Math.PI/50);
+                    if(code == KeyEvent.VK_A) game.getBilliardKey().setAngle(game.getBilliardKey().getAngle() - (float)Math.PI/100);
+                    if(code == KeyEvent.VK_D) game.getBilliardKey().setAngle(game.getBilliardKey().getAngle() + (float)Math.PI/100);
                     
                     curBall%=game.getGameScene().getBalls().length;
                     game.getBilliardKey().changeBall(game.getGameScene().getBalls()[curBall]);
 
                      // if(Keyposition == null) {
                        Keyposition = new Transform3D();
-                       Keyposition.rotX(-Math.PI/24);
+                     
+                       Keyposition.rotZ(game.getBilliardKey().getAngle());
                        Transform3D rotk = new Transform3D();
-                       rotk.rotZ(game.getBilliardKey().getAngle());
+                       rotk.rotX(-Math.PI/24);
                        Keyposition.mul(rotk);
 
                     // }
@@ -551,12 +552,17 @@ private void SetStartTransform(Vector3f[] mass, BranchGroup bran){
    Point3f three = new Point3f(0.0f,-0.8f,0.8f);
    PointLight light4 = new PointLight(ambient, three, three);
    light4.setInfluencingBounds(bounds);
-
+   
+   Point3f four = new Point3f(0.0f,0.8f,0.8f);
+   PointLight light5 = new PointLight(ambient, four, four);
+   light5.setInfluencingBounds(bounds);
+   
    light1.setInfluencingBounds(bounds);
    //objRoot.addChild(light1);
    objRoot.addChild(light2);
    objRoot.addChild(light3);
    objRoot.addChild(light4);
+   objRoot.addChild(light5);
    // Set up the ambient light
 
    Color3f ambientColor = new Color3f(1.0f, 1.0f, 1.0f);

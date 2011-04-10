@@ -7,8 +7,10 @@
 package client.gui;
 
 import client.Main;
+import client.util.UserProfile;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URI;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
@@ -40,14 +42,14 @@ public class MainWindow extends javax.swing.JFrame {
     private void showLostConnectionMessage(){
         checkConnectionTimer.stop();
         userUpdateTimer.stop();
-        int res = JOptionPane.showConfirmDialog(rootPane, "There is a connection problem. You have to authorize again.\nClick Yes to return back to the login window or No to ignore the problem.",
-                "Oops...", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+        int res = JOptionPane.showConfirmDialog(rootPane, java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("MainWindow.lostConnectionMessageText"),
+                java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("MainWindow.lostConnectionMessageTitle"), JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         if(res==JOptionPane.YES_OPTION){
             Main.loginWindow.setVisible(true);
             this.dispose();
         } else {
             userUpdateTimer.start();
-            checkConnectionTimer.start();
+            //checkConnectionTimer.start();
         }
     }
 
@@ -69,8 +71,12 @@ public class MainWindow extends javax.swing.JFrame {
                         Main.server.command("profile by id", res[i], Main.server.secret);
                         String r[] = Main.server.getResponse();
                         if(r[0]==null || !r[0].equals("SUCCESS")) continue;
-                        StringBuilder sb = new StringBuilder(r[7]);
-                        model.addElement(sb.delete(0, 1).toString());
+                        UserProfile u = new UserProfile(Integer.parseInt(res[i]));
+                        for(int j=1;j<r.length;j++){
+                            u.setProperty(r[j].substring(0, r[j].indexOf(':')).trim(), 
+                                    r[j].substring(r[j].indexOf(':')+1, r[j].length()).trim());
+                        }
+                        model.addElement(u);
                     }
                 } catch (Exception ex){
                     System.err.println("user list: "+ex.getLocalizedMessage());
@@ -95,26 +101,68 @@ public class MainWindow extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPopupMenu1 = new javax.swing.JPopupMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList();
         jButton1 = new javax.swing.JButton();
+        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 32767));
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
+        jMenuItem10 = new javax.swing.JMenuItem();
+        jMenuItem9 = new javax.swing.JMenuItem();
+        jSeparator2 = new javax.swing.JPopupMenu.Separator();
+        jMenuItem3 = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
+        jMenuItem4 = new javax.swing.JMenuItem();
+        jMenuItem5 = new javax.swing.JMenuItem();
         jMenu3 = new javax.swing.JMenu();
+        jMenuItem6 = new javax.swing.JMenuItem();
+        jMenuItem7 = new javax.swing.JMenuItem();
+        jSeparator1 = new javax.swing.JPopupMenu.Separator();
+        jMenuItem8 = new javax.swing.JMenuItem();
+
+        jPopupMenu1.setInvoker(jList1);
+        jPopupMenu1.setName("jPopupMenu1"); // NOI18N
+        jPopupMenu1.addComponentListener(new java.awt.event.ComponentAdapter() {
+            public void componentShown(java.awt.event.ComponentEvent evt) {
+                jPopupMenu1ComponentShown(evt);
+            }
+        });
+
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("client/gui/Bundle"); // NOI18N
+        jMenuItem1.setText(bundle.getString("MainWindow.jMenuItem1.text")); // NOI18N
+        jMenuItem1.setName("jMenuItem1"); // NOI18N
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jPopupMenu1.add(jMenuItem1);
+
+        jMenuItem2.setText(bundle.getString("MainWindow.jMenuItem2.text")); // NOI18N
+        jMenuItem2.setName("jMenuItem2"); // NOI18N
+        jPopupMenu1.add(jMenuItem2);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Let's play the pool!");
+        setTitle(bundle.getString("MainWindow.title")); // NOI18N
+        setName("Form"); // NOI18N
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
             }
         });
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2), "Players online:"));
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2), bundle.getString("MainWindow.players_online"))); // NOI18N
+        jPanel1.setName("jPanel1"); // NOI18N
+
+        jScrollPane1.setName("jScrollPane1"); // NOI18N
 
         jList1.setModel(new DefaultListModel());
+        jList1.setComponentPopupMenu(jPopupMenu1);
+        jList1.setName("jList1"); // NOI18N
         jScrollPane1.setViewportView(jList1);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -133,20 +181,79 @@ public class MainWindow extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jButton1.setText("Play!");
+        jButton1.setText(bundle.getString("MainWindow.jButton1.text")); // NOI18N
+        jButton1.setName("jButton1"); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
 
-        jMenu1.setText("Game");
+        filler1.setName("filler1"); // NOI18N
+
+        jMenuBar1.setName("jMenuBar1"); // NOI18N
+
+        jMenu1.setText(bundle.getString("MainWindow.jMenu1.text")); // NOI18N
+        jMenu1.setName("jMenu1"); // NOI18N
+
+        jMenuItem10.setText(bundle.getString("MainWindow.jMenuItem10.text")); // NOI18N
+        jMenuItem10.setName("jMenuItem10"); // NOI18N
+        jMenu1.add(jMenuItem10);
+
+        jMenuItem9.setText(bundle.getString("MainWindow.jMenuItem9.text")); // NOI18N
+        jMenuItem9.setName("jMenuItem9"); // NOI18N
+        jMenu1.add(jMenuItem9);
+
+        jSeparator2.setName("jSeparator2"); // NOI18N
+        jMenu1.add(jSeparator2);
+
+        jMenuItem3.setText(bundle.getString("MainWindow.jMenuItem3.text")); // NOI18N
+        jMenuItem3.setName("jMenuItem3"); // NOI18N
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem3);
+
         jMenuBar1.add(jMenu1);
 
-        jMenu2.setText("Settings");
+        jMenu2.setText(bundle.getString("MainWindow.jMenu2.text")); // NOI18N
+        jMenu2.setName("jMenu2"); // NOI18N
+
+        jMenuItem4.setText(bundle.getString("MainWindow.jMenuItem4.text")); // NOI18N
+        jMenuItem4.setName("jMenuItem4"); // NOI18N
+        jMenu2.add(jMenuItem4);
+
+        jMenuItem5.setText(bundle.getString("MainWindow.jMenuItem5.text")); // NOI18N
+        jMenuItem5.setName("jMenuItem5"); // NOI18N
+        jMenu2.add(jMenuItem5);
+
         jMenuBar1.add(jMenu2);
 
-        jMenu3.setText("About");
+        jMenu3.setText(bundle.getString("MainWindow.jMenu3.text")); // NOI18N
+        jMenu3.setName("jMenu3"); // NOI18N
+
+        jMenuItem6.setText(bundle.getString("MainWindow.jMenuItem6.text")); // NOI18N
+        jMenuItem6.setName("jMenuItem6"); // NOI18N
+        jMenu3.add(jMenuItem6);
+
+        jMenuItem7.setText(bundle.getString("MainWindow.jMenuItem7.text")); // NOI18N
+        jMenuItem7.setName("jMenuItem7"); // NOI18N
+        jMenuItem7.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem7ActionPerformed(evt);
+            }
+        });
+        jMenu3.add(jMenuItem7);
+
+        jSeparator1.setName("jSeparator1"); // NOI18N
+        jMenu3.add(jSeparator1);
+
+        jMenuItem8.setText(bundle.getString("MainWindow.jMenuItem8.text")); // NOI18N
+        jMenuItem8.setName("jMenuItem8"); // NOI18N
+        jMenu3.add(jMenuItem8);
+
         jMenuBar1.add(jMenu3);
 
         setJMenuBar(jMenuBar1);
@@ -186,15 +293,77 @@ public class MainWindow extends javax.swing.JFrame {
         userUpdateTimer.stop();
     }//GEN-LAST:event_formWindowClosing
 
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        if(jList1.getSelectedIndex()<0) return;
+        try{
+            UserProfile u = (UserProfile)jList1.getSelectedValue();
+            new UserProfileView(u).setVisible(true);
+        } catch (Exception ex) {
+            System.err.println(ex.getMessage());
+        }
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void jPopupMenu1ComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jPopupMenu1ComponentShown
+        if(jList1.getSelectedValue()==null){
+            jMenuItem1.setEnabled(false);
+            jMenuItem2.setEnabled(false);
+        } else {
+           jMenuItem1.setEnabled(true);
+           jMenuItem2.setEnabled(true); 
+        }
+        
+    }//GEN-LAST:event_jPopupMenu1ComponentShown
+
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+        formWindowClosing(null);
+        dispose();
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
+
+    private void jMenuItem7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem7ActionPerformed
+        String url = "http://danon-laptop.campus.mipt.ru/TitanicWebSite/index";
+        if( !java.awt.Desktop.isDesktopSupported() ) {
+            System.err.println( "Desktop is not supported!\nGo to "+url);
+            return;
+        }
+        
+        java.awt.Desktop desktop = java.awt.Desktop.getDesktop();
+        if( !desktop.isSupported( java.awt.Desktop.Action.BROWSE ) ) {
+            System.err.println("Desktop doesn't support the browse action.");
+            System.err.println("Desktop is not supported!\nGo to "+url);
+            return;
+        }
+
+        try {
+            desktop.browse(new URI(url));
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+
+    }//GEN-LAST:event_jMenuItem7ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.Box.Filler filler1;
     private javax.swing.JButton jButton1;
     private javax.swing.JList jList1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem10;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem jMenuItem5;
+    private javax.swing.JMenuItem jMenuItem6;
+    private javax.swing.JMenuItem jMenuItem7;
+    private javax.swing.JMenuItem jMenuItem8;
+    private javax.swing.JMenuItem jMenuItem9;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JPopupMenu jPopupMenu1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JPopupMenu.Separator jSeparator1;
+    private javax.swing.JPopupMenu.Separator jSeparator2;
     // End of variables declaration//GEN-END:variables
 
     private Timer checkConnectionTimer, userUpdateTimer;

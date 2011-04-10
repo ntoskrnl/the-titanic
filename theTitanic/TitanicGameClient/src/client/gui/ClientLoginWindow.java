@@ -40,16 +40,17 @@ public class ClientLoginWindow extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("theTitanic :: Sign in");
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("client/gui/Bundle"); // NOI18N
+        setTitle(bundle.getString("LoginWindow.title")); // NOI18N
         setResizable(false);
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Authentication:"));
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("LoginWindow.panelBorder.text"))); // NOI18N
 
-        jLabel1.setText("Login:");
+        jLabel1.setText(bundle.getString("LOGIN:")); // NOI18N
 
-        jLabel2.setText("Password:");
+        jLabel2.setText(bundle.getString("PASSWORD:")); // NOI18N
 
-        loginTextField.setText("anton.danshin@frtk.ru");
+        loginTextField.setText("anton.danshin@frtk.ru"); // NOI18N
         loginTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 loginTextFieldActionPerformed(evt);
@@ -62,14 +63,14 @@ public class ClientLoginWindow extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setText("Sign in");
+        jButton1.setText(bundle.getString("LoginWindow.signInButton.text")); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
 
-        jLabel3.setText("<html>\n<a href=\"http://google.com\"> Sign up...</a>\n</html>");
+        jLabel3.setText(bundle.getString("LoginWindow.signUpRef.text")); // NOI18N
         jLabel3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jLabel3.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -77,7 +78,7 @@ public class ClientLoginWindow extends javax.swing.JFrame {
             }
         });
 
-        jButton2.setText("Setup...");
+        jButton2.setText(bundle.getString("LoginWindow.setupButton.text")); // NOI18N
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -161,7 +162,7 @@ public class ClientLoginWindow extends javax.swing.JFrame {
             setVisible(false);
             new MainWindow().setVisible(true);
         } else {
-            JOptionPane.showMessageDialog(this, "Can not connect to the server.");
+            JOptionPane.showMessageDialog(this, java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("CANTCONNECT"));
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 

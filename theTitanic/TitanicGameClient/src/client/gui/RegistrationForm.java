@@ -1,9 +1,4 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
  * RegistrationForm.java
  *
  * Created on Mar 24, 2011, 4:48:15 PM
@@ -29,34 +24,34 @@ public class RegistrationForm extends javax.swing.JFrame {
 
     private boolean checkFields(){
         if(loginTextField.getText().isEmpty()) {
-            statusLabel.setText("<html><span style=\"color:red\">Login required!</span></html>");
+            statusLabel.setText(java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("loginRequired"));
             return false;
         }
         if(passwordTextField.getPassword().length==0) {
-            statusLabel.setText("<html><span style=\"color:red\">Password required!</span></html>");
+            statusLabel.setText(java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("passwordRequired"));
             return false;
         }
         if(retypePwdTextField.getPassword().length==0) {
-            statusLabel.setText("<html><span style=\"color:red\">Please, retype password!</span></html>");
+            statusLabel.setText(java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("retypePassword"));
             return false;
         }
         if(! new String(passwordTextField.getPassword()).equals(new String(retypePwdTextField.getPassword()))) {
-            statusLabel.setText("<html><span style=\"color:red\">Passwords does not match!</span></html>");
+            statusLabel.setText(java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("passwordsNotMatch"));
             return false;
         }
         if(firstNameTextField.getText().isEmpty()) {
-            statusLabel.setText("<html><span style=\"color:red\">Enter you first name.</span></html>");
+            statusLabel.setText(java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("enterFirstName"));
             return false;
         }
         if(surnameTextField.getText().isEmpty()) {
-            statusLabel.setText("<html><span style=\"color:red\">Enter surname!</span></html>");
+            statusLabel.setText(java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("enterSurname"));
             return false;
         }
         if(pubNicknameTextField.getText().isEmpty()) {
-            statusLabel.setText("<html><span style=\"color:red\">You should specify a public name.</span></html>");
+            statusLabel.setText(java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("specifyPubNickname"));
             return false;
         }
-        statusLabel.setText("<html><span style=\"color:green\">OK</span></html>");
+        statusLabel.setText(java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("OKgreen"));
         return true;
     }
 
@@ -91,17 +86,23 @@ public class RegistrationForm extends javax.swing.JFrame {
         statusLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Titanic :: Registration...");
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("client/gui/Bundle"); // NOI18N
+        setTitle(bundle.getString("RegistrationForm.title")); // NOI18N
+        setName("Form"); // NOI18N
         setResizable(false);
 
-        jButton1.setText("Sign up!");
+        jPanel1.setName("jPanel1"); // NOI18N
+
+        jButton1.setText(bundle.getString("RegistrationForm.jButton1.text")); // NOI18N
+        jButton1.setName("jButton1"); // NOI18N
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Cancel");
+        jButton2.setText(bundle.getString("RegistrationForm.jButton2.text")); // NOI18N
+        jButton2.setName("jButton2"); // NOI18N
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -129,8 +130,10 @@ public class RegistrationForm extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Login Information"));
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("RegistrationForm.jPanel2.border.title"))); // NOI18N
+        jPanel2.setName("jPanel2"); // NOI18N
 
+        loginTextField.setName("loginTextField"); // NOI18N
         loginTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -150,8 +153,10 @@ public class RegistrationForm extends javax.swing.JFrame {
             }
         });
 
-        jLabel2.setText("Login:");
+        jLabel2.setText(bundle.getString("RegistrationForm.jLabel2.text")); // NOI18N
+        jLabel2.setName("jLabel2"); // NOI18N
 
+        passwordTextField.setName("passwordTextField"); // NOI18N
         passwordTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -171,8 +176,10 @@ public class RegistrationForm extends javax.swing.JFrame {
             }
         });
 
-        jLabel3.setText("Password:");
+        jLabel3.setText(bundle.getString("RegistrationForm.jLabel3.text")); // NOI18N
+        jLabel3.setName("jLabel3"); // NOI18N
 
+        retypePwdTextField.setName("retypePwdTextField"); // NOI18N
         retypePwdTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -192,7 +199,8 @@ public class RegistrationForm extends javax.swing.JFrame {
             }
         });
 
-        jLabel4.setText("Retype:");
+        jLabel4.setText(bundle.getString("RegistrationForm.jLabel4.text")); // NOI18N
+        jLabel4.setName("jLabel4"); // NOI18N
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -228,10 +236,13 @@ public class RegistrationForm extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        jLabel1.setText("<html> Please, correct information.<br> Then click 'Sign up!' to register. </html>");
+        jLabel1.setText(bundle.getString("RegistrationForm.jLabel1.text")); // NOI18N
+        jLabel1.setName("jLabel1"); // NOI18N
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Personal Info:"));
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("RegistrationForm.jPanel3.border.title"))); // NOI18N
+        jPanel3.setName("jPanel3"); // NOI18N
 
+        firstNameTextField.setName("firstNameTextField"); // NOI18N
         firstNameTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -251,8 +262,10 @@ public class RegistrationForm extends javax.swing.JFrame {
             }
         });
 
-        jLabel5.setText("First name:");
+        jLabel5.setText(bundle.getString("RegistrationForm.jLabel5.text")); // NOI18N
+        jLabel5.setName("jLabel5"); // NOI18N
 
+        surnameTextField.setName("surnameTextField"); // NOI18N
         surnameTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -272,8 +285,10 @@ public class RegistrationForm extends javax.swing.JFrame {
             }
         });
 
-        jLabel6.setText("Surname:");
+        jLabel6.setText(bundle.getString("RegistrationForm.jLabel6.text")); // NOI18N
+        jLabel6.setName("jLabel6"); // NOI18N
 
+        pubNicknameTextField.setName("pubNicknameTextField"); // NOI18N
         pubNicknameTextField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -293,7 +308,8 @@ public class RegistrationForm extends javax.swing.JFrame {
             }
         });
 
-        jLabel7.setText("Public name:");
+        jLabel7.setText(bundle.getString("RegistrationForm.jLabel7.text")); // NOI18N
+        jLabel7.setName("jLabel7"); // NOI18N
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -329,9 +345,11 @@ public class RegistrationForm extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
-        jLabel8.setText("Status:");
+        jLabel8.setText(bundle.getString("RegistrationForm.jLabel8.text")); // NOI18N
+        jLabel8.setName("jLabel8"); // NOI18N
 
-        statusLabel.setText("<html>\n<span style=\"color:red;\">Fill all fields!</span>\n</html>");
+        statusLabel.setText(bundle.getString("RegistrationForm.statusLabel.text")); // NOI18N
+        statusLabel.setName("statusLabel"); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -389,7 +407,7 @@ public class RegistrationForm extends javax.swing.JFrame {
         if(!checkFields()) return;
         Main.server = new TitanicServer();
         if(!Main.server.isConnected()){
-            statusLabel.setText("<html><span style=\"color:red\">Connection problem.</span></html>");
+            statusLabel.setText(java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("connectionProblemHTMLred"));
             return;
         }
         try {
@@ -399,13 +417,13 @@ public class RegistrationForm extends javax.swing.JFrame {
                         pubNicknameTextField.getText(), "", "", "", "");
             String r[] = Main.server.getResponse();
             if(r[0].equals("SUCCESS")) {
-                JOptionPane.showMessageDialog(rootPane, "New profile was seccessfully registered on the server. Now you can sign in.", 
-                        "Registration successfull", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(rootPane, java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("registrationSuccessfulMessageText"), 
+                        java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("registrationSuccessfulMessageTitle"), JOptionPane.INFORMATION_MESSAGE);
                 dispose();
             }
         } catch(Exception e){
             Main.server.disconnect();
-            statusLabel.setText("<html><span style=\"color:red\">Cannot register..</span></html>");
+            statusLabel.setText(java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("cannotRegisterHTMLred"));
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
