@@ -47,9 +47,11 @@ Current version of the server supports the following commands:
   * [commandAuthorize AUTHOSIZE]
   * [commandListUsers LIST USERS]
   * [commandProfileById PROFILE BY ID]
+  * [commanNicknameById NICKNAME BY ID]
   * [commandRegister REGISTER]
   * [commandRegistered REGISTERED]
   * [commandCheckPassword CHECK PASSWORD]
+  * [commandSecret SECRET]
   * [commandExit EXIT]
 This list will be extended soon.
 
