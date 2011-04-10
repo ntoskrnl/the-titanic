@@ -25,12 +25,12 @@ class Controller_Login extends Controller_Base {
                 "Выход из системы", "?", 3);
     }
 
-    private function check_login(){
+    private function check_login($silent=false){
         $login = $_POST['login'];
         $password = $_POST['password'];
         $m = preg_match("/[A-Za-z0-9@._-]{5,30}$/", $login, $mathces);
         if($m===FALSE || $m == 0){
-            $this->message("Обнаружены недопустимые символы в поле Логин. Допустимые символы:
+            if(!$silent) $this->message("Обнаружены недопустимые символы в поле Логин. Допустимые символы:
                 'A' ... 'Z', 'a' ... 'z', '0' ... '9', '@', '.', '-', '_'. <br />
                 Логин должен содержать от 5 до 30 символов.", 
                     "Ошибка ввода данных", $_POST['redirect']);
@@ -39,7 +39,7 @@ class Controller_Login extends Controller_Base {
         
         $m = preg_match("/.{0,30}$/", $password, $mathces);
         if($m===FALSE || $m == 0){
-            $this->message("Обнаружены недопустимые символы в поле Пароль. <br />
+            if(!$silent) $this->message("Обнаружены недопустимые символы в поле Пароль. <br />
                 Пароль должен содержать от 4 до 30 символов.", 
                     "Ошибка ввода данных", $_POST['redirect']);
             return false;
@@ -95,7 +95,7 @@ class Controller_Login extends Controller_Base {
         } catch (Exception $e) {
             $msg = "<b>Ошибка</b>: " . $e->getMessage();
             $logged_in = false;
-            $this->message($msg, "Ошибка входа", $_POST['redirect']);
+            if(!$silent) $this->message($msg, "Ошибка входа", $_POST['redirect']);
         }
 
         if (isset($socket)) {
@@ -108,6 +108,16 @@ class Controller_Login extends Controller_Base {
     private function do_login(){
         $_SESSION['login'] = $_POST['login'];
         $_SESSION['logged_in'] = true;
+    }
+    
+    public function ajax($args){
+        global $lang;
+        if($this->check_login(true)){
+            $this->do_login();
+            echo "<p>Вход выполнен.</p>";
+        } else{
+            echo "<p>Ошибка входа в систему.</p>";
+        }
     }
 
 }

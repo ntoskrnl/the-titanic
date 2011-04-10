@@ -3,66 +3,104 @@
     <p>Чтобы зарегистрироваться на игровом сервере, необходимо заполнить все
         обязательные поля формы и нажать кнопку <b>Регистрация</b>. В любом случае,
         спасибо, что посетили наш сайт. Надеемся, что вы хорошо проведете время.</p>
-    <form action="user/register/post" method="post">
-        <fieldset>
-            <table style="margin-left: 10%;">
-                <tr>
-                    <td>
-                        <b>Логин:</b>
-                    </td>
-                    <td>
-                        <input type="text" name="login" value="" style="width:150px" />
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <b>Пароль:</b>
-                    </td>
-                    <td>
-                        <input type="password" name="password" value="" style="width:150px" />
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <b>Повторите пароль:</b>
-                    </td>
-                    <td>
-                        <input type="password" name="password_retype" value="" style="width:150px" />
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <b>Ваше имя:</b>
-                    </td>
-                    <td>
-                        <input type="text" name="first_name" value="" style="width:150px" />
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <b>Фамилия:</b>
-                    </td>
-                    <td>
-                        <input type="text" name="surname" value="" style="width:150px" />
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <b>Псевдоним:</b>
-                    </td>
-                    <td>
-                        <input type="text" name="pub_nickname" value="" style="width:150px" />
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <div class="align_c">
-                            <input type="submit" value="Зарегистрироваться" />
-                        </div>
-                    </td>
-                </tr>
-            </table>
-
-        </fieldset>
-    </form>
+    <div id="reg_form" style="margin-left:20px;">
+        <form action="user/register/post" method="post" style="width: 400px;">
+            <fieldset style="margin-left: 20px;"><legend>Данные для входа:</legend>
+                <div class="clear_fix ">
+                    <div class="label fl_l">
+                        Логин<span class="highlight">*</span>:
+                    </div>
+                    <div class="labeled fl_l">
+                        <input type="text"  style="width: 200px;" name="login" />
+                    </div>
+                </div>
+                <div class="clear_fix ">
+                    <div class="label fl_l">
+                        Пароль<span class="highlight">*</span>:
+                    </div>
+                    <div class="labeled fl_l">
+                        <input type="password" style="width: 200px;" name="password" />
+                    </div>
+                </div>
+                <div class="clear_fix ">
+                    <div class="label fl_l">
+                        Повторите пароль<span class="highlight">*</span>:
+                    </div>
+                    <div class="labeled fl_l">
+                        <input type="password" style="width: 200px;" name="password_retype" />
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset style="margin-left: 20px;"><legend>Личные данные:</legend>
+                <div class="clear_fix ">
+                    <div class="label fl_l">
+                        Ваше имя<span class="highlight">*</span>:
+                    </div>
+                    <div class="labeled fl_l">
+                        <input type="text" style="width: 200px;" name="first_name" />
+                    </div>
+                </div>
+                <div class="clear_fix ">
+                    <div class="label fl_l">
+                        Фамилия<span class="highlight">*</span>:
+                    </div>
+                    <div class="labeled fl_l">
+                        <input type="text" style="width: 200px;" name="surname" />
+                    </div>
+                </div>
+                <div class="clear_fix ">
+                    <div class="label fl_l">
+                        Псевдоним<span class="highlight">*</span>:
+                    </div>
+                    <div class="labeled fl_l">
+                        <input type="text" style="width: 200px;" name="pub_nickname" />
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset style="margin-left: 20px;"><legend>Дополнительно:</legend>
+                <div class="clear_fix ">
+                    <div class="label fl_l">
+                        Публичный e-mail:
+                    </div>
+                    <div class="labeled fl_l">
+                        <input type="email" style="width: 200px;" name="pub_email" />
+                    </div>
+                </div>
+                <div class="clear_fix ">
+                    <div class="label fl_l">
+                        Пол:
+                    </div>
+                    <div class="labeled fl_l">
+                        <select  style="width: 200px;" name="sex">
+                            <option value="">Предпочитаю не указывать</option>
+                            <option value="Male">Мужской</option>
+                            <option value="Female">Женский</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="clear_fix ">
+                    <div class="label fl_l">
+                        Возраст:
+                    </div>
+                    <div class="labeled fl_l">
+                        <input type="number" style="width: 200px;" name="age" value="18" />
+                    </div>
+                </div>
+                <div class="clear_fix ">
+                    <div class="label fl_l">
+                        Откуда вы:
+                    </div>
+                    <div class="labeled fl_l">
+                        <input type="text" style="width: 200px;" name="location" />
+                    </div>
+                </div>
+            </fieldset>
+            <div class="align_c">
+                <input type="submit" value="Зарегистрироваться" />
+            </div>
+        </form>
+    </div>
+    <div>
+        <p>Символом <span class="highlight">*</span> помечены поля, обязательные к заполнению.</p>
+    </div>
 </div>

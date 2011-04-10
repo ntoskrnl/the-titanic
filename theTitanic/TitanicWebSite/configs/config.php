@@ -12,7 +12,7 @@
     }
 
     session_start();
-    error_reporting(E_ALL & ~E_WARNING & ~E_NOTICE);
+    error_reporting(E_ALL & (~E_WARNING) & (~E_NOTICE) & (~E_DEPRECATED));
     if (version_compare(phpversion(), '5.1.0', '<') == true) {
             die ('PHP5.1 or higher!');
     }
