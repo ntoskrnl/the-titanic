@@ -5,7 +5,7 @@ class Controller_Register extends Controller_Base {
 
     function index($args) {
         global $lang;
-        $this->registry['smarty']->assign("content_file", "pages/ru/user/registration_form.html");
+        $this->registry['smarty']->assign("content_file", "pages/$lang/user/registration_form.html");
         $this->registry['smarty']->display("$lang/form.tpl");
     }
 
@@ -25,7 +25,19 @@ class Controller_Register extends Controller_Base {
         $surname = $_POST['surname'];
         $pub_nickname = $_POST['pub_nickname'];
         
-        $m = preg_match("/[A-Za-z0-9@._-]{5,30}$/", $login, $mathces);
+        if(!isset($_POST['age'])||empty($_POST['age'])) $age = -1;
+        else $age = (int)$_POST['age'];
+        
+        if(isset($_POST['sex']) && !empty($_POST['sex'])){
+            if(strcasecmp($_POST['sex'], 'male')) $sex='male';
+            else if(strcasecmp($_POST['sex'], 'female')) $sex="female";
+            else $sex="";
+        } else $sex = "";
+        
+        $pub_email = $_POST['pub_email'];
+        $location = $_POST['location'];
+        
+        $m = preg_match("/^[A-Za-z0-9@._-]{5,30}$/", $login, $mathces);
         if($m===FALSE || $m == 0){
             $this->message("Обнаружены недопустимые символы в поле Логин. Допустимые символы:
                 'A' ... 'Z', 'a' ... 'z', '0' ... '9', '@', '.', '-', '_'. <br />
@@ -46,7 +58,7 @@ class Controller_Register extends Controller_Base {
             return false;
         }
         
-        $m = preg_match("/.{4,30}$/", $password, $mathces);
+        $m = preg_match("/^.{4,30}$/", $password, $mathces);
         if($m===FALSE || $m == 0){
             $this->message("Обнаружены недопустимые символы в поле Пароль. <br />
                 Пароль должен содержать от 4 до 30 символов.", 
@@ -60,7 +72,7 @@ class Controller_Register extends Controller_Base {
             return false;
         }
         
-        $m = preg_match("/.{3,30}$/", $pub_nickname, $mathces);
+        $m = preg_match("/^.{3,30}$/", $pub_nickname, $mathces);
         if($m===FALSE || $m == 0){
             $this->message("Обнаружены недопустимые символы в поле Псевдоним. <br />
                 Псевдоним должен содержать от 3 до 30 символов.", 
@@ -68,7 +80,7 @@ class Controller_Register extends Controller_Base {
             return false;
         }
         
-        $m = preg_match("/\w+$/", $first_name, $mathces);
+        $m = preg_match("/^\w+$/", $first_name, $mathces);
         if($m===FALSE || $m == 0){
             $this->message("Обнаружены недопустимые символы в поле Имя. <br />
                 Разрешены только буквы, цифры и знак подчеркивания.", 
@@ -76,10 +88,32 @@ class Controller_Register extends Controller_Base {
             return false;
         }
         
-        $m = preg_match("/\w+$/", $surname, $mathces);
+        $m = preg_match("/^\w+$/", $surname, $mathces);
         if($m===FALSE || $m == 0){
             $this->message("Обнаружены недопустимые символы в поле Фамилия. <br />
                 Разрешены только буквы, цифры и знак подчеркивания.", 
+                    "Ошибка ввода данных", "user/register", 5);
+            return false;
+        }
+        
+        $m = preg_match("/^[A-Za-z0-9@._-]{0,128}$/", $pub_email, $mathces);
+        if($m===FALSE || $m == 0){
+            $this->message("Обнаружены недопустимые символы в поле Публичный e-mail. Допустимые символы:
+                'A' ... 'Z', 'a' ... 'z', '0' ... '9', '@', '.', '-', '_'. <br />
+                Поле должно содержать от 0 до 128 символов.", 
+                    "Ошибка ввода данных", "user/register", 5);
+            return false;
+        }
+        
+        if($age!=-1 && ($age>100 || $age < 5)){
+            $this->message("Ваш возраст выглядит подозрительно.", 
+                    "Ошибка ввода данных", "user/register", 5);
+            return false;
+        }
+        
+        $m = preg_match("/^.{0,128}$/", $location, $mathces);
+        if($m===FALSE || $m == 0){
+            $this->message("Недопустимый символ в поле Местоположение.", 
                     "Ошибка ввода данных", "user/register", 5);
             return false;
         }
@@ -90,7 +124,6 @@ class Controller_Register extends Controller_Base {
         
         try {
 
-            ob_flush();
             ob_implicit_flush();
             set_time_limit(10);
             
@@ -133,13 +166,13 @@ class Controller_Register extends Controller_Base {
             socket_write($socket, $msg);
             $msg = $pub_nickname."\n";
             socket_write($socket, $msg);
-            $msg = "\n";
+            $msg = $pub_email."\n";
             socket_write($socket, $msg);
-            $msg = "\n";
+            $msg = $sex."\n";
             socket_write($socket, $msg);
-            $msg = "\n";
+            $msg = $age."\n";
             socket_write($socket, $msg);
-            $msg = "\n";
+            $msg = $location."\n";
             socket_write($socket, $msg);
             
             $ans = socket_read($socket, 1024);
