@@ -1,6 +1,5 @@
 package util;
 
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.sql.*;
 
@@ -25,7 +24,7 @@ public class DataBaseAccess {
         anonymous = true;
         this.dbfile = dbfile;
         try{
-            DriverManager.setLogWriter(new PrintWriter(System.err));
+            DriverManager.setLogWriter(new PrintWriter(Main.logs.getDefaultWriter()));
             
             connection = DriverManager.getConnection("jdbc:sqlite:"+dbfile);
             connection.setAutoCommit(true);
@@ -47,7 +46,7 @@ public class DataBaseAccess {
         this.user = user;
         this.dbfile = dbfile;    
         try{
-            DriverManager.setLogWriter(new PrintWriter(System.err));
+            DriverManager.setLogWriter(new PrintWriter(Main.logs.getDefaultWriter()));
             connection = DriverManager.getConnection("jdbc:sqlite:"+dbfile, user, password);
             connection.setAutoCommit(true);
         } catch (SQLException e){

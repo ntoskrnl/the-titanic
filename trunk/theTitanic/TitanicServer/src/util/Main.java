@@ -14,7 +14,6 @@ public class Main {
 
     private static ServerConfigWindow configWindow = null;
     private static Thread mainServerThread = null;
-    private static Preferences userPreferences = null;
 
     static ConnectionContainer connections;
     /**
@@ -22,7 +21,7 @@ public class Main {
      */
     static ServerSocket server;
 
-    public static DataBaseAccess usersDB = null;
+    public static  DataBaseAccess usersDB = null;
     public static Log logs = null;
     public static CommandInterpreter cmd = null;
 
