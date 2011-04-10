@@ -1,5 +1,7 @@
 package util;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -37,13 +39,28 @@ public class MainServerThread implements Runnable {
             Main.logs.info("Connecting to databases...");
 
             Main.usersDB = new DataBaseAccess("titanic_users.db");
+            Main.usersDB.doUpdate("DELETE FROM online_users WHERE 1=1");
+            
+            javax.swing.Timer commitTimer = new javax.swing.Timer(10000, new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    try{
+                        Main.usersDB.reconnect();
+                        Main.logs.info("DB: reconnect");
+                    } catch(Exception ex){
+                        Main.logs.warning("commitTimer: "+ex.getMessage());
+                    }
+                }
+            });
+            commitTimer.start();
 
             connections = new ConnectionContainer();
 
             server = new ServerSocket(ServerConfiguration.serverPort);
+            
             server.setSoTimeout(1000);
 
-            Main.cmd = new ServerCommandProcessor();
+            Main.cmd = new CommandInterpreter();
 
             Main.logs.info("Waiting for incoming connections...");
             while(true){
@@ -66,7 +83,7 @@ public class MainServerThread implements Runnable {
         }
 
         try {
-            server.close();
+            if(server!=null) server.close();
             Main.usersDB.doUpdate("DELETE FROM online_users WHERE 1=1");
             Main.usersDB.close();
         } catch (IOException ex) {

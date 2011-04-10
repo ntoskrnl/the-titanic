@@ -32,7 +32,12 @@ public class ClientHandlerRunnable implements Runnable {
                 Main.logs.info("Client has disconected from server.");
                 break;
             }
-            Main.cmd.processCommand(s, clientHandler.getUser());
+            try{
+               Main.cmd.processCommand(s, clientHandler.getUser()); 
+            } catch (Exception ex){
+                Main.logs.warning("processCommand: "+ex.getMessage());
+            }
+            
         }
         clientHandler.disconnect();
     }

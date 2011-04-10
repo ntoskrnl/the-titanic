@@ -10,7 +10,7 @@ import java.sql.SQLException;
  *
  * @author danon
  */
-public class ServerCommandProcessor {
+public class CommandInterpreter {
     
     synchronized public void processCommand(String command, User u){
         if(command==null) return;
@@ -22,7 +22,6 @@ public class ServerCommandProcessor {
         boolean result = false;
         String cmd = command.toLowerCase().trim();
 
-        Main.logs.info("CMMAND: "+cmd);
         try{
             // Connection stop
             if(cmd.equals("exit")){
@@ -130,6 +129,32 @@ public class ServerCommandProcessor {
                 if(Main.usersDB.isConnected()){
                     result = true;
                     pw.println("SUCCESS");
+                }
+            }
+            
+            if(cmd.equals("top players")){
+                int N = Integer.parseInt(br.readLine());
+                ResultSet res = Main.usersDB.doQouery("SELECT * FROM rating ORDER BY score");
+                if(res != null){ 
+                    int i = 0;
+                    pw.println("SUCCESS");
+                    while(res.next() && i<N){
+                        pw.println(res.getInt("user_id"));
+                        i++;
+                    }
+                    result = true;
+                }
+            }
+            
+            if(cmd.equals("nickname by id")){
+                int id = Integer.parseInt(br.readLine().trim());
+                ResultSet res = Main.usersDB.doPreparedQuery("SELECT pub_nickname FROM profiles WHERE (id = ?)", id+"");
+                if(res != null && res.next()){ 
+                    String nick = res.getString("pub_nickname");
+                    if(nick==null || nick.trim().equals("")) 
+                        pw.println("<incognito>");
+                    else pw.println(nick);
+                    result = true;
                 }
             }
 

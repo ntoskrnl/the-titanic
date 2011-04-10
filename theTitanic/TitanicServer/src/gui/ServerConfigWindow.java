@@ -6,6 +6,7 @@
 
 package gui;
 
+
 import util.*;
 
 /**
@@ -229,10 +230,16 @@ public class ServerConfigWindow extends javax.swing.JFrame {
         Thread t = Main.getMainServerThread();
         if(t!=null) t.interrupt();
         jButton2.setEnabled(false);
-        jButton1.setEnabled(true);
+        try{
+            Thread.sleep(1);
+        } catch (Exception ex) {}
+        finally { 
+            jButton1.setEnabled(true);
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void serverConfigWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_serverConfigWindowClosing
+        jButton2ActionPerformed(null);
         applyConfigChanges();
         ServerConfiguration.savePreferences();
     }//GEN-LAST:event_serverConfigWindowClosing
