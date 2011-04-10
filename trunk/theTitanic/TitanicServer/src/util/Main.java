@@ -24,7 +24,7 @@ public class Main {
 
     public static DataBaseAccess usersDB = null;
     public static Log logs = null;
-    public static ServerCommandProcessor cmd = null;
+    public static CommandInterpreter cmd = null;
 
 
     /**

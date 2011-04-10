@@ -55,7 +55,7 @@ public class DataBaseAccess {
         }
     }
 
-    public boolean isConnected(){
+    synchronized public boolean isConnected(){
         try{
             if(connection==null) return false;
             return !connection.isClosed();
@@ -64,8 +64,11 @@ public class DataBaseAccess {
         }
     }
     
-    public boolean reconnect(){
+    synchronized public boolean reconnect(){
         try{
+            try{
+                connection.close();
+            } catch(Exception ex) {}
             if(!anonymous) 
                 connection = DriverManager.getConnection("jdbc:sqlite:"+dbfile, user, password);
             else connection = DriverManager.getConnection("jdbc:sqlite:"+dbfile);
@@ -76,11 +79,11 @@ public class DataBaseAccess {
         return isConnected();
     }
     
-    public Connection getConnection(){
+    synchronized public Connection getConnection(){
         return connection;
     }
 
-    public ResultSet doQouery(String sql) throws SQLException{
+    synchronized public ResultSet doQouery(String sql) throws SQLException{
         Statement s = connection.createStatement();
         s.setEscapeProcessing(true);
         ResultSet r = s.executeQuery(sql);
@@ -88,7 +91,7 @@ public class DataBaseAccess {
     }
 
 
-    public int doUpdate(String sql){
+    synchronized public int doUpdate(String sql){
         try{
             if(!isConnected()) reconnect();
             Statement s = connection.createStatement();
@@ -101,7 +104,7 @@ public class DataBaseAccess {
         }
     }
     
-    public int doPreparedUpdate(String query, String... values){
+    synchronized public int doPreparedUpdate(String query, String... values){
         try{
             if(!isConnected()) reconnect();
             PreparedStatement s = connection.prepareStatement(query);
@@ -114,7 +117,7 @@ public class DataBaseAccess {
         } 
     }
     
-    public ResultSet doPreparedQuery(String query, String... values) throws SQLException{
+    synchronized public ResultSet doPreparedQuery(String query, String... values) throws SQLException{
         if(!isConnected()) reconnect();
         PreparedStatement s = connection.prepareStatement(query);
         for(int i=0;i<values.length;i++)
@@ -122,7 +125,7 @@ public class DataBaseAccess {
         return s.executeQuery();
     }
 
-    public void close(){
+    synchronized public void close(){
         try{
             connection.close();
         } catch(SQLException ex){
