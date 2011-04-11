@@ -653,6 +653,10 @@ private void SetStartTransform(Vector3f[] mass, BranchGroup bran){
 
 }
 
+    public void dispose() {
+        u.cleanup();
+    }
+
    
 
 }
