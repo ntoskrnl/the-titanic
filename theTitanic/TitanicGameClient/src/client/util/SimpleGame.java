@@ -158,6 +158,14 @@ public class SimpleGame extends Game {
         return key;
     }
 
+    @Override
+    public void dispose() {
+        stop();
+        if(graphics!=null)
+            graphics.dispose();
+        events.clear();
+    }
+
 
 }
 

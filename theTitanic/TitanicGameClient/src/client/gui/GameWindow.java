@@ -125,7 +125,9 @@ public class GameWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        if(game!=null) game.stop();
+        if(game!=null){
+            game.dispose();
+        }
     }//GEN-LAST:event_formWindowClosing
 
 
