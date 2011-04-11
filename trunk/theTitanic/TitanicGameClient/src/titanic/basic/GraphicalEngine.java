@@ -19,4 +19,10 @@ public interface GraphicalEngine {
      * @param game The instance of the game to render.
      */
     public void render(Game game);
+
+    /**
+     * Releases all Java3D objects to free memory.
+     * Do not call any methods after calling this one.
+     */
+    public void dispose();
 }
