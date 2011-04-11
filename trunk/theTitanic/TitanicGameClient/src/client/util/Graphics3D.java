@@ -22,6 +22,8 @@ import com.sun.j3d.loaders.objectfile.ObjectFile;
 import com.sun.j3d.loaders.ParsingErrorException;
 import com.sun.j3d.loaders.IncorrectFormatException;
 import com.sun.j3d.loaders.Scene;
+import com.sun.j3d.utils.behaviors.mouse.MouseRotate;
+import com.sun.j3d.utils.geometry.Text2D;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseWheelListener;
 import java.io.*;
@@ -277,17 +279,35 @@ public class Graphics3D implements GraphicalEngine {
         // or just rotate the universe with arrow keys.
         setEventListeners(c);
         BranchGroup Gamescene;
+
         Gamescene = createSceneGraph();
 
        if(Gamescenegroup==null) Gamescenegroup = new TransformGroup();
         Gamescenegroup.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+        Gamescenegroup.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
+        MouseRotate rotatescene = new MouseRotate(Gamescenegroup);
+        rotatescene.setSchedulingBounds(new BoundingSphere());
+
 
        Gamescenegroup.addChild(Gamescene);
 
         //scene = createSceneGraph();
         scene.addChild(Gamescenegroup);
-        //TransformGroup trsc = new TransformGroup();   с помощью этого будем все вращать))
-          //      trsc.addChild(scene);
+        scene.addChild(rotatescene);
+        Text2D text = new Text2D("Game in process", diffuse, "Times new Roman", 25, Font.PLAIN);
+        TransformGroup texttr = new TransformGroup();
+        texttr.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
+        texttr.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+
+        Transform3D textposition = new Transform3D();
+        textposition.rotX(Math.PI / 3.0d);
+        textposition.setTranslation(new Vector3f(0.2f,0f,0.9f));
+        texttr.setTransform(textposition);
+        texttr.addChild(text);
+       
+
+        scene.addChild(texttr);
+      
                 
 
         scene.compile();
@@ -563,6 +583,12 @@ private void SetStartTransform(Vector3f[] mass, BranchGroup bran){
    objRoot.addChild(light3);
    objRoot.addChild(light4);
    objRoot.addChild(light5);
+
+   Background back = new Background(1,1,1);
+   back.setApplicationBounds(new BoundingSphere());
+
+   objRoot.addChild(back);
+
    // Set up the ambient light
 
    Color3f ambientColor = new Color3f(1.0f, 1.0f, 1.0f);
