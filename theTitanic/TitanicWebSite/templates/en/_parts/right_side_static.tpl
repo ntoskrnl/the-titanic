@@ -1,10 +1,10 @@
 
         <div>
             <h3>
-                Состояние сервера:
+                Server status:
             </h3>
             <p>
-            <b>Статус:</b> 
+            <b>Status:</b>
                 <span id="server_status">
                     <noscript>
                     {php} include("pages/util/server_status.php"); {/php}
@@ -15,23 +15,23 @@
         <hr />
         <div>
             <h3>
-                Сейчас играют:
+                Now playing:
             </h3>
             <div id="online_users">
                 <noscript>
                     {php} include("pages/util/online_users.php"); {/php}
                 </noscript>
             </div>
-            <p class="align_r"><a href="stats/players_online">Подробнее...</a></p>
+            <p class="align_r"><a href="stats/players_online">More info...</a></p>
         </div>
         <hr />
         <div>
-            <h3>Лучшие игроки:</h3>
+            <h3>Top players:</h3>
             <div id="best_players">
                 <noscript>
                     {php} include("pages/util/best_players.php"); {/php}
                     </noscript>
             </div>
-            <p class="align_r"><a href="#">Полный рейтинг...</a></p>
+            <p class="align_r"><a href="#">Full rating...</a></p>
         </div>
         
