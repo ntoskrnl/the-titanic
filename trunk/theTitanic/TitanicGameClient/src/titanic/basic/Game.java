@@ -24,6 +24,8 @@ public abstract class Game {
 
     public abstract BilliardKey getBilliardKey();
 
+    public abstract void dispose();
+
     /**
      * Waiting for user to make next impact. (no physics)
      */
