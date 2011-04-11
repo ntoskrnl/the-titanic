@@ -5,7 +5,11 @@ class Controller_Index extends Controller_Base {
     }
     
     public function profile($args){
-        echo "PROFILE";
+        global $lang;
+        $file = "$lang/user/profile.tpl";
+        $this->registry['smarty']->assign("content_file", $file);
+        $this->registry['smarty']->assign("user_id", $_GET['id']);
+        $this->registry['smarty']->display("$lang/tpl_article.tpl");
     }
 }
 ?>

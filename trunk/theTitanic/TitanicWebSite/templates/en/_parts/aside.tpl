@@ -1,18 +1,18 @@
 <div id="aside">
     <div>
         <h3>
-            Язык сайта:
+            Site language:
         </h3>
         <div id="language_selector" class="align_c">
-            <p><b><a href="util/lang/change/en">English</a>&nbsp;|&nbsp;Русский</b></p>
+            <p><b>English&nbsp;|&nbsp;<a href="util/lang/change/ru">Russian</a></b></p>
         </div>
     </div>
     <div>
         <h3>
-            Вход в систему:
+            Authentication:
         </h3>
         <div class="align_r">
-            [<a href="user/register">Регистрация</a>]
+            [<a href="user/register">Sign up</a>]
         </div>
         {php} include("pages/{$lang}/user/login_form.php"); {/php}
     </div>
