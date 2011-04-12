@@ -3,14 +3,11 @@ package client.util;
 
 
 import java.awt.*;
-import com.sun.j3d.utils.geometry.Box;
-import com.sun.j3d.utils.geometry.Primitive;
 import com.sun.j3d.utils.universe.*;
 import java.awt.event.MouseWheelEvent;
 import javax.media.j3d.*;
 import javax.vecmath.*;
 import com.sun.j3d.utils.geometry.Sphere;
-import com.sun.j3d.utils.image.TextureLoader;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -45,12 +42,12 @@ public class Graphics3D implements GraphicalEngine {
     private int N;
     private TransformGroup[] objTrans;
     private Vector3f[] mass;
-    public Vector3f[] V;
-    public Transform3D[] speedch;
+    public Transform3D[] BallTransform;
     private Game game;
     private TransformGroup Keytrans;
     private Transform3D Keyposition;
 
+    Sphere obj15;
     Appearance startballapp = new Appearance();
     Appearance ballapp = new Appearance();
     final float width = 0.59f;  // ширина стола
@@ -71,8 +68,7 @@ public class Graphics3D implements GraphicalEngine {
         scene = new BranchGroup();
         N = g.getGameScene().getBalls().length;
         mass = new Vector3f[N];
-        V = new Vector3f[N];
-        speedch = new Transform3D[N];
+        BallTransform = new Transform3D[N];
         objTrans = new TransformGroup[N+1];
 
         maxhight = g.getGameScene().getBounds().getY();
@@ -93,7 +89,8 @@ public class Graphics3D implements GraphicalEngine {
             public void keyPressed(KeyEvent evt){
                 int code = evt.getKeyCode();
                 int curBall = game.getBilliardKey().getBall().getId();
-                
+
+              
                 if(code==KeyEvent.VK_COMMA || code == KeyEvent.VK_PERIOD || code ==KeyEvent.VK_A ||  code ==KeyEvent.VK_D) {
                     if(code == KeyEvent.VK_COMMA)  {
                         curBall+=game.getGameScene().getBalls().length-1;
@@ -126,6 +123,13 @@ public class Graphics3D implements GraphicalEngine {
                       Keyposition.setTranslation(pos);
                      
                       Keytrans.setTransform(Keyposition);
+
+                      //Changing color of 15 ball
+                        if(curBall == 15) obj15.getAppearance().getMaterial().setDiffuseColor(new Color3f(Color.yellow));
+                        else{
+                          obj15.getAppearance().getMaterial().setDiffuseColor(diffuse);
+                        }
+
                 }
 
                 if(code == KeyEvent.VK_END){
@@ -144,7 +148,7 @@ public class Graphics3D implements GraphicalEngine {
                     setscenerot.mul(t);
                     setscenerot.setScale(scale);
                     Gamescenegroup.setTransform(setscenerot);
-                }
+                     }
 
                  if(code == KeyEvent.VK_RIGHT){
                     phi = phi - 0.01f;
@@ -286,6 +290,7 @@ public class Graphics3D implements GraphicalEngine {
         Gamescenegroup.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
         Gamescenegroup.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
         MouseRotate rotatescene = new MouseRotate(Gamescenegroup);
+        rotatescene.setFactor(0.01);
         rotatescene.setSchedulingBounds(new BoundingSphere());
 
 
@@ -342,9 +347,9 @@ public class Graphics3D implements GraphicalEngine {
     int i;
 
     for(i = 0;i < N;i++){
-     if(speedch[i] == null) speedch[i] = new Transform3D();
-    speedch[i].setTranslation(mass[i]);
-    objTrans[i].setTransform(speedch[i]);
+     if(BallTransform[i] == null) BallTransform[i] = new Transform3D();
+    BallTransform[i].setTranslation(mass[i]);
+    objTrans[i].setTransform(BallTransform[i]);
     }
 }
 
@@ -416,7 +421,7 @@ public Vector3f[] startmass(){
     int i;
 
     for(i=0;i<N;i++){
-        mass[i] = new Vector3f();
+       if(mass[i] == null) mass[i] = new Vector3f();
         mass[i].setX(game.getGameScene().getBalls()[i].getCoordinates().getX()/maxwidth*2*width*0.8f);
         mass[i].setY(game.getGameScene().getBalls()[i].getCoordinates().getY()/maxhight*2*high*0.87f);
         mass[i].setZ(game.getGameScene().getBalls()[i].getCoordinates().getZ()-0.005f);
@@ -430,34 +435,24 @@ public Vector3f[] startmass(){
 // не делать
 private void SetStartTransform(Vector3f[] mass, BranchGroup bran){
 
-    TransformGroup[] tr = new TransformGroup[N];
+  
     int i=0;
 
-   // Shape3D[] ball = new Shape3D[15];
     Sphere[] ball = new Sphere[N];
     Transform3D[] pos = new Transform3D[N];
 
     for(i=0;i<N-1;i++){
-
-        
-        tr[i] = new TransformGroup();
-        tr[i].setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
-        bran.addChild(tr[i]);
-
-        
-        tr[i] =  new TransformGroup();
-        
-        tr[i].setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+     
+         objTrans[i] = new TransformGroup();
+         objTrans[i].setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
         ball[i] = new Sphere(r);
-
         pos[i] = new Transform3D();
 
         pos[i].setTranslation(mass[i]);
-        tr[i].setTransform(pos[i]);
-        tr[i].addChild(ball[i]);
-        objTrans[i] = tr[i];
-        
-        bran.addChild(tr[i]);
+         objTrans[i].setTransform(pos[i]);
+         objTrans[i].addChild(ball[i]);
+            
+        bran.addChild( objTrans[i]);
     }
 
 }
@@ -473,9 +468,6 @@ private void SetStartTransform(Vector3f[] mass, BranchGroup bran){
     public BranchGroup createSceneGraph() {
 
    // Create the root of the branch graph
-
-   BranchGroup objRoot = new BranchGroup();
-
    //---------------------------------------------------------------------------
    //****************************************************************
    //*                Начальное положение обьектов                  *
@@ -483,7 +475,8 @@ private void SetStartTransform(Vector3f[] mass, BranchGroup bran){
    //---------------------------------------------------------------------------
 
    //--------------Устанавливаем шары-------------------------------------------
-   
+
+   BranchGroup objRoot = new BranchGroup();
    mass = startmass();
    SetStartTransform(mass, objRoot);
    //---------------------------------------------------------------------------
@@ -491,63 +484,33 @@ private void SetStartTransform(Vector3f[] mass, BranchGroup bran){
 
    objTrans[N-1] = new TransformGroup();
    objTrans[N-1].setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
-   objRoot.addChild(objTrans[N-1]);
-
+  
    // Create a simple shape leaf node, add it to the scene graph.
    startballapp.setMaterial(new Material(ambient, emissive, diffuse, speculas, 12000f));
    ballapp.setMaterial(new Material(ambient, emissive, new Color3f(0.3f, 0.3f, 0.3f), speculas, 12000f));
-
-   //MyGeometry geom = new MyGeometry();
-  // Shape3D sphere = new Shape3D(geom.mySphere(r, 1000),startballapp);
    
    Sphere sphere = new Sphere(r, startballapp);
-
-   objTrans[N-1] = new TransformGroup();
-   objTrans[N-1].setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+   obj15=sphere;
+   obj15.setCapability(Sphere.ENABLE_APPEARANCE_MODIFY);
+   obj15.getAppearance().setCapability(Appearance.ALLOW_COLORING_ATTRIBUTES_WRITE);
+   obj15.getAppearance().setCapability(Appearance.ALLOW_RENDERING_ATTRIBUTES_WRITE);
+   obj15.getAppearance().getMaterial().setCapability(Material.ALLOW_COMPONENT_WRITE);
+ 
    objTrans[N-1].setCapability(TransformGroup.ALLOW_CHILDREN_WRITE);
    Transform3D pos = new Transform3D();
    pos.setTranslation(mass[N-1]);
 
    //1 шар, которым начинается игра---------------------------------------------
    objTrans[N-1].setTransform(pos);
-   objTrans[N-1].addChild(sphere);
+   objTrans[N-1].addChild(obj15);
    objRoot.addChild(objTrans[N-1]);
    
    //---------------------------------------------------------------------------
    //-------------------------------Table---------------------------------------
    //---------------------------------------------------------------------------
-   Appearance table = new Appearance();
-  // table.setMaterial(new Material(outer, tabem, tabdif, tabsp, 1200f));
-
    // Now the texture file is in special package ballsimpact.res,
    // so we need to use getClass.getResource(String resname) method to access it.
    // For more information see http://netbeans.org/kb/docs/java/gui-image-display.html
-   TextureLoader loader = new TextureLoader(getClass().getResource("/client/res/table.jpg"),  new Container());
-   Texture texture = loader.getTexture();
-   texture.setBoundaryModeS(Texture.WRAP);
-   texture.setBoundaryModeT(Texture.WRAP);
-   texture.setBoundaryColor( new Color4f( 2.0f, 1.0f, 1.0f, 1.0f ) );
-    TextureAttributes texAttr = new TextureAttributes();
-
-   texAttr.setTextureMode(TextureAttributes.MODULATE);
-   table.setTexture(texture);
-   table.setTextureAttributes(texAttr);
-   int primflags = Primitive.GENERATE_NORMALS + Primitive.GENERATE_TEXTURE_COORDS;
-//Создание стола
-   com.sun.j3d.utils.geometry.Box box = new Box(width, high, .1f, primflags, table);
-
-   objTrans[N] = new TransformGroup();
-   objTrans[N].setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
-   objRoot.addChild(objTrans[16]);
-//НАчальное положение стола
-   Transform3D vec = new Transform3D();
-   vec.setTranslation(new Vector3f(0.0f,0.0f,(-0.1f - r)));
-   objTrans[N] = new TransformGroup();
-   objTrans[N].setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
-
-   objTrans[N].setTransform(vec);
-   objTrans[N].addChild(box);
-   //objRoot.addChild(objTrans[N]);
 
    //---------------------------------------------------------------------------
    //****************************************************************
@@ -584,9 +547,9 @@ private void SetStartTransform(Vector3f[] mass, BranchGroup bran){
    objRoot.addChild(light4);
    objRoot.addChild(light5);
 
+   //Background
    Background back = new Background(1,1,1);
    back.setApplicationBounds(new BoundingSphere());
-
    objRoot.addChild(back);
 
    // Set up the ambient light
@@ -601,7 +564,7 @@ private void SetStartTransform(Vector3f[] mass, BranchGroup bran){
    Transform3D key = new Transform3D();
    key.setTranslation(new Vector3f(-.7f,0.0f,0.0f));
    let.rotX(Math.PI/2);
-   Keytrans = new TransformGroup();
+   if(Keytrans == null) Keytrans = new TransformGroup();
    Keytrans.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
    Keytrans.setTransform(let);
    Keytrans.setTransform(key);
@@ -643,7 +606,7 @@ private void SetStartTransform(Vector3f[] mass, BranchGroup bran){
    
   
    tabletransform.addChild(stable.getSceneGroup());
-    tabletransform.setTransform(settable);
+   tabletransform.setTransform(settable);
 
  
 
