@@ -489,11 +489,8 @@ private void SetStartTransform(Vector3f[] mass, BranchGroup bran){
    startballapp.setMaterial(new Material(ambient, emissive, diffuse, speculas, 12000f));
    ballapp.setMaterial(new Material(ambient, emissive, new Color3f(0.3f, 0.3f, 0.3f), speculas, 12000f));
    
-   Sphere sphere = new Sphere(r, startballapp);
-   obj15=sphere;
-   obj15.setCapability(Sphere.ENABLE_APPEARANCE_MODIFY);
-   obj15.getAppearance().setCapability(Appearance.ALLOW_COLORING_ATTRIBUTES_WRITE);
-   obj15.getAppearance().setCapability(Appearance.ALLOW_RENDERING_ATTRIBUTES_WRITE);
+   obj15 = new Sphere(r, startballapp);
+   
    obj15.getAppearance().getMaterial().setCapability(Material.ALLOW_COMPONENT_WRITE);
  
    objTrans[N-1].setCapability(TransformGroup.ALLOW_CHILDREN_WRITE);
