@@ -8,6 +8,7 @@ package client.gui;
 
 import client.util.SimpleGame;
 import java.util.Timer;
+import javax.swing.JOptionPane;
 
 /**
  * Window with GameScene and several control buttons.
@@ -19,7 +20,13 @@ public class GameWindow extends javax.swing.JFrame {
     /** Creates new form GameWindow */
     public GameWindow() {
         initComponents();
-        game = new SimpleGame(gameScenePanel);
+        try {
+            game = new SimpleGame(gameScenePanel);
+        } catch (Exception ex){
+            JOptionPane.showMessageDialog(rootPane, ex.getLocalizedMessage(),
+                    "Titanic GameClient: Error", JOptionPane.ERROR_MESSAGE);
+            dispose();
+        }
     }
 
     /** This method is called from within the constructor to
@@ -127,6 +134,7 @@ public class GameWindow extends javax.swing.JFrame {
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         if(game!=null){
             game.dispose();
+            System.gc();
         }
     }//GEN-LAST:event_formWindowClosing
 

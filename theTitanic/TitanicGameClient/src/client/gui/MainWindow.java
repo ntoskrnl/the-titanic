@@ -13,6 +13,7 @@ import java.awt.event.ActionListener;
 import java.net.URI;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 /**
@@ -24,6 +25,10 @@ public class MainWindow extends javax.swing.JFrame {
     /** Creates new form MainWindow */
     public MainWindow() {
         initComponents();
+
+        myProfile = new UserProfile(0);
+        myProfile.update();
+
         checkConnectionTimer = new Timer(1000, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 checkConnection();
@@ -108,7 +113,6 @@ public class MainWindow extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList();
         jButton1 = new javax.swing.JButton();
-        filler1 = new javax.swing.Box.Filler(new java.awt.Dimension(0, 0), new java.awt.Dimension(0, 0), new java.awt.Dimension(32767, 32767));
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem10 = new javax.swing.JMenuItem();
@@ -144,6 +148,11 @@ public class MainWindow extends javax.swing.JFrame {
 
         jMenuItem2.setText(bundle.getString("MainWindow.jMenuItem2.text")); // NOI18N
         jMenuItem2.setName("jMenuItem2"); // NOI18N
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
         jPopupMenu1.add(jMenuItem2);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -189,8 +198,6 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
-        filler1.setName("filler1"); // NOI18N
-
         jMenuBar1.setName("jMenuBar1"); // NOI18N
 
         jMenu1.setText(bundle.getString("MainWindow.jMenu1.text")); // NOI18N
@@ -223,6 +230,11 @@ public class MainWindow extends javax.swing.JFrame {
 
         jMenuItem4.setText(bundle.getString("MainWindow.jMenuItem4.text")); // NOI18N
         jMenuItem4.setName("jMenuItem4"); // NOI18N
+        jMenuItem4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem4ActionPerformed(evt);
+            }
+        });
         jMenu2.add(jMenuItem4);
 
         jMenuItem5.setText(bundle.getString("MainWindow.jMenuItem5.text")); // NOI18N
@@ -283,7 +295,15 @@ public class MainWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        new GameWindow().setVisible(true);
+        try{
+            new GameWindow().setVisible(true);
+        } catch (Error ex){
+            System.err.println("Start game error: "+ex.getLocalizedMessage());
+            JOptionPane.showMessageDialog(rootPane, ex.getLocalizedMessage(),
+                    "Titanic GameCilent: Error",
+                    JOptionPane.ERROR_MESSAGE);
+            System.gc();
+        }
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
@@ -304,7 +324,7 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void jPopupMenu1ComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_jPopupMenu1ComponentShown
-        if(jList1.getSelectedValue()==null){
+        if(jList1.getSelectedIndex()<0){
             jMenuItem1.setEnabled(false);
             jMenuItem2.setEnabled(false);
         } else {
@@ -327,6 +347,7 @@ public class MainWindow extends javax.swing.JFrame {
         }
         
         java.awt.Desktop desktop = java.awt.Desktop.getDesktop();
+        
         if( !desktop.isSupported( java.awt.Desktop.Action.BROWSE ) ) {
             System.err.println("Desktop doesn't support the browse action.");
             System.err.println("Desktop is not supported!\nGo to "+url);
@@ -341,8 +362,25 @@ public class MainWindow extends javax.swing.JFrame {
 
     }//GEN-LAST:event_jMenuItem7ActionPerformed
 
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        if(jList1.getSelectedIndex()<0) return;
+        try{
+            UserProfile u = (UserProfile)jList1.getSelectedValue();
+            SwingUtilities.invokeLater(new Runnable() {
+                public void run() {
+                    jButton1ActionPerformed(null);
+                }
+            });
+        } catch (Exception ex) {
+            System.err.println(ex.getMessage());
+        }
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+
+    private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
+        new UserProfileEdit(myProfile).setVisible(true);
+    }//GEN-LAST:event_jMenuItem4ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.Box.Filler filler1;
     private javax.swing.JButton jButton1;
     private javax.swing.JList jList1;
     private javax.swing.JMenu jMenu1;
@@ -367,7 +405,7 @@ public class MainWindow extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private Timer checkConnectionTimer, userUpdateTimer;
-
+    private UserProfile myProfile;
 }
 
 

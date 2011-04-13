@@ -2,6 +2,8 @@ package client.util;
 
 import titanic.basic.Ball;
 import titanic.basic.BilliardKey;
+import titanic.basic.Game;
+import titanic.basic.Vector3D;
 
 /**
  * Represents billiard key with its position and power of the hit.
@@ -38,11 +40,31 @@ public class SimpleBilliardKey implements BilliardKey {
     }
 
     public void setAngle(float a) {
-        angle = a;
+        double s = Math.sin(a);
+        double c = Math.cos(a);
+        angle = (float)Math.asin(s);
+        if(c>=0.0){
+            if(angle<=0.0) angle=(float)(2*Math.PI)+angle;
+        } else  angle=(float)(Math.PI)-angle;
     }
 
     public void setPower(float p) {
         power = p;
+    }
+
+    public boolean validAngle(Game game) {
+        if(ball==null) return true;
+        Ball[] balls = game.getGameScene().getBalls();
+        for(int i=0;i<balls.length;i++){
+            if(ball.equals(balls[i])) continue;
+            Vector3D v = ball.getCoordinates().multiply(-1).add(balls[i].getCoordinates());
+            if(v.getNorm()>0.5) continue;
+            Vector3D w = new Vector3D((float)Math.sin(angle), -(float)Math.cos(angle)).multiply((float)v.getNorm());
+            if(w.multiply(-1).add(v).getNorm()<balls[i].getRadius()/2.0){
+                return false;
+            }
+        }
+        return true;
     }
 
 }

@@ -39,4 +39,10 @@ public interface BilliardKey {
      * @param p float value in range (0,1]
      */
     public void setPower(float p);
+
+    /**
+     * Verifies the angle of the key.
+     * @return false if angle is invalid (there are intersections with balls), otherwise - true.
+     */
+    public boolean validAngle(Game game);
 }
