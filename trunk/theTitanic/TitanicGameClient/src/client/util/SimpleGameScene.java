@@ -17,7 +17,7 @@ class SimpleGameScene extends GameScene {
     public SimpleGameScene(Container c, Ball[] b){
         renderingArea = c;
         balls = b;
-        bounds = new Vector3D(2.530f, 1.410f);
+        bounds = new Vector3D(1.410f, 2.530f);
     }
 
     @Override

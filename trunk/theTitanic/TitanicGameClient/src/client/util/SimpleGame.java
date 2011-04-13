@@ -24,7 +24,7 @@ public class SimpleGame extends Game {
     private Game game;
     private EventPipeLine events;
     private BilliardKey key;
-
+    private Container renderingArea;
     private boolean rearrange = false;
 
     /**
@@ -33,11 +33,11 @@ public class SimpleGame extends Game {
      */
     public SimpleGame(Container c){
         Ball[] balls = new Ball[16];
+        renderingArea = c;
         scene = new SimpleGameScene(c, balls);
         arrangeBalls(balls, scene.getBounds());
 
         key = new SimpleBilliardKey();
-        key.changeBall(balls[0]);
 
         events = new SimpleEventPipeLine();
 
@@ -45,7 +45,6 @@ public class SimpleGame extends Game {
         
         graphics = new Graphics3D(this);
         graphics.setRenderingArea(c);
-
 
         game = this;
 
@@ -61,7 +60,7 @@ public class SimpleGame extends Game {
     private void arrangeBalls(Ball[] balls, Vector3D bounds){
         synchronized(balls){
             Random rand = new Random(System.currentTimeMillis());
-            float R = 0.04f;
+            float R = 0.05f;
             for(int i=0;i<balls.length;i++){
                 balls[i] = new Ball();
                 balls[i].setCoordinates(new Vector3D(R+rand.nextFloat()*(bounds.getX()-R) - bounds.getX()/2.0f,
@@ -161,9 +160,11 @@ public class SimpleGame extends Game {
     @Override
     public void dispose() {
         stop();
+        renderingArea.removeAll();
         if(graphics!=null)
             graphics.dispose();
         events.clear();
+        System.gc();
     }
 
 
