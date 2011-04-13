@@ -90,8 +90,10 @@ public class Graphics3D implements GraphicalEngine {
             @Override
             public void keyPressed(KeyEvent evt){
                 int code = evt.getKeyCode();
-                int curBall = game.getBilliardKey().getBall().getId();
-
+                Ball b = game.getBilliardKey().getBall();
+                int curBall=0;
+                if(b!=null)
+                    curBall = game.getBilliardKey().getBall().getId();
               
                 if(code==KeyEvent.VK_COMMA || code == KeyEvent.VK_PERIOD || code ==KeyEvent.VK_A ||  code ==KeyEvent.VK_D) {
                     if(code == KeyEvent.VK_COMMA)  {
@@ -102,9 +104,23 @@ public class Graphics3D implements GraphicalEngine {
                         curBall+=game.getGameScene().getBalls().length+1;
                         game.getBilliardKey().setAngle(0);
                     }
-                    if(code == KeyEvent.VK_A) game.getBilliardKey().setAngle(game.getBilliardKey().getAngle() - (float)Math.PI/100);
-                    if(code == KeyEvent.VK_D) game.getBilliardKey().setAngle(game.getBilliardKey().getAngle() + (float)Math.PI/100);
-                    
+
+                    if(code == KeyEvent.VK_A) {
+                        float inc = 0;
+                        do{
+                            inc+=(float)Math.PI/150;
+                            game.getBilliardKey().setAngle(game.getBilliardKey().getAngle() - (float)Math.PI/150);
+                        }while(!game.getBilliardKey().validAngle(game)&&inc<Math.PI*2);
+                    }
+
+                    if(code == KeyEvent.VK_D) {
+                        float inc = 0;
+                        do{
+                            inc+=(float)Math.PI/150;
+                            game.getBilliardKey().setAngle(game.getBilliardKey().getAngle() + (float)Math.PI/150);
+                        }while(!game.getBilliardKey().validAngle(game)&&inc<Math.PI*2);
+                    }
+
                     curBall%=game.getGameScene().getBalls().length;
                     game.getBilliardKey().changeBall(game.getGameScene().getBalls()[curBall]);
 
