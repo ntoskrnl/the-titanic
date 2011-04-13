@@ -50,8 +50,8 @@ public class Graphics3D implements GraphicalEngine {
     Sphere obj15;
     Appearance startballapp = new Appearance();
     Appearance ballapp = new Appearance();
-    final float width = 0.59f;  // ширина стола
-    final float high  = 0.86f;  // длина
+    private float width = 0.59f;  // ширина стола
+    private float high  = 0.86f;  // длина
     private float r; //радиус
     private float maxwidth;
     private float maxhight;
@@ -73,7 +73,9 @@ public class Graphics3D implements GraphicalEngine {
 
         maxhight = g.getGameScene().getBounds().getY();
         maxwidth = g.getGameScene().getBounds().getX();
-        r = game.getGameScene().getBalls()[0].getRadius()/maxhight*high;
+        high=maxhight/2.2f;
+        width=maxwidth/2.2f;
+        r = game.getGameScene().getBalls()[0].getRadius()/maxhight*high*1.55f;
       //  BallsArray = game.getGameScene().getBalls();
 
 
@@ -117,15 +119,15 @@ public class Graphics3D implements GraphicalEngine {
                     // }
 
                     Vector3f pos = new Vector3f();
-                    pos.setX(game.getBilliardKey().getBall().getCoordinates().getX()/maxwidth*2*width*0.8f);
-                    pos.setY(game.getBilliardKey().getBall().getCoordinates().getY()/maxhight*2*high*0.87f);
+                    pos.setX(game.getBilliardKey().getBall().getCoordinates().getY()/maxwidth*1.6f*width);
+                    pos.setY(game.getBilliardKey().getBall().getCoordinates().getX()/maxhight*1.6f*high);
                     pos.setZ(game.getBilliardKey().getBall().getCoordinates().getZ());
                       Keyposition.setTranslation(pos);
                      
                       Keytrans.setTransform(Keyposition);
 
                       //Changing color of 15 ball
-                        if(curBall == 15) obj15.getAppearance().getMaterial().setDiffuseColor(new Color3f(Color.yellow));
+                        if(curBall == 15) obj15.getAppearance().getMaterial().setDiffuseColor(new Color3f(Color.PINK));
                         else{
                           obj15.getAppearance().getMaterial().setDiffuseColor(diffuse);
                         }
@@ -359,8 +361,8 @@ public class Graphics3D implements GraphicalEngine {
 
         mass[i] = new Vector3f();
 
-        mass[i].setX(BallsArray[i].getCoordinates().getX()/maxwidth*2*width*0.8f);
-        mass[i].setY(BallsArray[i].getCoordinates().getY()/maxhight*2*high*0.87f);
+        mass[i].setX(BallsArray[i].getCoordinates().getY()/maxwidth*1.6f*width);
+        mass[i].setY(BallsArray[i].getCoordinates().getX()/maxhight*1.6f*high);
         mass[i].setZ(BallsArray[i].getCoordinates().getZ()-0.005f);
 
 
@@ -422,8 +424,8 @@ public Vector3f[] startmass(){
 
     for(i=0;i<N;i++){
        if(mass[i] == null) mass[i] = new Vector3f();
-        mass[i].setX(game.getGameScene().getBalls()[i].getCoordinates().getX()/maxwidth*2*width*0.8f);
-        mass[i].setY(game.getGameScene().getBalls()[i].getCoordinates().getY()/maxhight*2*high*0.87f);
+        mass[i].setX(game.getGameScene().getBalls()[i].getCoordinates().getY()/maxwidth*1.6f*width);
+        mass[i].setY(game.getGameScene().getBalls()[i].getCoordinates().getX()/maxhight*1.6f*high);
         mass[i].setZ(game.getGameScene().getBalls()[i].getCoordinates().getZ()-0.005f);
 
     }
@@ -598,8 +600,8 @@ private void SetStartTransform(Vector3f[] mass, BranchGroup bran){
 
    TransformGroup tabletransform = new TransformGroup();
    Transform3D settable = new Transform3D();
-   settable.setTranslation(new Vector3d(-0.177,0.045,-0.14));
-   settable.setScale(new Vector3d(1.5,1.15,1.0));
+   settable.setTranslation(new Vector3d(-0.179,0.05,-0.14));
+   settable.setScale(new Vector3d(1.55,1.355,1.0));
    
   
    tabletransform.addChild(stable.getSceneGroup());
