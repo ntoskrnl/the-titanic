@@ -58,7 +58,6 @@ public class Main {
     public static boolean checkMemory(long limit){
         System.gc();
         long memAvailable = Runtime.getRuntime().maxMemory()-Runtime.getRuntime().totalMemory()+Runtime.getRuntime().freeMemory();
-        System.out.println(memAvailable);
         return limit<=memAvailable;
     }
 
@@ -70,16 +69,28 @@ class autoGC implements Runnable {
     public void run() {
         //Mimimum acceptable free memory you think your app needs
         long minRunningMemory = (12*1024*1024);
-        long interal = 3000;
+        long interval = 3000;
 
         while(!Thread.currentThread().isInterrupted()){
             Runtime runtime = Runtime.getRuntime();
 
-            if(runtime.freeMemory()<minRunningMemory)
+            System.out.print("Free memory: "+runtime.freeMemory()/1024/1024+"Mb... ");
+
+            if(runtime.freeMemory()<minRunningMemory){
+                Runtime.getRuntime().runFinalization();
                 System.gc();
+                System.out.println("gc");
+                interval = 10000;
+            } else {
+                System.out.println();
+                interval = 3000;
+            }
+            
             try{
-                Thread.currentThread().sleep(3000);
-            } catch(InterruptedException ex){break;}
+                Thread.currentThread().sleep(interval);
+            } catch(InterruptedException ex){
+                break;
+            }
         }
     }
 
