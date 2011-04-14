@@ -57,7 +57,7 @@ This list will be extended soon.
 
 = How to connect and send commands =
 
-Servers listens port 10000 on the host machine, so first of all you need to create a socket connection between client ans server machines. This, of cause, depends on programming language and platform.
+Server listens port 10000 (this will be changed in future releases!) on the host machine, so first of all you need to create a socket connection between client ans server machines. This, of cause, depends on programming language and platform.
 
 == PHP ==
 
