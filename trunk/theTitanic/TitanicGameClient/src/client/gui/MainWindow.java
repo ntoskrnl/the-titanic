@@ -296,10 +296,13 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try{
+            if(!Main.checkMemory(12*1024*1024))
+                throw new OutOfMemoryError("Low available memory");
             new GameWindow().setVisible(true);
         } catch (Error ex){
             System.err.println("Start game error: "+ex.getLocalizedMessage());
-            JOptionPane.showMessageDialog(rootPane, ex.getLocalizedMessage(),
+            JOptionPane.showMessageDialog(rootPane,
+                    ex.getLocalizedMessage()+" The application may behave abnormally.",
                     "Titanic GameCilent: Error",
                     JOptionPane.ERROR_MESSAGE);
             System.gc();

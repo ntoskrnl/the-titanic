@@ -6,6 +6,7 @@
 
 package client.gui;
 
+import client.Main;
 import client.util.SimpleGame;
 import java.util.Timer;
 import javax.swing.JOptionPane;
@@ -21,9 +22,14 @@ public class GameWindow extends javax.swing.JFrame {
     public GameWindow() {
         initComponents();
         try {
+            if(!Main.checkMemory(8*1024*1024)){
+                JOptionPane.showMessageDialog(rootPane, "Too few free memory! Game may bevave abnormally.",
+                    "Titanic GameClient: Warning", JOptionPane.WARNING_MESSAGE);
+            } else if(!Main.checkMemory(4*1024*1024))
+                throw new ExceptionInInitializerError("Out of memory.");
             game = new SimpleGame(gameScenePanel);
         } catch (Exception ex){
-            JOptionPane.showMessageDialog(rootPane, ex.getLocalizedMessage(),
+            JOptionPane.showMessageDialog(rootPane, "Failed to create a game instance!",
                     "Titanic GameClient: Error", JOptionPane.ERROR_MESSAGE);
             dispose();
         }
