@@ -70,7 +70,7 @@ public class UserProfile implements Comparable<UserProfile> {
     }
 
     /**
-     * Updates all properties of user profile.
+     * Updates all properties of user profile (data are retrieved from the server).
      * If server command failed, it does not make any changes.
      * @return <code>true</code> if profile was updated, otherwise - <code>false</code>.
      */
