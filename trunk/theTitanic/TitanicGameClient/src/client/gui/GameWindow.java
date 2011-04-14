@@ -22,14 +22,14 @@ public class GameWindow extends javax.swing.JFrame {
     public GameWindow() {
         initComponents();
         try {
-            if(!Main.checkMemory(8*1024*1024)){
+            if(!Main.checkMemory(10*1024*1024)){
                 JOptionPane.showMessageDialog(rootPane, "Too few free memory! Game may bevave abnormally.",
                     "Titanic GameClient: Warning", JOptionPane.WARNING_MESSAGE);
-            } else if(!Main.checkMemory(4*1024*1024))
+            } else if(!Main.checkMemory(8*1024*1024))
                 throw new ExceptionInInitializerError("Out of memory.");
             game = new SimpleGame(gameScenePanel);
         } catch (Exception ex){
-            JOptionPane.showMessageDialog(rootPane, "Failed to create a game instance!",
+            JOptionPane.showMessageDialog(rootPane, "Failed to create a game instance!\nIt is trongly recommended to close all games and relogin. If problem repeats, restart the application.",
                     "Titanic GameClient: Error", JOptionPane.ERROR_MESSAGE);
             dispose();
         }
