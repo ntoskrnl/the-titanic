@@ -22,11 +22,24 @@ public class MainServerThread implements Runnable {
      */
     static ServerSocket server;
 
+    static String db_file;
+
     public void run(){
         startServer();
     }
 
     public static void startServer(){
+        javax.swing.Timer commitTimer = new javax.swing.Timer(10000, new ActionListener() {
+
+                public void actionPerformed(ActionEvent e) {
+                    try{
+                        Main.usersDB.reconnect();
+                    } catch(Exception ex){
+                        Main.logs.warning("commitTimer: "+ex.getMessage());
+                    }
+                }
+            });
+
         Main.logs.info("Starting the Titanic game server on port "+ServerConfiguration.serverPort+"...");
 
         if(ServerConfiguration.proxyType==2||ServerConfiguration.proxyType==1){
@@ -38,19 +51,13 @@ public class MainServerThread implements Runnable {
         try{
             Main.logs.info("Connecting to databases...");
 
-            Main.usersDB = new DataBaseAccess("titanic_users.db");
+            Main.usersDB = new DataBaseAccess(ServerConfiguration.user_db_file);
             Main.usersDB.doUpdate("DELETE FROM online_users WHERE 1=1");
-            
-            javax.swing.Timer commitTimer = new javax.swing.Timer(10000, new ActionListener() {
 
-                public void actionPerformed(ActionEvent e) {
-                    try{
-                        Main.usersDB.reconnect();
-                    } catch(Exception ex){
-                        Main.logs.warning("commitTimer: "+ex.getMessage());
-                    }
-                }
-            });
+            if(!Main.usersDB.isConnected()){
+                throw new Exception("Cannot connect to Sqlite database: "+ServerConfiguration.user_db_file);
+            }
+            
             commitTimer.start();
 
             connections = new ConnectionContainer();
@@ -89,6 +96,7 @@ public class MainServerThread implements Runnable {
             Main.logs.warning(ex.getMessage());
         }
         Main.logs.info("Server stopped.");
+        commitTimer.stop();
     }
 
 }

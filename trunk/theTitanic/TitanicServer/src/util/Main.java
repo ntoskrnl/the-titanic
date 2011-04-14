@@ -4,7 +4,6 @@ import gui.ServerConfigWindow;
 import java.net.*;
 import javax.swing.JFrame;
 import javax.swing.UIManager;
-import java.util.prefs.Preferences;
 
 /**
  * TheTitanic Server Side Main Class
