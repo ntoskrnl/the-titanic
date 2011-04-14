@@ -52,15 +52,17 @@ public class SimpleBilliardKey implements BilliardKey {
         power = p;
     }
 
+    // all coefficients are from eperiments
     public boolean validAngle(Game game) {
         if(ball==null) return true;
         Ball[] balls = game.getGameScene().getBalls();
         for(int i=0;i<balls.length;i++){
             if(ball.equals(balls[i])) continue;
             Vector3D v = ball.getCoordinates().multiply(-1).add(balls[i].getCoordinates());
-            if(v.getNorm()>0.5) continue;
+            //if(v.getNorm()>1.8*balls[i].getRadius()*Math.atan(Math.PI/42)) continue;
+            if(v.getNorm()>1.5*balls[i].getRadius()/Math.tan(Math.PI/24)) continue;
             Vector3D w = new Vector3D((float)Math.sin(angle), -(float)Math.cos(angle)).multiply((float)v.getNorm());
-            if(w.multiply(-1).add(v).getNorm()<balls[i].getRadius()/2.0){
+            if(w.multiply(-1).add(v).getNorm()<balls[i].getRadius()/1.3){
                 return false;
             }
         }

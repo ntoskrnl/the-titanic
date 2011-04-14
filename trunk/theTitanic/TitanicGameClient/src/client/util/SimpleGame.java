@@ -38,6 +38,7 @@ public class SimpleGame extends Game {
         arrangeBalls(balls, scene.getBounds());
 
         key = new SimpleBilliardKey();
+        key.changeBall(balls[15]);
 
         events = new SimpleEventPipeLine();
 
@@ -58,18 +59,40 @@ public class SimpleGame extends Game {
      * @param bounds Table bounds Vector3D
      */
     private void arrangeBalls(Ball[] balls, Vector3D bounds){
+        Vector3D[] mass = new Vector3D[balls.length];
+        float r = 0.045f;
         synchronized(balls){
+            mass[0] = new Vector3D();
+    
+            int k = 5,i,x=5;
+            for(i=1; i<15; i++){
+                Vector3D a = new Vector3D();
+                mass[i] = a;
+                float r_=r-0.005f;
+                if(i == x) {
+
+                    mass[i].setX(mass[i - k].getX() - r_);
+                    mass[i].setY((float) (mass[i - k].getY() + 2 * r_ * Math.cos((Math.PI) / 6)));
+                    k--;
+                    x = x + k;
+                } else{
+                    mass[i].setX(mass[i-1].getX() + r_);
+                    mass[i].setY((float)(mass[i-1].getY() +2 * r_ * Math.cos((Math.PI) / 6)));
+
+                }
+            }
+
             Random rand = new Random(System.currentTimeMillis());
-            float R = 0.05f;
-            for(int i=0;i<balls.length;i++){
+            for(i=0;i<15;i++){
                 balls[i] = new Ball();
-                balls[i].setCoordinates(new Vector3D(R+rand.nextFloat()*(bounds.getX()-R) - bounds.getX()/2.0f,
-                        R+rand.nextFloat()*(bounds.getY()-R) - bounds.getY()/2.0f));
-                balls[i].setColor(Color.BLACK);
-                balls[i].setRadius(R);
+                balls[i].setCoordinates(mass[i]);
+                balls[i].setRadius(r);
                 balls[i].setId(i);
             }
-            balls[0].setSpeed(new Vector3D(rand.nextFloat()*1-0.5f, rand.nextFloat()*1-0.5f));
+            balls[15] = new Ball(0, -0.5f);
+            balls[15].setId(15);
+            balls[15].setRadius(r);
+            balls[15].setSpeed(new Vector3D(rand.nextFloat()*1-0.5f, rand.nextFloat()*1-0.5f));
         }
     }
 

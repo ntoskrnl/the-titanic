@@ -15,7 +15,10 @@ import titanic.basic.*;
 /* Невероятно продвинутая модель физики. */
 public class yukiEngine implements PhysicalEngine {
 
+    private Game game;
+    
     public void compute() {
+        updateGameInfo();
         testWallCollisions(); //Проверяем столкновение шаров со стенками.
         testBallsCollisions(); //Проверяем столкновение шаров друг с другом.
         moveBalls(); //Двигаем шары.
@@ -25,7 +28,8 @@ public class yukiEngine implements PhysicalEngine {
     /* Конструктор физического движка. */
     public yukiEngine(Game game){
         /* В качестве параметра передаётся экземпляр игры. */
-
+        this.game = game;
+        
         dT = (float) 0.25; // Время дискретизации.
         balls = game.getGameScene().getBalls(); // Получаем все шары.
         bQuant = balls.length; // Число шаров.
@@ -36,31 +40,8 @@ public class yukiEngine implements PhysicalEngine {
   //          impList[i] = 0;
             conList[i] = 0;
         }
-
-        // Получаем положение шаров.
-        bPos = new float [bQuant][3];
-        for(int i=0; i<bQuant; ++i){
-            Vector3D a = balls[i].getCoordinates();
-            bPos[i][0] = a.getX();
-            bPos[i][1] = a.getY();
-            bPos[i][2] = a.getZ();
-        }
-
-        // Получаем скорости шаров.
-        bVel = new float [bQuant][3];
-        for(int i=0; i<bQuant; ++i){
-            Vector3D a = balls[i].getSpeed();
-            bVel[i][0] = a.getX();
-            bVel[i][1] = a.getY();
-            bVel[i][2] = a.getZ();
-        }
-
-        // Получаем размеры стола.
-        width = game.getGameScene().getBounds().getX();
-        height = game.getGameScene().getBounds().getY();
-
-        // Получаем радиус шариков.
-        r = balls[0].getRadius();
+  
+        updateGameInfo();
     }
 
     private Ball[] balls; // Массив шаров для обработки.
@@ -99,6 +80,35 @@ public class yukiEngine implements PhysicalEngine {
 //                       impList[q] = 0;
 //                   }
             }
+    }
+
+    /* Обновляет все координаты, скорости и размеры, т.к.
+     положение шаров может быть изменено извне */
+    private void updateGameInfo(){
+        // Получаем положение шаров.
+        bPos = new float [bQuant][3];
+        for(int i=0; i<bQuant; ++i){
+            Vector3D a = balls[i].getCoordinates();
+            bPos[i][0] = a.getX();
+            bPos[i][1] = a.getY();
+            bPos[i][2] = a.getZ();
+        }
+
+        // Получаем скорости шаров.
+        bVel = new float [bQuant][3];
+        for(int i=0; i<bQuant; ++i){
+            Vector3D a = balls[i].getSpeed();
+            bVel[i][0] = a.getX();
+            bVel[i][1] = a.getY();
+            bVel[i][2] = a.getZ();
+        }
+
+        // Получаем размеры стола.
+        width = game.getGameScene().getBounds().getX();
+        height = game.getGameScene().getBounds().getY();
+
+        // Получаем радиус шариков.
+        r = balls[0].getRadius();
     }
 
     /* Процедура, реагирующая на столкновение со стенками. */

@@ -42,12 +42,12 @@ public class UserProfile implements Comparable<UserProfile> {
             Integer myId = new Integer(getId());
             Integer oId = new Integer(o.getId());
             return myId.compareTo(oId);
-        } else {
+        } else if(comp!=null){
             String mine = getProperty(comp);
             String others = getProperty(comp);
             if(mine==null) return -1;
             return mine.compareToIgnoreCase(others);
-        }
+        } else return hashCode()-o.hashCode();
     }
     
     @Override
@@ -66,20 +66,25 @@ public class UserProfile implements Comparable<UserProfile> {
     public int hashCode() {
         int hash = 3;
         hash = 41 * hash + (this.data != null ? this.data.hashCode() : 0);
-        hash = 41 * hash + (this.comp != null ? this.comp.hashCode() : 0);
         return hash;
     }
-    
-    public void update(){
+
+    /**
+     * Updates all properties of user profile.
+     * If server command failed, it does not make any changes.
+     * @return <code>true</code> if profile was updated, otherwise - <code>false</code>.
+     */
+    public boolean update(){
         synchronized(Main.server){
             Main.server.command("profile by id", getId()+"", Main.server.secret);
             String r[] = Main.server.getResponse();
-            if(r[0]==null || !r[0].equals("SUCCESS")) return;
+            if(r[0]==null || !r[0].equals("SUCCESS")) return false;
             data.clear();
             for(int j=1;j<r.length;j++){
                 setProperty(r[j].substring(0, r[j].indexOf(':')).trim(), 
                 r[j].substring(r[j].indexOf(':')+1, r[j].length()).trim());
             }
         }
+        return true;
     }
 }
