@@ -96,6 +96,7 @@ public class CommandInterpreter {
                     String id = br.readLine().trim();
                     String secret = br.readLine().trim();
                     if (secret.equals(u.getSecret())) {
+                        if(id.equals("0")) id=u.getId()+"";
                         String sql = "SELECT * FROM profiles WHERE id = " + id;
                         ResultSet r = Main.usersDB.doQouery(sql);
                         if (r.next()) {

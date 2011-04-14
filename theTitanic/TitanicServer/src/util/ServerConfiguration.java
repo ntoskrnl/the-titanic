@@ -20,6 +20,8 @@ public class ServerConfiguration {
 
     public static String lookAndFeel = UIManager.getCrossPlatformLookAndFeelClassName();
 
+    public static String user_db_file = "titanic_users.db";
+
     public static Preferences userPreferences = null;
 
     public static void savePreferences() {
@@ -32,6 +34,7 @@ public class ServerConfiguration {
         userPreferences.putInt("connection.server_port", serverPort);
         userPreferences.putByteArray("connection.proxy_host", proxyHost.getBytes());
         userPreferences.putByteArray("ui.look_and_feel", lookAndFeel.getBytes());
+        userPreferences.putByteArray("db.user_db_file", user_db_file.getBytes());
     }
 
     public static void loadPreferences(){
@@ -44,5 +47,6 @@ public class ServerConfiguration {
         ServerConfiguration.proxyHost = new String(userPreferences.getByteArray("connection.proxy_host", DEFAULT_PROXY_HOST.getBytes()));
         ServerConfiguration.proxyPort = userPreferences.getInt("connection.proxy_port", DEFAULT_PROXY_PORT);
         ServerConfiguration.lookAndFeel = new String(userPreferences.getByteArray("ui.look_and_feel", UIManager.getCrossPlatformLookAndFeelClassName().getBytes()));
+        ServerConfiguration.user_db_file = new String(userPreferences.getByteArray("db.user_db_file", "titanic_users.db".getBytes()));
     }
 }
