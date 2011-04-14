@@ -5,7 +5,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * This class is use encryption/decryption of string values.
+ * This class provides basic routines for encryption/decryption of string values.
  * @author danon
  */
 public class Crypto {
