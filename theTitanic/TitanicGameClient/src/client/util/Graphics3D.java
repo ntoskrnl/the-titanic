@@ -75,20 +75,24 @@ public class Graphics3D implements GraphicalEngine {
         maxwidth = g.getGameScene().getBounds().getX();
         high=maxhight/2.2f;
         width=maxwidth/2.2f;
-        r = game.getGameScene().getBalls()[0].getRadius()/maxhight*high*1.55f;
+        r = game.getGameScene().getBalls()[0].getRadius()/maxhight*high*1.5f;
       //  BallsArray = game.getGameScene().getBalls();
 
 
     }
 
     /** Adds some mouse and key listeners to the component */
+
     private void setEventListeners(Component c){
         /**
          * Behavour on key pressing
          */
         c.addKeyListener(new KeyAdapter() {
+
             @Override
             public void keyPressed(KeyEvent evt){
+   try{
+
                 int code = evt.getKeyCode();
                 Ball b = game.getBilliardKey().getBall();
                 int curBall=0;
@@ -135,8 +139,8 @@ public class Graphics3D implements GraphicalEngine {
                     // }
 
                     Vector3f pos = new Vector3f();
-                    pos.setX(game.getBilliardKey().getBall().getCoordinates().getY()/maxwidth*1.6f*width);
-                    pos.setY(game.getBilliardKey().getBall().getCoordinates().getX()/maxhight*1.6f*high);
+                    pos.setX(game.getBilliardKey().getBall().getCoordinates().getX()/maxwidth*1.6f*width);
+                    pos.setY(game.getBilliardKey().getBall().getCoordinates().getY()/maxhight*1.6f*high);
                     pos.setZ(game.getBilliardKey().getBall().getCoordinates().getZ());
                       Keyposition.setTranslation(pos);
                      
@@ -157,6 +161,8 @@ public class Graphics3D implements GraphicalEngine {
                       
                 }
 
+
+
                 if(code == KeyEvent.VK_LEFT){
                     phi = phi + 0.01f;
                     Transform3D t = new Transform3D();
@@ -167,6 +173,7 @@ public class Graphics3D implements GraphicalEngine {
                     setscenerot.setScale(scale);
                     Gamescenegroup.setTransform(setscenerot);
                      }
+
 
                  if(code == KeyEvent.VK_RIGHT){
                     phi = phi - 0.01f;
@@ -245,6 +252,11 @@ public class Graphics3D implements GraphicalEngine {
                                         
                      
                  }
+        }
+ catch(Exception ex){
+ System.err.println(ex);
+ System.exit(1);
+                 }
             }
         });
 
@@ -288,6 +300,9 @@ public class Graphics3D implements GraphicalEngine {
     }
 
     public void setRenderingArea(Container area) {
+        try {
+
+
 
         area.setLayout(new BorderLayout());
         GraphicsConfiguration config = SimpleUniverse.getPreferredConfiguration();
@@ -358,29 +373,44 @@ public class Graphics3D implements GraphicalEngine {
             
                 u.addBranchGraph(scene);
 
-      
+       } catch (Exception e) {
+           System.err.println(e);
+        }
     }
 
     private void SetDrawBalls(){
     int i;
+        try {
+
 
     for(i = 0;i < N;i++){
      if(BallTransform[i] == null) BallTransform[i] = new Transform3D();
     BallTransform[i].setTranslation(mass[i]);
     objTrans[i].setTransform(BallTransform[i]);
     }
+
+     } catch  (Exception e) {
+         System.err.println(e);
+        }
+
+
 }
 
     private void SetCoadinates(){
     int i;
+    try{
     for(i=0;i<N;i++){
 
         mass[i] = new Vector3f();
 
-        mass[i].setX(BallsArray[i].getCoordinates().getY()/maxwidth*1.6f*width);
-        mass[i].setY(BallsArray[i].getCoordinates().getX()/maxhight*1.6f*high);
+        mass[i].setX(BallsArray[i].getCoordinates().getX()/maxwidth*1.6f*width);
+        mass[i].setY(BallsArray[i].getCoordinates().getY()/maxhight*1.6f*high);
         mass[i].setZ(BallsArray[i].getCoordinates().getZ()-0.005f);
 
+        }
+       }
+     catch(Exception ex){
+        System.err.println(ex);
 
             }
 }
@@ -437,21 +467,25 @@ public Vector3f[] startmass(){
 
 
     int i;
-
+try{
     for(i=0;i<N;i++){
        if(mass[i] == null) mass[i] = new Vector3f();
-        mass[i].setX(game.getGameScene().getBalls()[i].getCoordinates().getY()/maxwidth*1.6f*width);
-        mass[i].setY(game.getGameScene().getBalls()[i].getCoordinates().getX()/maxhight*1.6f*high);
+        mass[i].setX(game.getGameScene().getBalls()[i].getCoordinates().getX()/maxwidth*1.6f*width);
+        mass[i].setY(game.getGameScene().getBalls()[i].getCoordinates().getY()/maxhight*1.6f*high);
         mass[i].setZ(game.getGameScene().getBalls()[i].getCoordinates().getZ()-0.005f);
 
     }
-   
+    }
+catch(Exception ex){
+    System.err.println(ex);
+}
     return mass;
 }
 
 
 // не делать
 private void SetStartTransform(Vector3f[] mass, BranchGroup bran){
+    try{
 
   
     int i=0;
@@ -472,7 +506,10 @@ private void SetStartTransform(Vector3f[] mass, BranchGroup bran){
             
         bran.addChild( objTrans[i]);
     }
-
+    }
+    catch(Exception ex){
+        System.err.println(ex);
+    }
 }
 
 
@@ -495,6 +532,7 @@ private void SetStartTransform(Vector3f[] mass, BranchGroup bran){
    //--------------Устанавливаем шары-------------------------------------------
 
    BranchGroup objRoot = new BranchGroup();
+   try{
    mass = startmass();
    SetStartTransform(mass, objRoot);
    //---------------------------------------------------------------------------
@@ -616,7 +654,7 @@ private void SetStartTransform(Vector3f[] mass, BranchGroup bran){
 
    TransformGroup tabletransform = new TransformGroup();
    Transform3D settable = new Transform3D();
-   settable.setTranslation(new Vector3d(-0.179,0.05,-0.14));
+   settable.setTranslation(new Vector3d(-0.18,0.05,-0.14));
    settable.setScale(new Vector3d(1.55,1.355,1.0));
    
   
@@ -626,8 +664,14 @@ private void SetStartTransform(Vector3f[] mass, BranchGroup bran){
  
 
    objRoot.addChild(tabletransform);
-   
+        }
+   catch(Exception w){
+       System.err.println(w);
+   }
+
    return objRoot;
+
+
 
 }
 
