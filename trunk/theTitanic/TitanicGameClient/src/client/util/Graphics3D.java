@@ -47,7 +47,7 @@ public class Graphics3D implements GraphicalEngine {
     private TransformGroup Keytrans;
     private Transform3D Keyposition;
 
-    Sphere obj15;
+    
     Appearance startballapp = new Appearance();
     Appearance ballapp = new Appearance();
     private float width = 0.59f;  // ширина стола
@@ -147,10 +147,20 @@ public class Graphics3D implements GraphicalEngine {
                       Keytrans.setTransform(Keyposition);
 
                       //Changing color of 15 ball
-                        if(curBall == 15) obj15.getAppearance().getMaterial().setDiffuseColor(new Color3f(Color.PINK));
-                        else{
-                          obj15.getAppearance().getMaterial().setDiffuseColor(diffuse);
+                      int i;
+                      for(i=0; i<16; i++){
+
+                        if(curBall == i) {
+                            Sphere chsp;
+                            chsp = (Sphere)objTrans[i].getChild(0);
+                            chsp.getAppearance().getTransparencyAttributes().setTransparency(0.3f);
                         }
+                        else{
+                          Sphere chsp;
+                          chsp = (Sphere)objTrans[i].getChild(0);
+                          chsp.getAppearance().getTransparencyAttributes().setTransparency(0);
+                        }
+                    }
 
                 }
 
@@ -158,6 +168,14 @@ public class Graphics3D implements GraphicalEngine {
                       Transform3D key = new Transform3D();
                       key.setTranslation(new Vector3f(-.7f, 0.0f,0.0f));
                       Keytrans.setTransform(key);
+                      int i;
+                       for(i=0; i<16; i++){
+                        if(curBall == i) {
+                            Sphere chsp;
+                            chsp = (Sphere)objTrans[i].getChild(0);
+                            chsp.getAppearance().getTransparencyAttributes().setTransparency(0.0f);
+                        }
+                    }
                       
                 }
 
@@ -381,8 +399,6 @@ public class Graphics3D implements GraphicalEngine {
     private void SetDrawBalls(){
     int i;
         try {
-
-
     for(i = 0;i < N;i++){
      if(BallTransform[i] == null) BallTransform[i] = new Transform3D();
     BallTransform[i].setTranslation(mass[i]);
@@ -492,19 +508,28 @@ private void SetStartTransform(Vector3f[] mass, BranchGroup bran){
 
     Sphere[] ball = new Sphere[N];
     Transform3D[] pos = new Transform3D[N];
+    
 
     for(i=0;i<N-1;i++){
-     
+        
+     TransparencyAttributes ta = new TransparencyAttributes();
+     ta.setTransparencyMode(Transparency.TRANSLUCENT);
+    
+
          objTrans[i] = new TransformGroup();
          objTrans[i].setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
         ball[i] = new Sphere(r);
+        ball[i].getAppearance().getMaterial().setDiffuseColor(ambient);
+        ball[i].getAppearance().setTransparencyAttributes(ta);
+        ball[i].getAppearance().getMaterial().setCapability(Material.ALLOW_COMPONENT_WRITE);
+        ball[i].getAppearance().getTransparencyAttributes().setCapability(TransparencyAttributes.ALLOW_VALUE_WRITE);
         pos[i] = new Transform3D();
 
         pos[i].setTranslation(mass[i]);
          objTrans[i].setTransform(pos[i]);
          objTrans[i].addChild(ball[i]);
             
-        bran.addChild( objTrans[i]);
+        bran.addChild(objTrans[i]);
     }
     }
     catch(Exception ex){
@@ -545,9 +570,13 @@ private void SetStartTransform(Vector3f[] mass, BranchGroup bran){
    startballapp.setMaterial(new Material(ambient, emissive, diffuse, speculas, 12000f));
    ballapp.setMaterial(new Material(ambient, emissive, new Color3f(0.3f, 0.3f, 0.3f), speculas, 12000f));
    
-   obj15 = new Sphere(r, startballapp);
-   
-   obj15.getAppearance().getMaterial().setCapability(Material.ALLOW_COMPONENT_WRITE);
+   Sphere startball = new Sphere(r, startballapp);
+   TransparencyAttributes ta = new TransparencyAttributes();
+   ta.setTransparencyMode(Transparency.BITMASK);
+   ta.setTransparency(0);
+   startball.getAppearance().setTransparencyAttributes(ta);
+   startball.getAppearance().getTransparencyAttributes().setCapability(TransparencyAttributes.ALLOW_VALUE_WRITE);
+   startball.getAppearance().getMaterial().setCapability(Material.ALLOW_COMPONENT_WRITE);
  
    objTrans[N-1].setCapability(TransformGroup.ALLOW_CHILDREN_WRITE);
    Transform3D pos = new Transform3D();
@@ -555,7 +584,7 @@ private void SetStartTransform(Vector3f[] mass, BranchGroup bran){
 
    //1 шар, которым начинается игра---------------------------------------------
    objTrans[N-1].setTransform(pos);
-   objTrans[N-1].addChild(obj15);
+   objTrans[N-1].addChild(startball);
    objRoot.addChild(objTrans[N-1]);
    
    //---------------------------------------------------------------------------
@@ -628,6 +657,7 @@ private void SetStartTransform(Vector3f[] mass, BranchGroup bran){
    ObjectFile gamekey = new ObjectFile();
    Scene skey = null;
    ObjectFile MAXtable = new ObjectFile();
+ 
    Scene stable = null;
 
    try {
