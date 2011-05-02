@@ -41,13 +41,16 @@ public class UpDownBottom extends Thread {
         for(;;){
         if(COUNT!=1){
             COUNT=0;
+          
             //while(time>2*Math.PI){
             //    time-=Math.PI*2;
             //}
             Str = (1+(float)(Math.sin(time)))/2;
             if(Str!=0.5) {
+                
                 KeyKick kick = new KeyKick(key, 1, Str, game);
                 kick.start();
+                
             }
             break;
         }
@@ -57,7 +60,7 @@ public class UpDownBottom extends Thread {
         time+=0.01;
         //Transform3D ad = new Transform3D();
         //ad.setTranslation(new Vector3d(Math.sin(time),Math.cos(time),0));
-        trans.setTranslation(new Vector3d(0.8855, 0.635+0.4*A*Math.sin(time), 1));
+        trans.setTranslation(new Vector3d(0.88, 0.605+0.4*A*Math.sin(time), 1));
         rot.rotX(Math.PI/3);
         rot.mul(trans);
         
