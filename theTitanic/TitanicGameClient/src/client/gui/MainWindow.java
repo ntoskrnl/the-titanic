@@ -8,10 +8,13 @@ package client.gui;
 
 import client.Main;
 import client.util.UserProfile;
+import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URI;
+import java.util.ArrayList;
 import javax.swing.DefaultListModel;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
@@ -94,7 +97,57 @@ public class MainWindow extends javax.swing.JFrame {
         if(!Main.server.isConnected()){
             showLostConnectionMessage();
         }
+    }
 
+    private boolean requestGame(UserProfile rival){
+        try{
+            UserProfile me = new UserProfile(0);
+            me.update();
+            if(rival==null) rival=me;
+            if(rival.equals(me)){    
+                /* // Show message that user is trying to play with themselves. =)
+                EventQueue.invokeLater(new Runnable() {
+                    public void run() {
+                        JOptionPane.showMessageDialog(rootPane, "You are about to play with yourself. "
+                                + "The results of the game won't be stored on the server.",
+                        "Titanic GameClient: Info", JOptionPane.INFORMATION_MESSAGE);
+                    }
+                });
+                */
+                return true;
+            }
+            synchronized(Main.server){
+                Main.server.command("REQUEST GAME", rival.getProperty("id"), Main.server.secret);
+                String[] r = Main.server.getResponse();
+                if(r==null) return false;
+                if(r.length==0) return false;
+                if(!r[0].toUpperCase().equals("SUCCESS")) return false;
+                return true;
+            }
+        } catch(Exception ex){}
+        return false;
+    }
+
+    public void initGame(UserProfile rival){
+        try{
+            if(!Main.checkMemory(12*1024*1024))
+                throw new OutOfMemoryError("Low available memory");
+
+            if(rival==null){
+                rival=new UserProfile(0);
+                rival.update();
+            }
+            GameWindow g = new GameWindow(rival);
+            g.setVisible(true);
+            gameWindows.add(g);
+        } catch (Error ex){
+            System.err.println("Start game error: "+ex.getLocalizedMessage());
+            JOptionPane.showMessageDialog(rootPane,
+                    ex.getLocalizedMessage()+" The application may behave abnormally.",
+                    "Titanic GameCilent: Error",
+                    JOptionPane.ERROR_MESSAGE);
+            System.gc();
+        }
     }
 
     /** This method is called from within the constructor to
@@ -298,7 +351,17 @@ public class MainWindow extends javax.swing.JFrame {
         try{
             if(!Main.checkMemory(12*1024*1024))
                 throw new OutOfMemoryError("Low available memory");
-            new GameWindow().setVisible(true);
+            UserProfile rival = (UserProfile)jList1.getSelectedValue();
+            boolean r = requestGame(rival);
+            if(r){
+                JFrame f = new WaitingForPlayerWindow(rival, this);
+                f.setVisible(true);
+            }
+            else{
+                JOptionPane.showMessageDialog(rootPane, "Sorry. But your request was ignored or server is temporarily down. "
+                        + "Try again or choose another opponent to play with.",
+                    "Titanic GameClient: Info", JOptionPane.INFORMATION_MESSAGE);
+            }
         } catch (Error ex){
             System.err.println("Start game error: "+ex.getLocalizedMessage());
             JOptionPane.showMessageDialog(rootPane,
@@ -409,6 +472,7 @@ public class MainWindow extends javax.swing.JFrame {
 
     private Timer checkConnectionTimer, userUpdateTimer;
     private UserProfile myProfile;
+    private ArrayList<GameWindow> gameWindows = new ArrayList<GameWindow>();
 }
 
 
