@@ -57,8 +57,8 @@ public class UpDownBottom extends Thread {
         time+=0.01;
         //Transform3D ad = new Transform3D();
         //ad.setTranslation(new Vector3d(Math.sin(time),Math.cos(time),0));
-        trans.setTranslation(new Vector3d(0.75, -0.85+0.4*A*Math.sin(time), 1));
-        rot.rotX(-Math.PI/6);
+        trans.setTranslation(new Vector3d(0.8855, 0.635+0.4*A*Math.sin(time), 1));
+        rot.rotX(Math.PI/3);
         rot.mul(trans);
         
         tr.setTransform(rot);

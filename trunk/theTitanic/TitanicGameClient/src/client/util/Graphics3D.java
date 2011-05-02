@@ -344,7 +344,7 @@ public class Graphics3D implements GraphicalEngine {
     tranbot1.setTranslation(new Vector3d(0.9, -0.5, 1));
 
     Transform3D t = new Transform3D();
-    t.rotX(-Math.PI/6);
+    t.rotX(Math.PI/3);
     tranbot.mul(t);
     tranbot1.mul(t);
     bott1.setTransform(tranbot);
@@ -355,7 +355,8 @@ public class Graphics3D implements GraphicalEngine {
     field.addChild(bott1);
     field.addChild(button);
     Transform3D move = new Transform3D();
-    move.setTranslation(new Vector3d(0.8,0,0));
+    move.setTranslation(new Vector3d(-0.35,-1,-0.5));
+    move.setScale(0.8);
     field.setTransform(move);
     Branch.addChild(field);
 
