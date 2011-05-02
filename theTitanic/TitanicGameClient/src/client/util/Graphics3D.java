@@ -45,8 +45,10 @@ public class Graphics3D implements GraphicalEngine {
     public Transform3D[] BallTransform;
     private Game game;
     private TransformGroup Keytrans;
+    private TransformGroup Key;
+    private Transform3D Keypos;
     private Transform3D Keyposition;
-
+    private TransformGroup button;
     
     Appearance startballapp = new Appearance();
     Appearance ballapp = new Appearance();
@@ -128,8 +130,7 @@ public class Graphics3D implements GraphicalEngine {
                     curBall%=game.getGameScene().getBalls().length;
                     game.getBilliardKey().changeBall(game.getGameScene().getBalls()[curBall]);
 
-                     // if(Keyposition == null) {
-                       Keyposition = new Transform3D();
+                      if(Keyposition == null) Keyposition = new Transform3D();
                      
                        Keyposition.rotZ(game.getBilliardKey().getAngle());
                        Transform3D rotk = new Transform3D();
@@ -145,7 +146,7 @@ public class Graphics3D implements GraphicalEngine {
                       Keyposition.setTranslation(pos);
                      
                       Keytrans.setTransform(Keyposition);
-
+                      
                       //Changing color of 15 ball
                       int i;
                       for(i=0; i<16; i++){
@@ -225,7 +226,8 @@ public class Graphics3D implements GraphicalEngine {
                     setscenerot.setScale(scale);
                     Gamescenegroup.setTransform(setscenerot);
                 }
-                
+
+
                 if(code == KeyEvent.VK_ESCAPE){
                     phi = 0; psi = 0; 
                     scale.x = 1;
@@ -270,6 +272,13 @@ public class Graphics3D implements GraphicalEngine {
                                         
                      
                  }
+                //Запуск выбора силы кия и отрисовка удара
+                if(code == KeyEvent.VK_ENTER){
+
+                    UpDownBottom boto = new UpDownBottom(button, 0.4, Key, game);
+                    boto.start();
+
+                }
         }
  catch(Exception ex){
  System.err.println(ex);
@@ -317,6 +326,55 @@ public class Graphics3D implements GraphicalEngine {
 
     }
 
+    private BranchGroup Textandgamefield(){
+    BranchGroup Branch = new BranchGroup();
+
+    Shape3D bot = new Shape3D(getqw(0.4,0.1,0.015));
+    Shape3D bot1 = new Shape3D(getqw(0.02, 0.15, 0.005));
+
+    button = new TransformGroup();
+    button.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+
+    button.addChild(bot1);
+
+    TransformGroup bott1 = new TransformGroup();
+    Transform3D tranbot = new Transform3D();
+    Transform3D tranbot1 = new Transform3D();
+    tranbot.setTranslation(new Vector3d(0.9, -0.5, 1));
+    tranbot1.setTranslation(new Vector3d(0.9, -0.5, 1));
+
+    Transform3D t = new Transform3D();
+    t.rotX(-Math.PI/6);
+    tranbot.mul(t);
+    tranbot1.mul(t);
+    bott1.setTransform(tranbot);
+    button.setTransform(tranbot1);
+    bott1.addChild(bot);
+    TransformGroup field = new TransformGroup();
+
+    field.addChild(bott1);
+    field.addChild(button);
+    Transform3D move = new Transform3D();
+    move.setTranslation(new Vector3d(0.8,0,0));
+    field.setTransform(move);
+    Branch.addChild(field);
+
+
+    Text2D text = new Text2D("Game in process", diffuse, "Times new Roman", 25, Font.PLAIN);
+        TransformGroup texttr = new TransformGroup();
+        texttr.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
+        texttr.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+
+        Transform3D textposition = new Transform3D();
+        textposition.rotX(Math.PI / 3.0d);
+        textposition.setTranslation(new Vector3f(0.2f,0f,0.9f));
+        texttr.setTransform(textposition);
+        texttr.addChild(text);
+
+        Branch.addChild(texttr);
+
+        return Branch;
+    }
     public void setRenderingArea(Container area) {
         try {
 
@@ -347,25 +405,8 @@ public class Graphics3D implements GraphicalEngine {
 
        Gamescenegroup.addChild(Gamescene);
 
-        //scene = createSceneGraph();
+                     
         scene.addChild(Gamescenegroup);
-        scene.addChild(rotatescene);
-        Text2D text = new Text2D("Game in process", diffuse, "Times new Roman", 25, Font.PLAIN);
-        TransformGroup texttr = new TransformGroup();
-        texttr.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
-        texttr.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
-
-        Transform3D textposition = new Transform3D();
-        textposition.rotX(Math.PI / 3.0d);
-        textposition.setTranslation(new Vector3f(0.2f,0f,0.9f));
-        texttr.setTransform(textposition);
-        texttr.addChild(text);
-       
-
-        scene.addChild(texttr);
-      
-                
-
         scene.compile();
 
         u.getViewingPlatform().setNominalViewingTransform();
@@ -390,6 +431,7 @@ public class Graphics3D implements GraphicalEngine {
 // --------------------------------------------------------------------
             
                 u.addBranchGraph(scene);
+                u.addBranchGraph(Textandgamefield());
 
        } catch (Exception e) {
            System.err.println(e);
@@ -650,8 +692,12 @@ private void SetStartTransform(Vector3f[] mass, BranchGroup bran){
    Keytrans.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
    Keytrans.setTransform(let);
    Keytrans.setTransform(key);
-   
 
+   if(Key == null) Key = new TransformGroup();
+   if(Keypos == null) Keypos = new Transform3D();
+   Key.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
+   Key.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+   Key.setTransform(Keypos);
 
 
    ObjectFile gamekey = new ObjectFile();
@@ -679,7 +725,8 @@ private void SetStartTransform(Vector3f[] mass, BranchGroup bran){
        System.exit(1);
    }
 
-   Keytrans.addChild(skey.getSceneGroup());
+   Key.addChild(skey.getSceneGroup());
+   Keytrans.addChild(Key);
    objRoot.addChild(Keytrans);
 
    TransformGroup tabletransform = new TransformGroup();
@@ -709,6 +756,54 @@ private void SetStartTransform(Vector3f[] mass, BranchGroup bran){
         u.cleanup();
     }
 
+private Geometry getqw(double h, double w,double b ){
+
+
+   QuadArray qward = new QuadArray(16, QuadArray.COORDINATES | TriangleArray.COLOR_3);
+
+    qward.setCoordinate(0, new Point3d(-w/2,-h/2,0));
+    qward.setCoordinate(1, new Point3d(b-w/2,-h/2,0));
+    qward.setCoordinate(2, new Point3d(b-w/2,h/2,0));
+    qward.setCoordinate(3, new Point3d(-w/2,h/2,0));
+
+    qward.setColor(0, new Color3f(0, 0, 10));
+    qward.setColor(1, new Color3f(0, 0, 10));
+    qward.setColor(2, new Color3f(0, 0, 10));
+    qward.setColor(3, new Color3f(0, 0, 10));
+
+    qward.setCoordinate(4, new Point3d(-w/2,-b+h/2,0));
+    qward.setCoordinate(5, new Point3d(w/2,-b+h/2,0));
+    qward.setCoordinate(6, new Point3d(w/2,h/2,0));
+    qward.setCoordinate(7, new Point3d(-w/2,h/2,0));
+
+    qward.setColor(4, new Color3f(0, 0, 10));
+    qward.setColor(5, new Color3f(0, 0, 10));
+    qward.setColor(6, new Color3f(0, 0, 10));
+    qward.setColor(7, new Color3f(0, 0, 10));
+
+    qward.setCoordinate(8,  new Point3d(w/2,h/2,0));
+    qward.setCoordinate(9,  new Point3d(-b+w/2,h/2,0));
+    qward.setCoordinate(10, new Point3d(-b+w/2,-h/2,0));
+    qward.setCoordinate(11, new Point3d(w/2,-h/2,0));
+
+    qward.setColor(8,  new Color3f(0, 0, 10));
+    qward.setColor(9,  new Color3f(0, 0, 10));
+    qward.setColor(10, new Color3f(0, 0, 10));
+    qward.setColor(11, new Color3f(0, 0, 10));
+
+    qward.setCoordinate(12, new Point3d(-w/2,-h/2,0));
+    qward.setCoordinate(13, new Point3d(w/2,-h/2,0));
+    qward.setCoordinate(14, new Point3d(w/2,b-h/2,0));
+    qward.setCoordinate(15, new Point3d(-w/2,b-h/2,0));
+
+    qward.setColor(12, new Color3f(0, 0, 10));
+    qward.setColor(13, new Color3f(0, 0, 10));
+    qward.setColor(14, new Color3f(0, 0, 10));
+    qward.setColor(15, new Color3f(0, 0, 10));
+
+
+    return qward;
+}
    
 
 }
