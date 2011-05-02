@@ -26,6 +26,7 @@ public class SimpleGame extends Game {
     private BilliardKey key;
     private Container renderingArea;
     private boolean rearrange = false;
+    int status = Game.S_NONE;
 
     /**
      * Constructs new Game instance and sets c as default rendering area.
@@ -156,8 +157,13 @@ public class SimpleGame extends Game {
     }
 
     @Override
-    public int changeStatus(int gameStatus) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    synchronized public int changeStatus(int gameStatus) {
+        return status = gameStatus;
+    }
+
+    @Override
+    synchronized public int getGameStatus(){
+        return status;
     }
 
     @Override

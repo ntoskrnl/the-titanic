@@ -8,7 +8,10 @@ package client.gui;
 
 import client.Main;
 import client.util.SimpleGame;
+import client.util.UserProfile;
+import java.awt.EventQueue;
 import java.util.Timer;
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 /**
@@ -19,20 +22,27 @@ public class GameWindow extends javax.swing.JFrame {
 
 
     /** Creates new form GameWindow */
-    public GameWindow() {
+    public GameWindow(UserProfile rvl) {
         initComponents();
+        this.rival = rvl;
         try {
             if(!Main.checkMemory(10*1024*1024)){
                 JOptionPane.showMessageDialog(rootPane, "Too few free memory! Game may bevave abnormally.",
                     "Titanic GameClient: Warning", JOptionPane.WARNING_MESSAGE);
             } else if(!Main.checkMemory(8*1024*1024))
                 throw new ExceptionInInitializerError("Out of memory.");
-            game = new SimpleGame(gameScenePanel);
+
+            initGame();
+
         } catch (Exception ex){
             JOptionPane.showMessageDialog(rootPane, "Failed to create a game instance!\nIt is trongly recommended to close all games and relogin. If problem repeats, restart the application.",
                     "Titanic GameClient: Error", JOptionPane.ERROR_MESSAGE);
-            dispose();
+            closeWindowLater();
         }
+    }
+
+    public final void initGame(){
+        game = new SimpleGame(gameScenePanel);
     }
 
     /** This method is called from within the constructor to
@@ -144,6 +154,14 @@ public class GameWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_formWindowClosing
 
+    private void closeWindowLater(){
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                setVisible(false);
+                dispose();
+            }
+        });
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel buttonPanel;
@@ -155,4 +173,7 @@ public class GameWindow extends javax.swing.JFrame {
 
     private SimpleGame game;
     private Timer timer;
+    private UserProfile rival;
+    private boolean blankCycle = true;
+
 }
