@@ -21,7 +21,6 @@ import com.sun.j3d.loaders.IncorrectFormatException;
 import com.sun.j3d.loaders.Scene;
 import com.sun.j3d.utils.behaviors.mouse.MouseRotate;
 import com.sun.j3d.utils.geometry.Text2D;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseWheelListener;
 import java.io.*;
 /**
@@ -116,6 +115,7 @@ public class Graphics3D implements GraphicalEngine {
                         do{
                             inc+=(float)Math.PI/150;
                             game.getBilliardKey().setAngle(game.getBilliardKey().getAngle() - (float)Math.PI/150);
+
                         }while(!game.getBilliardKey().validAngle(game)&&inc<Math.PI*2);
                     }
 
@@ -329,8 +329,8 @@ public class Graphics3D implements GraphicalEngine {
     private BranchGroup Textandgamefield(){
     BranchGroup Branch = new BranchGroup();
 
-    Shape3D bot = new Shape3D(getqw(0.4,0.1,0.015));
-    Shape3D bot1 = new Shape3D(getqw(0.02, 0.15, 0.005));
+    Shape3D bot = new Shape3D(getqw(0.4,0.1,0.015,1));
+    Shape3D bot1 = new Shape3D(getqw(0.02, 0.15, 0.005,0));
 
     button = new TransformGroup();
     button.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
@@ -355,7 +355,7 @@ public class Graphics3D implements GraphicalEngine {
     field.addChild(bott1);
     field.addChild(button);
     Transform3D move = new Transform3D();
-    move.setTranslation(new Vector3d(-0.35,-1,-0.5));
+    move.setTranslation(new Vector3d(0.1,0.0,-0.3));
     move.setScale(0.8);
     field.setTransform(move);
     Branch.addChild(field);
@@ -757,10 +757,10 @@ private void SetStartTransform(Vector3f[] mass, BranchGroup bran){
         u.cleanup();
     }
 
-private Geometry getqw(double h, double w,double b ){
+private Geometry getqw(double h, double w,double b, int look ){
 
 
-   QuadArray qward = new QuadArray(16, QuadArray.COORDINATES | TriangleArray.COLOR_3);
+   QuadArray qward = new QuadArray(20, QuadArray.COORDINATES | TriangleArray.COLOR_3);
 
     qward.setCoordinate(0, new Point3d(-w/2,-h/2,0));
     qward.setCoordinate(1, new Point3d(b-w/2,-h/2,0));
@@ -801,7 +801,18 @@ private Geometry getqw(double h, double w,double b ){
     qward.setColor(13, new Color3f(0, 0, 10));
     qward.setColor(14, new Color3f(0, 0, 10));
     qward.setColor(15, new Color3f(0, 0, 10));
+if(look == 1){
 
+    qward.setCoordinate(16, new Point3d(-w/2+b,-h/2+b,0));
+    qward.setCoordinate(17, new Point3d(w/2-b,-h/2+b,0));
+    qward.setCoordinate(18, new Point3d(w/2-b,h/2-b,0));
+    qward.setCoordinate(19, new Point3d(-w/2+b,h/2-b,0));
+
+    qward.setColor(16, new Color3f(0, 10, 0));
+    qward.setColor(17, new Color3f(0, 10, 0));
+    qward.setColor(18, new Color3f(10, 0, 0));
+    qward.setColor(19, new Color3f(10, 0, 0));
+}
 
     return qward;
 }
