@@ -11,7 +11,6 @@ import client.util.SimpleGame;
 import client.util.UserProfile;
 import java.awt.EventQueue;
 import java.util.Timer;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 /**
@@ -24,7 +23,6 @@ public class GameWindow extends javax.swing.JFrame {
     /** Creates new form GameWindow */
     public GameWindow(UserProfile rvl, boolean first) {
         initComponents();
-        this.rival = rvl;
         try {
             if(!Main.checkMemory(10*1024*1024)){
                 JOptionPane.showMessageDialog(rootPane, "Too few free memory! Game may bevave abnormally.",
@@ -32,6 +30,7 @@ public class GameWindow extends javax.swing.JFrame {
             } else if(!Main.checkMemory(8*1024*1024))
                 throw new ExceptionInInitializerError("Out of memory.");
 
+            setTitle(getTitle()+" [You vs. " + rvl.getProperty("pub_nickname") + "]");
             initGame();
 
         } catch (Exception ex){
@@ -39,6 +38,7 @@ public class GameWindow extends javax.swing.JFrame {
                     "Titanic GameClient: Error", JOptionPane.ERROR_MESSAGE);
             closeWindowLater();
         }
+        if(splash!=null) splash.setVisible(false);
     }
 
     public final void initGame(){
@@ -137,6 +137,15 @@ public class GameWindow extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    public static void showSplash(){
+        splash.setVisible(true);
+        splash.repaint();
+    }
+    
+    public static void hideSplash(){
+        splash.setVisible(false);
+    }
+    
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         if(game!=null) game.start();
         gameScenePanel.requestFocus();
@@ -175,5 +184,6 @@ public class GameWindow extends javax.swing.JFrame {
     private Timer timer;
     private UserProfile rival;
     private boolean blankCycle = true;
+    private static javax.swing.JFrame splash = new GameStartingSplashWindow();
 
 }
