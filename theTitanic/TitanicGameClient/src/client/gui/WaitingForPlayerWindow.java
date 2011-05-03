@@ -6,6 +6,7 @@
 
 package client.gui;
 
+import client.Main;
 import client.util.UserProfile;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,10 +18,15 @@ import javax.swing.Timer;
  */
 public class WaitingForPlayerWindow extends javax.swing.JFrame {
 
+    /**
+     * Default time limit in seconds to wait for response.
+     */
+    public static final int TIME_LIMIT = 20;
+    
     /** Creates new form WaitingForPlayerWindow */
     public WaitingForPlayerWindow(UserProfile rvl, MainWindow mw) {
         initComponents();
-        count = 20;
+        count = TIME_LIMIT;
         mainWindow = mw;
         rival = rvl;
 
@@ -32,28 +38,70 @@ public class WaitingForPlayerWindow extends javax.swing.JFrame {
         jLabel1.setText("<html>The request was successfully sent to your opponent "
                 + rival.getProperty("pub_nickname") + ". <br>Please, wait. There are 20 seconds to respond.</html>");
 
-        timer = new Timer(999, new ActionListener() {
+        // This will provide a count down
+        countDownTimer = new Timer(999, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if(count>0){
                     count--;
                     jButton1.setText("Cancel" + " ("+count+")");
                 } else {
-                    timer.stop();
-                    dispose();
+                    closeMe();
                 }
             }
         });
-        timer.start();
-
-        timer.addActionListener(new ActionListener() {
+        
+        // This will check the response
+        responseCheckTimer = new Timer(999, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if(count<=15 && mainWindow!=null) {
-                    mainWindow.initGame(rival);
-                    timer.stop();
-                    dispose();
+                boolean r = checkRequest();
+                Boolean a = getResponse();
+                if(a!=null) accepted = a;
+                if(r && a!=null && a==true && mainWindow!=null) {
+                    closeMe();
+                    mainWindow.initGame(rival, true);
+                    
+                }
+                if(!r || (a!=null && a==false)){
+                    closeMe();
                 }
             }
         });
+        setResizable(false);
+        
+        responseCheckTimer.start();
+        countDownTimer.start();
+    }
+    
+    
+    private Boolean getResponse(){
+        try{  
+            String[] r = Main.server.commandAndResponse(500, "IS GAME ACCEPTED", rival.getProperty("id"), Main.server.secret);
+            if(r==null||r.length==0) return null;
+            if(!r[0].toUpperCase().equals("SUCCESS")) return null;
+            if(r[1].toUpperCase().equals("YES")) return true;
+            else if (r[1].toUpperCase().equals("NO")) return false;
+            else return null;
+        } catch (Exception ex){
+            return false;
+        }
+    }
+    
+    private boolean checkRequest(){
+        UserProfile me = new UserProfile(0);
+        me.update();
+        String[] r = Main.server.commandAndResponse(500, "IS REQUEST VALID", me.getProperty("id"), rival.getProperty("id"), Main.server.secret);
+        if(r[0].equalsIgnoreCase("SUCCESS")) return true;
+        return false;
+    }
+    
+    private void cancelRequest(){
+        Main.server.commandAndResponse(500, "CANCEL REQUEST", rival.getProperty("id"), Main.server.secret);
+    }
+    
+    private void closeMe(){
+        countDownTimer.stop();
+        responseCheckTimer.stop();
+        dispose();
     }
 
     /** This method is called from within the constructor to
@@ -72,7 +120,11 @@ public class WaitingForPlayerWindow extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Waiting for user response...");
         setAlwaysOnTop(true);
-        setResizable(false);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosed(java.awt.event.WindowEvent evt) {
+                formWindowClosed(evt);
+            }
+        });
 
         jLabel1.setText("<html>You are about to play with your opponent. <br>Now you need to receive their response.</html>");
 
@@ -97,10 +149,10 @@ public class WaitingForPlayerWindow extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 281, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 309, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jButton2)
-                        .addGap(18, 18, 18)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jButton1)))
                 .addContainerGap())
         );
@@ -109,24 +161,34 @@ public class WaitingForPlayerWindow extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 30, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1)
                     .addComponent(jButton2))
-                .addContainerGap(23, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        timer.stop();
-        dispose();
+        cancelRequest();
+        closeMe();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        count = 20;
+        count = TIME_LIMIT;
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void formWindowClosed(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosed
+        countDownTimer.stop();
+        responseCheckTimer.stop();
+        UserProfile me = new UserProfile(0);
+        me.update();
+        if(!accepted)
+            Main.server.commandAndResponse(100, "CANCEL REQUEST", me.getProperty("id"), 
+                rival.getProperty("id"), Main.server.secret);
+    }//GEN-LAST:event_formWindowClosed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
@@ -135,7 +197,8 @@ public class WaitingForPlayerWindow extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     private int count;
-    private Timer timer;
+    private Timer countDownTimer, responseCheckTimer;
     private MainWindow mainWindow;
     private UserProfile rival;
+    private boolean accepted = false;
 }

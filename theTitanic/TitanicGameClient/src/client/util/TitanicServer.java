@@ -3,8 +3,8 @@ package client.util;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.net.DatagramSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.ArrayList;
 
 /**
@@ -21,6 +21,11 @@ public class TitanicServer {
     private Socket socket;
     private boolean connected = false;
     public String secret = null;
+    
+    public static MeasuringInputStream in;
+    public static MeasuringOutputStream out;
+    
+    public static final int DEFAULT_TIME_OUT = 10000;
 
     public TitanicServer() {
         host = "danon-laptop.campus.mipt.ru";
@@ -28,13 +33,16 @@ public class TitanicServer {
         connect();
     }
 
-    public final void connect(){
+    public synchronized final void connect(){
         try{
             socket = new Socket(host, port);
             socket.setTcpNoDelay(true);
-            socket.setSoTimeout(3000);
-            br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            pw = new PrintWriter(socket.getOutputStream());
+            socket.setSoTimeout(DEFAULT_TIME_OUT);
+            
+            in = new MeasuringInputStream(socket.getInputStream());
+            out = new MeasuringOutputStream(socket.getOutputStream());
+            br = new BufferedReader(new InputStreamReader(in));
+            pw = new PrintWriter(out);
             connected = true;
         } catch (Exception ex){
             System.err.println("CONNECT: "+ex.getLocalizedMessage());
@@ -42,7 +50,7 @@ public class TitanicServer {
         }
     }
 
-    public boolean isConnected(){
+    public synchronized boolean isConnected(){
         if(socket==null) return false;
         return connected && socket.isConnected();
     }
@@ -51,7 +59,7 @@ public class TitanicServer {
      * Authentication method.
      * @return TRUE if authentication performed, and FALSE otherwise.
      */
-    public boolean authorize(String login, String password){
+    public synchronized boolean authorize(String login, String password){
         status = "Authentication";
         if(socket==null||!socket.isConnected()){
             System.err.println("AUTH: Not connected.");
@@ -77,7 +85,7 @@ public class TitanicServer {
         return true;
     }
 
-    public void command(String command, String... args){
+    private void command(String command, String... args){
         String pstatus = status;
         String cmd = command.trim().toUpperCase();
         status = cmd;
@@ -87,24 +95,28 @@ public class TitanicServer {
             else pw.println();
         }
         pw.flush();
+        System.out.println(cmd);
         status = pstatus;
     }
 
-    public String[] getResponse(){
+    private String[] getResponse(){
         ArrayList<String> res = new ArrayList<String>();
         try{
             String line = br.readLine();
             if(line==null) line = "FAIL";
             res.add(line);
            
-            if(!res.get(0).equals("SUCCESS")) 
-                return (String[])res.toArray();
+            if(!res.get(0).equals("SUCCESS")) {
+                String[] r = new String[res.size()];
+                res.toArray(r);
+                return r;
+            }
             
             while(!(line=br.readLine()).equals(""))
                 res.add(line);
 
         } catch(Exception ex){
-            System.err.println("getResponse: Connection problem or strange server response.");
+            System.err.println("getResponse: Connection problem or strange server response."+ex.getLocalizedMessage());
             if(!res.isEmpty()) System.err.println(res.get(0));
         }
 
@@ -115,21 +127,53 @@ public class TitanicServer {
         res.toArray(r);
         return r;
     }
-
-    public void disconnect(){
+    
+    public synchronized String[] commandAndResponse(String command, String... args){
+        command(command, args);
+        String[] res = getResponse();
+        if(res==null){
+            res = new String[1];
+            res[0]="FAIL";
+        }
+        return res;
+    }
+    
+    public synchronized String[] commandAndResponse(int timeLimit, String command, String... args){
+        int pt = DEFAULT_TIME_OUT;
         try{
-            if(pw!=null){
-                pw.println("exit");
-                pw.close();
-            }
+            pt = socket.getSoTimeout();
+            socket.setSoTimeout(timeLimit);
+        } catch (Exception ex){}
+        String[] res = null;
+        try{
+            command(command, args);
+            res = getResponse();
+            socket.setSoTimeout(pt);
+        } catch (Exception ex){}
+        if(res==null){
+                res = new String[1];
+                res[0]="FAIL";
+        }
+        return res;
+    }
+
+    public synchronized void disconnect(){
+        try{
             if(br!=null) br.close();
+            try{
+                if(pw!=null){
+                    pw.println("exit");
+                    pw.close();
+                }
+            } catch(Exception e) {}
             if(socket!=null)
                 socket.close();
-            socket = null;
-            pw = null;
-            br = null;
+            
         } catch (Exception ex) {}
         connected = false;
+        socket = null;
+        pw = null;
+        br = null;
     }
 
 }

@@ -22,7 +22,7 @@ public class GameWindow extends javax.swing.JFrame {
 
 
     /** Creates new form GameWindow */
-    public GameWindow(UserProfile rvl) {
+    public GameWindow(UserProfile rvl, boolean first) {
         initComponents();
         this.rival = rvl;
         try {
