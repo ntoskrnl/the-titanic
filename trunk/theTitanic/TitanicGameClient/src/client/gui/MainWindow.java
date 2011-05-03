@@ -8,7 +8,6 @@ package client.gui;
 
 import client.Main;
 import client.util.UserProfile;
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URI;
@@ -37,16 +36,48 @@ public class MainWindow extends javax.swing.JFrame {
                 checkConnection();
             }
         });
-        userUpdateTimer = new Timer(500, new ActionListener() {
+        userUpdateTimer = new Timer(1000, new ActionListener() {
 
             public void actionPerformed(ActionEvent e) {
                 updateUserList(e);
             }
         });
+        
+        trafficCheckTimer = new Timer(1000, new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                jLabel1.setText("Traffic: "+Main.server.in.readBytesCount()/1024 + " K / "
+                        + Main.server.out.writtenBytesCount()/1024 + " K");
+            }
+        });
+        
+        checkRequestsTimer = new Timer(1000, new ActionListener() {
+
+            public void actionPerformed(ActionEvent e) {
+                String[] r = Main.server.commandAndResponse(100, "GET GAME REQUEST", Main.server.secret);
+                if(!r[0].equalsIgnoreCase("SUCCESS")) return;
+                int id = Integer.parseInt(r[1]);
+                acceptRequest(id);
+            }
+        });
+        
+        trafficCheckTimer.start();
         userUpdateTimer.start();
         checkConnectionTimer.start();
+        checkRequestsTimer.start();
     }
 
+    private void acceptRequest(int id){
+        UserProfile u = new UserProfile(id);
+        u.update();
+        if(u.equals(myProfile)){
+            // Automatically agree to play
+            Main.server.commandAndResponse(100, "ACCEPT GAME", u.getProperty("id"), Main.server.secret);
+            return;
+        }
+        new GameRequestWindow(this, u).setVisible(true);
+    }
+    
     private void showLostConnectionMessage(){
         checkConnectionTimer.stop();
         userUpdateTimer.stop();
@@ -55,9 +86,10 @@ public class MainWindow extends javax.swing.JFrame {
         if(res==JOptionPane.YES_OPTION){
             Main.loginWindow.setVisible(true);
             this.dispose();
+            Main.server.disconnect();
         } else {
             userUpdateTimer.start();
-            //checkConnectionTimer.start();
+            checkConnectionTimer.start();
         }
     }
 
@@ -65,30 +97,24 @@ public class MainWindow extends javax.swing.JFrame {
         DefaultListModel model = (DefaultListModel)jList1.getModel();
         Object sel = jList1.getSelectedValue();
         model.clear();
+        try{
+            String res[] = Main.server.commandAndResponse(1000, "list users", "online", Main.server.secret);
+            if(res[0]==null || !res[0].equals("SUCCESS")){
+                showLostConnectionMessage();
+            }
 
-        synchronized(Main.server){
-            Main.server.command("list users", "online", Main.server.secret);
-            if(Main.server.isConnected())
-                try{
-                    String res[] = Main.server.getResponse();
-                    if(res[0]==null || !res[0].equals("SUCCESS")){
-                        showLostConnectionMessage();
-                    }
-
-                    for(int i=1; i<res.length; i++){
-                        Main.server.command("profile by id", res[i], Main.server.secret);
-                        String r[] = Main.server.getResponse();
-                        if(r[0]==null || !r[0].equals("SUCCESS")) continue;
-                        UserProfile u = new UserProfile(Integer.parseInt(res[i]));
-                        for(int j=1;j<r.length;j++){
-                            u.setProperty(r[j].substring(0, r[j].indexOf(':')).trim(), 
-                                    r[j].substring(r[j].indexOf(':')+1, r[j].length()).trim());
-                        }
-                        model.addElement(u);
-                    }
-                } catch (Exception ex){
-                    System.err.println("user list: "+ex.getLocalizedMessage());
+            for(int i=1; i<res.length; i++){
+                String r[] = Main.server.commandAndResponse(500, "profile by id", res[i], Main.server.secret);
+                if(r[0]==null || !r[0].equals("SUCCESS")) continue;
+                UserProfile u = new UserProfile(Integer.parseInt(res[i]));
+                for(int j=1;j<r.length;j++){
+                    u.setProperty(r[j].substring(0, r[j].indexOf(':')).trim(), 
+                            r[j].substring(r[j].indexOf(':')+1, r[j].length()).trim());
                 }
+                model.addElement(u);
+            }
+        } catch (Exception ex){
+            System.err.println("user list: "+ex.getLocalizedMessage());
         }
         jList1.setSelectedValue(sel, true);
     }
@@ -114,21 +140,17 @@ public class MainWindow extends javax.swing.JFrame {
                     }
                 });
                 */
-                return true;
-            }
-            synchronized(Main.server){
-                Main.server.command("REQUEST GAME", rival.getProperty("id"), Main.server.secret);
-                String[] r = Main.server.getResponse();
-                if(r==null) return false;
-                if(r.length==0) return false;
-                if(!r[0].toUpperCase().equals("SUCCESS")) return false;
-                return true;
-            }
+            }     
+            String[] r = Main.server.commandAndResponse(200, "REQUEST GAME", rival.getProperty("id"), Main.server.secret);
+            if(r==null) return false;
+            if(r.length==0) return false;
+            if(!r[0].toUpperCase().equals("SUCCESS")) return false;
+            return true;
         } catch(Exception ex){}
         return false;
     }
 
-    public void initGame(UserProfile rival){
+    public void initGame(UserProfile rival, boolean first){
         try{
             if(!Main.checkMemory(12*1024*1024))
                 throw new OutOfMemoryError("Low available memory");
@@ -137,7 +159,7 @@ public class MainWindow extends javax.swing.JFrame {
                 rival=new UserProfile(0);
                 rival.update();
             }
-            GameWindow g = new GameWindow(rival);
+            GameWindow g = new GameWindow(rival, first);
             g.setVisible(true);
             gameWindows.add(g);
         } catch (Error ex){
@@ -166,6 +188,7 @@ public class MainWindow extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jList1 = new javax.swing.JList();
         jButton1 = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem10 = new javax.swing.JMenuItem();
@@ -251,6 +274,9 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
 
+        jLabel1.setText(bundle.getString("MainWindow.jLabel1.text")); // NOI18N
+        jLabel1.setName("jLabel1"); // NOI18N
+
         jMenuBar1.setName("jMenuBar1"); // NOI18N
 
         jMenu1.setText(bundle.getString("MainWindow.jMenu1.text")); // NOI18N
@@ -327,21 +353,26 @@ public class MainWindow extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+            .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton1))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 125, Short.MAX_VALUE)
+                        .addComponent(jButton1)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1)
-                .addContainerGap())
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(jLabel1))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -358,9 +389,9 @@ public class MainWindow extends javax.swing.JFrame {
                 f.setVisible(true);
             }
             else{
-                JOptionPane.showMessageDialog(rootPane, "Sorry. But your request was ignored or server is temporarily down. "
-                        + "Try again or choose another opponent to play with.",
-                    "Titanic GameClient: Info", JOptionPane.INFORMATION_MESSAGE);
+//                JOptionPane.showMessageDialog(rootPane, "Sorry. But your request was ignored or server is temporarily down. "
+//                        + "Try again or choose another opponent to play with.",
+//                    "Titanic GameClient: Info", JOptionPane.INFORMATION_MESSAGE);
             }
         } catch (Error ex){
             System.err.println("Start game error: "+ex.getLocalizedMessage());
@@ -377,6 +408,8 @@ public class MainWindow extends javax.swing.JFrame {
         Main.loginWindow.setVisible(true);
         checkConnectionTimer.stop();
         userUpdateTimer.stop();
+        trafficCheckTimer.stop();
+        checkRequestsTimer.stop();
     }//GEN-LAST:event_formWindowClosing
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
@@ -448,6 +481,7 @@ public class MainWindow extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JList jList1;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
@@ -470,7 +504,7 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator2;
     // End of variables declaration//GEN-END:variables
 
-    private Timer checkConnectionTimer, userUpdateTimer;
+    private Timer checkConnectionTimer, userUpdateTimer, trafficCheckTimer, checkRequestsTimer;
     private UserProfile myProfile;
     private ArrayList<GameWindow> gameWindows = new ArrayList<GameWindow>();
 }

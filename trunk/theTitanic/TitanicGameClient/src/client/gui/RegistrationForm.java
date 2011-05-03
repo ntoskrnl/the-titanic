@@ -411,16 +411,15 @@ public class RegistrationForm extends javax.swing.JFrame {
             return;
         }
         try {
-            Main.server.command("register", loginTextField.getText(),
-                        Crypto.md5(new String(passwordTextField.getPassword())),
-                        firstNameTextField.getText(), surnameTextField.getText(),
-                        pubNicknameTextField.getText(), "", "", "", "");
-            String r[] = Main.server.getResponse();
-            if(r[0].equals("SUCCESS")) {
-                JOptionPane.showMessageDialog(rootPane, java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("registrationSuccessfulMessageText"), 
-                        java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("registrationSuccessfulMessageTitle"), JOptionPane.INFORMATION_MESSAGE);
-                dispose();
-            }
+                String r[] = Main.server.commandAndResponse("register", loginTextField.getText(),
+                            Crypto.md5(new String(passwordTextField.getPassword())),
+                            firstNameTextField.getText(), surnameTextField.getText(),
+                            pubNicknameTextField.getText(), "", "", "", "");
+                if(r[0].equals("SUCCESS")) {
+                    JOptionPane.showMessageDialog(rootPane, java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("registrationSuccessfulMessageText"), 
+                            java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("registrationSuccessfulMessageTitle"), JOptionPane.INFORMATION_MESSAGE);
+                    dispose();
+                }
         } catch(Exception e){
             Main.server.disconnect();
             statusLabel.setText(java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("cannotRegisterHTMLred"));
