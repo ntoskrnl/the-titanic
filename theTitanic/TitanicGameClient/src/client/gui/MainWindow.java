@@ -7,10 +7,14 @@
 package client.gui;
 
 import client.Main;
+import client.util.SoundPlayer;
 import client.util.UserProfile;
+import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
@@ -27,7 +31,6 @@ public class MainWindow extends javax.swing.JFrame {
     /** Creates new form MainWindow */
     public MainWindow() {
         initComponents();
-
         myProfile = new UserProfile(0);
         myProfile.update();
 
@@ -152,9 +155,9 @@ public class MainWindow extends javax.swing.JFrame {
 
     public void initGame(UserProfile rival, boolean first){
         try{
+            GameWindow.showSplash();
             if(!Main.checkMemory(12*1024*1024))
                 throw new OutOfMemoryError("Low available memory");
-
             if(rival==null){
                 rival=new UserProfile(0);
                 rival.update();
@@ -170,6 +173,7 @@ public class MainWindow extends javax.swing.JFrame {
                     JOptionPane.ERROR_MESSAGE);
             System.gc();
         }
+        GameWindow.hideSplash();
     }
 
     /** This method is called from within the constructor to
