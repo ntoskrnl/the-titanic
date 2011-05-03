@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -16,7 +17,9 @@ public class MainServerThread implements Runnable {
     /**
      * Contains all currently active connections
      */
-    static ConnectionContainer connections;
+    public static ConnectionContainer connections;
+    
+    public static RequestContainer requests;
     /**
      * ServerSocket to accept incoming connections
      */
@@ -48,6 +51,8 @@ public class MainServerThread implements Runnable {
             Main.logs.info("Using proxy server: "+ServerConfiguration.proxyHost+":"+ServerConfiguration.proxyPort);
         }
 
+        requests = new RequestContainer();
+        
         try{
             Main.logs.info("Connecting to databases...");
 

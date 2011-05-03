@@ -21,7 +21,7 @@ public class CommandInterpreter {
         PrintWriter pw = u.getClientHandler().getSocketWriter();
         BufferedReader br = u.getClientHandler().getSocketReader();
 
-        boolean result = false;
+        Boolean result = null;
         String cmd = command.toLowerCase().trim();
 
         synchronized (Main.usersDB) {
@@ -48,7 +48,7 @@ public class CommandInterpreter {
 
                         u.setAuthorized(true);
                         result = true;
-                    }
+                    } else result = false;
                 }
 
                 // User List Request (secret required)
@@ -64,7 +64,7 @@ public class CommandInterpreter {
                             }
                             result = true;
                         }
-                    }
+                    } else result = false;
                 }
                 
                 // Returns secret key on demand
@@ -84,7 +84,6 @@ public class CommandInterpreter {
                     String sex = br.readLine().trim();
                     String age = br.readLine().trim();
                     String location = br.readLine().trim();
-
                     result = registerUser(u, login, password, firstName, surName, pubNickName,
                             pubEmail, sex, age, location);
                     if (result) {
@@ -95,6 +94,7 @@ public class CommandInterpreter {
                 if (cmd.equals("profile by id")) {
                     String id = br.readLine().trim();
                     String secret = br.readLine().trim();
+                    result = false;
                     if (secret.equals(u.getSecret())) {
                         if(id.equals("0")) id=u.getId()+"";
                         String sql = "SELECT * FROM profiles WHERE id = " + id;
@@ -202,17 +202,130 @@ public class CommandInterpreter {
                         result = true;
                     }
                 }
-
-                if (!result) {
-                    pw.println("FAIL");
-                } else {
-                    pw.println();
+                
+                if(cmd.equals("request game")){
+                    System.out.println("REQUEST!");
+                    int to_id = Integer.parseInt(br.readLine().trim());
+                    String secret = br.readLine().trim();
+                    result = false;
+                    if(secret.equals(u.getSecret())){
+                        if(result = MainServerThread.requests.add(new GameRequest(u.getId(), to_id))){
+                            pw.println("SUCCESS");
+                            result = true;
+                        }
+                    }
                 }
+                
+                if(cmd.equals("accept game")){
+                    System.out.println("ACCEPT!");
+                    int from = Integer.parseInt(br.readLine().trim());
+                    int my_id = u.getId();
+                    String secret = br.readLine().trim();
+                    result = false;
+                    if(secret.equals(u.getSecret())){
+                        GameRequest req = MainServerThread.requests.get(from, my_id);
+                        if(req!=null) {
+                            req.setAccepted(true);
+                            pw.println("SUCCESS");
+                            result = true;
+                        }
+                    }
+                }
+                
+                if(cmd.equals("is game accepted")){ 
+                    int to_id = Integer.parseInt(br.readLine().trim());
+                    int my_id = u.getId();
+                    String secret = br.readLine().trim();
+                    result = false;
+                    if(secret.equals(u.getSecret())){
+                        GameRequest req = MainServerThread.requests.get(my_id, to_id);
+                        if(req!=null){
+                            pw.println("SUCCESS");
+                            Boolean ac = req.isAccepted();
+                            if(ac==null) pw.println("NULL");
+                            else {
+                                MainServerThread.requests.remove(req);
+                                if(ac==true) pw.println("YES");
+                                    else pw.println("NO");
+                            }                  
+                            result = true;
+                        }
+                    }
+                }
+                
+                if(cmd.equals("get game request")){
+                    int my_id = u.getId();
+                    String secret = br.readLine().trim();
+                    result=false;
+                    if(secret.equals(u.getSecret())){
+                        GameRequest req = MainServerThread.requests.getActiveFor(my_id);
+                        if(req!=null){
+                            req.deactivate();
+                            pw.println("SUCCESS");
+                            pw.println(req.getFrom());
+                            result = true;
+                        }
+                    }
+                }
+                
+                if(cmd.equals("reject game")){
+                    System.out.println("REJECT!");
+                    int my_id = u.getId();
+                    int from = Integer.parseInt(br.readLine().trim());
+                    String secret = br.readLine().trim();
+                    result=false;
+                    if(secret.equals(u.getSecret())){
+                        GameRequest req = MainServerThread.requests.get(from, my_id);
+                        if(req!=null){
+                            MainServerThread.requests.remove(req);
+                            pw.println("SUCCESS");
+                            result = true;
+                        }
+                    }
+                }
+                
+                if(cmd.equals("cancel request")){
+                    System.out.println("CANCEL!");
+                    int my_id = u.getId();
+                    int to = Integer.parseInt(br.readLine().trim());
+                    String secret = br.readLine().trim();
+                    result=false;
+                    if(secret.equals(u.getSecret())){
+                        GameRequest req = MainServerThread.requests.get(my_id, to);
+                        if(req!=null){
+                            MainServerThread.requests.remove(req);
+                            pw.println("SUCCESS");
+                            result = true;
+                        }
+                    }
+                }
+                if(cmd.equals("is request valid")){
+                    System.out.println("VALID?");
+                    int from = Integer.parseInt(br.readLine().trim());
+                    int to = Integer.parseInt(br.readLine().trim());
+                    String secret = br.readLine().trim();
+                    result=false;
+                    if(secret.equals(u.getSecret())){
+                        GameRequest req = MainServerThread.requests.get(from, to);
+                        if(req!=null){
+                            pw.println("SUCCESS");
+                            result = true;
+                        }
+                    }
+                }
+                
+                if(result!=null){
+                    if (!result) {
+                        pw.println("FAIL");
+                    } else {
+                        pw.println();
+                    }
+                } else Main.logs.warning("COMMAND: unknown command "+command);
 
                 // send buffered data to the client
                 pw.flush();
             } catch (Exception ex) {
-                Main.logs.warning("COMMAND: " + ex.getLocalizedMessage());
+                Main.logs.warning("COMMAND: " + ex.getLocalizedMessage()+" on "+command);
                 pw.println("FAIL");
             }
         }
