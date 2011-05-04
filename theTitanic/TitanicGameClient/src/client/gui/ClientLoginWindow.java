@@ -6,6 +6,7 @@
 
 package client.gui;
 
+import client.util.GUIRoutines;
 import client.Main;
 import client.util.TitanicServer;
 import javax.swing.JOptionPane;
@@ -14,11 +15,13 @@ import javax.swing.JOptionPane;
  *
  * @author danon
  */
+
 public class ClientLoginWindow extends javax.swing.JFrame {
 
     /** Creates new form ClientLoginWindow */
     public ClientLoginWindow() {
         initComponents();
+        GUIRoutines.toScreenCenter(this);
     }
 
     /** This method is called from within the constructor to
@@ -42,6 +45,7 @@ public class ClientLoginWindow extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("client/gui/Bundle"); // NOI18N
         setTitle(bundle.getString("LoginWindow.title")); // NOI18N
+        setAlwaysOnTop(true);
         setResizable(false);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("LoginWindow.panelBorder.text"))); // NOI18N
@@ -149,7 +153,8 @@ public class ClientLoginWindow extends javax.swing.JFrame {
     private void jLabel3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel3MouseClicked
         // TODO add your handling code here:
         if(evt.getClickCount()==1)
-            new RegistrationForm().setVisible(true);
+            new RegistrationForm(this).setVisible(true);
+        System.out.println("hello");
     }//GEN-LAST:event_jLabel3MouseClicked
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed

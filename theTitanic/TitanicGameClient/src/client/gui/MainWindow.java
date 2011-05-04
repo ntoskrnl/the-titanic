@@ -6,15 +6,14 @@
 
 package client.gui;
 
+import client.util.GUIRoutines;
 import client.Main;
-import client.util.SoundPlayer;
+import client.util.TitanicServer;
 import client.util.UserProfile;
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
@@ -35,12 +34,14 @@ public class MainWindow extends javax.swing.JFrame {
         myProfile.update();
 
         checkConnectionTimer = new Timer(1000, new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 checkConnection();
             }
         });
         userUpdateTimer = new Timer(1000, new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
                 updateUserList(e);
             }
@@ -48,14 +49,15 @@ public class MainWindow extends javax.swing.JFrame {
         
         trafficCheckTimer = new Timer(1000, new ActionListener() {
 
+            @Override
             public void actionPerformed(ActionEvent e) {
-                jLabel1.setText("Traffic: "+Main.server.in.readBytesCount()/1024 + " K / "
-                        + Main.server.out.writtenBytesCount()/1024 + " K");
+                jLabel1.setText("Traffic: "+TitanicServer.in.readBytesCount()/1024 + " K / "
+                        + TitanicServer.out.writtenBytesCount()/1024 + " K");
             }
         });
         
         checkRequestsTimer = new Timer(1000, new ActionListener() {
-
+            @Override
             public void actionPerformed(ActionEvent e) {
                 String[] r = Main.server.commandAndResponse(100, "GET GAME REQUEST", Main.server.secret);
                 if(!r[0].equalsIgnoreCase("SUCCESS")) return;
@@ -68,6 +70,11 @@ public class MainWindow extends javax.swing.JFrame {
         userUpdateTimer.start();
         checkConnectionTimer.start();
         checkRequestsTimer.start();
+        
+        if(GameWindow.splash==null)
+            GameWindow.splash = new GameStartingSplashWindow();
+        
+        GUIRoutines.toScreenCenter(this);
     }
 
     private void acceptRequest(int id){
@@ -108,12 +115,10 @@ public class MainWindow extends javax.swing.JFrame {
 
             for(int i=1; i<res.length; i++){
                 String r[] = Main.server.commandAndResponse(500, "profile by id", res[i], Main.server.secret);
-                if(r[0]==null || !r[0].equals("SUCCESS")) continue;
+                if(r==null || r[0]==null || !r[0].equals("SUCCESS")) continue;
                 UserProfile u = new UserProfile(Integer.parseInt(res[i]));
-                for(int j=1;j<r.length;j++){
-                    u.setProperty(r[j].substring(0, r[j].indexOf(':')).trim(), 
-                            r[j].substring(r[j].indexOf(':')+1, r[j].length()).trim());
-                }
+                u.update();
+                if(u.equals(myProfile)) u.setProperty("pub_nickname", u.getProperty("pub_nickname")+" (Me)");
                 model.addElement(u);
             }
         } catch (Exception ex){
@@ -134,15 +139,15 @@ public class MainWindow extends javax.swing.JFrame {
             me.update();
             if(rival==null) rival=me;
             if(rival.equals(me)){    
-                /* // Show message that user is trying to play with themselves. =)
-                EventQueue.invokeLater(new Runnable() {
-                    public void run() {
-                        JOptionPane.showMessageDialog(rootPane, "You are about to play with yourself. "
-                                + "The results of the game won't be stored on the server.",
-                        "Titanic GameClient: Info", JOptionPane.INFORMATION_MESSAGE);
-                    }
-                });
-                */
+                 // Show message that user is trying to play with themselves. =)
+//                EventQueue.invokeLater(new Runnable() {
+//                    public void run() {
+//                        JOptionPane.showMessageDialog(rootPane, "You are about to play with yourself. "
+//                                + "The results of the game won't be stored on the server.",
+//                        "Titanic GameClient: Info", JOptionPane.INFORMATION_MESSAGE);
+//                    }
+//                });
+                
             }     
             String[] r = Main.server.commandAndResponse(200, "REQUEST GAME", rival.getProperty("id"), Main.server.secret);
             if(r==null) return false;
@@ -420,7 +425,9 @@ public class MainWindow extends javax.swing.JFrame {
         if(jList1.getSelectedIndex()<0) return;
         try{
             UserProfile u = (UserProfile)jList1.getSelectedValue();
-            new UserProfileView(u).setVisible(true);
+            myProfile.update();
+            if(u.equals(myProfile)) new UserProfileEdit(this, myProfile).setVisible(true);
+            else new UserProfileView(u).setVisible(true);
         } catch (Exception ex) {
             System.err.println(ex.getMessage());
         }
@@ -480,7 +487,7 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
-        new UserProfileEdit(myProfile).setVisible(true);
+        new UserProfileEdit(this, myProfile).setVisible(true);
     }//GEN-LAST:event_jMenuItem4ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

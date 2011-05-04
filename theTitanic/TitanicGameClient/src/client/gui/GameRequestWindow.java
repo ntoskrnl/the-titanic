@@ -6,6 +6,7 @@
 
 package client.gui;
 
+import client.util.GUIRoutines;
 import client.Main;
 import client.util.UserProfile;
 import java.awt.EventQueue;
@@ -29,10 +30,14 @@ public class GameRequestWindow extends javax.swing.JFrame {
 
             public void actionPerformed(ActionEvent e) {
                 boolean r = checkRequest();
-                if(!r) dispose(); 
+                if(!r){
+                    timer1.stop();
+                    dispose();
+                } 
             }
         });
         timer1.start();
+        GUIRoutines.toScreenCenter(this);
     }
     
     private void reject(){
@@ -65,6 +70,7 @@ public class GameRequestWindow extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Game Request...");
+        setAlwaysOnTop(true);
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
