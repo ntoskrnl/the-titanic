@@ -7,6 +7,7 @@
 package client.gui;
 
 import client.Main;
+import client.util.GUIRoutines;
 import client.util.SimpleGame;
 import client.util.UserProfile;
 import java.awt.EventQueue;
@@ -39,6 +40,7 @@ public class GameWindow extends javax.swing.JFrame {
             closeWindowLater();
         }
         if(splash!=null) splash.setVisible(false);
+        GUIRoutines.toScreenCenter(this);
     }
 
     public final void initGame(){
@@ -63,6 +65,7 @@ public class GameWindow extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("client/gui/Bundle"); // NOI18N
         setTitle(bundle.getString("GameWindow.title")); // NOI18N
+        setAlwaysOnTop(true);
         setName("Form"); // NOI18N
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
@@ -184,6 +187,6 @@ public class GameWindow extends javax.swing.JFrame {
     private Timer timer;
     private UserProfile rival;
     private boolean blankCycle = true;
-    private static javax.swing.JFrame splash = new GameStartingSplashWindow();
+    public static javax.swing.JFrame splash = new GameStartingSplashWindow();
 
 }

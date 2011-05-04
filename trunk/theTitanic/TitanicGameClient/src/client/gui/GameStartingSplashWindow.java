@@ -1,15 +1,12 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
-/*
  * GameStartingSplashWindow.java
  *
  * Created on May 4, 2011, 1:24:43 AM
  */
 
 package client.gui;
+
+import client.util.GUIRoutines;
 
 /**
  *
@@ -20,7 +17,8 @@ public class GameStartingSplashWindow extends javax.swing.JFrame {
     /** Creates new form GameStartingSplashWindow */
     public GameStartingSplashWindow() {
         initComponents();
-        jLabel1.repaint();
+        jLabel1.setVisible(true);
+        GUIRoutines.toScreenCenter(this);
     }
 
     /** This method is called from within the constructor to
@@ -35,10 +33,12 @@ public class GameStartingSplashWindow extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
 
         setAlwaysOnTop(true);
+        setBackground(new java.awt.Color(0, 153, 51));
         setBounds(new java.awt.Rectangle(400, 300, 0, 0));
         setResizable(false);
         setUndecorated(true);
 
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("Starting game... Please, wait a few seconds.");
         jLabel1.setDoubleBuffered(true);
         jLabel1.setFocusable(false);
@@ -63,16 +63,6 @@ public class GameStartingSplashWindow extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-    * @param args the command line arguments
-    */
-    public static void main(String args[]) {
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new GameStartingSplashWindow().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;

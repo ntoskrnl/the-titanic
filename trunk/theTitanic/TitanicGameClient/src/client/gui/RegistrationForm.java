@@ -9,17 +9,20 @@ package client.gui;
 import client.Main;
 import client.util.Crypto;
 import client.util.TitanicServer;
+import java.awt.Frame;
 import javax.swing.JOptionPane;
 
 /**
  *
  * @author danon
  */
-public class RegistrationForm extends javax.swing.JFrame {
+public class RegistrationForm extends javax.swing.JDialog {
 
     /** Creates new form RegistrationForm */
-    public RegistrationForm() {
+    public RegistrationForm(Frame owner) {
+        super(owner, true);
         initComponents();
+        setLocationRelativeTo(owner);
     }
 
     private boolean checkFields(){
@@ -88,6 +91,7 @@ public class RegistrationForm extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("client/gui/Bundle"); // NOI18N
         setTitle(bundle.getString("RegistrationForm.title")); // NOI18N
+        setAlwaysOnTop(true);
         setName("Form"); // NOI18N
         setResizable(false);
 
@@ -148,8 +152,11 @@ public class RegistrationForm extends javax.swing.JFrame {
             }
         });
         loginTextField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                RegistrationForm.this.keyPressed(evt);
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                loginTextFieldKeyTyped(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                loginTextFieldKeyReleased(evt);
             }
         });
 
@@ -171,8 +178,11 @@ public class RegistrationForm extends javax.swing.JFrame {
             }
         });
         passwordTextField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                RegistrationForm.this.keyPressed(evt);
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                loginTextFieldKeyTyped(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                loginTextFieldKeyReleased(evt);
             }
         });
 
@@ -194,8 +204,11 @@ public class RegistrationForm extends javax.swing.JFrame {
             }
         });
         retypePwdTextField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                RegistrationForm.this.keyPressed(evt);
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                loginTextFieldKeyTyped(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                loginTextFieldKeyReleased(evt);
             }
         });
 
@@ -257,8 +270,11 @@ public class RegistrationForm extends javax.swing.JFrame {
             }
         });
         firstNameTextField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                RegistrationForm.this.keyPressed(evt);
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                loginTextFieldKeyTyped(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                loginTextFieldKeyReleased(evt);
             }
         });
 
@@ -280,8 +296,11 @@ public class RegistrationForm extends javax.swing.JFrame {
             }
         });
         surnameTextField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                RegistrationForm.this.keyPressed(evt);
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                loginTextFieldKeyTyped(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                loginTextFieldKeyReleased(evt);
             }
         });
 
@@ -303,8 +322,11 @@ public class RegistrationForm extends javax.swing.JFrame {
             }
         });
         pubNicknameTextField.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                RegistrationForm.this.keyPressed(evt);
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                loginTextFieldKeyTyped(evt);
+            }
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                loginTextFieldKeyReleased(evt);
             }
         });
 
@@ -426,9 +448,13 @@ public class RegistrationForm extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    private void keyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_keyPressed
-        checkFields();
-    }//GEN-LAST:event_keyPressed
+    private void loginTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_loginTextFieldKeyReleased
+        // TODO add your handling code here:
+    }//GEN-LAST:event_loginTextFieldKeyReleased
+
+    private void loginTextFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_loginTextFieldKeyTyped
+        // TODO add your handling code here:
+    }//GEN-LAST:event_loginTextFieldKeyTyped
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField firstNameTextField;

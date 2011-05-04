@@ -6,6 +6,7 @@
 
 package client.gui;
 
+import client.util.GUIRoutines;
 import client.util.UserProfile;
 
 /**
@@ -22,6 +23,7 @@ public class UserProfileView extends javax.swing.JFrame {
         if(user!=null)
             setTitle(getTitle()+": "+user.getProperty("pub_nickname"));
         updateFields();
+        GUIRoutines.toScreenCenter(this);
     }
     
     public final void updateFields(){

@@ -95,7 +95,6 @@ public class TitanicServer {
             else pw.println();
         }
         pw.flush();
-        System.out.println(cmd);
         status = pstatus;
     }
 

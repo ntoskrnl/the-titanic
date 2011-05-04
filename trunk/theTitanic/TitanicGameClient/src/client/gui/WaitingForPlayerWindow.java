@@ -26,6 +26,8 @@ public class WaitingForPlayerWindow extends javax.swing.JFrame {
     /** Creates new form WaitingForPlayerWindow */
     public WaitingForPlayerWindow(UserProfile rvl, MainWindow mw) {
         initComponents();
+        setLocationRelativeTo(mw);
+        
         count = TIME_LIMIT;
         mainWindow = mw;
         rival = rvl;
@@ -186,8 +188,7 @@ public class WaitingForPlayerWindow extends javax.swing.JFrame {
         UserProfile me = new UserProfile(0);
         me.update();
         if(!accepted)
-            Main.server.commandAndResponse(100, "CANCEL REQUEST", me.getProperty("id"), 
-                rival.getProperty("id"), Main.server.secret);
+            cancelRequest();
     }//GEN-LAST:event_formWindowClosed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
