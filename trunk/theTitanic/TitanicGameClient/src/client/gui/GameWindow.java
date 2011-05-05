@@ -140,14 +140,6 @@ public class GameWindow extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    public static void showSplash(){
-        splash.setVisible(true);
-        splash.repaint();
-    }
-    
-    public static void hideSplash(){
-        splash.setVisible(false);
-    }
     
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         if(game!=null) game.start();
@@ -187,6 +179,6 @@ public class GameWindow extends javax.swing.JFrame {
     private Timer timer;
     private UserProfile rival;
     private boolean blankCycle = true;
-    public static javax.swing.JFrame splash = new GameStartingSplashWindow();
+    public static javax.swing.JDialog splash;
 
 }
