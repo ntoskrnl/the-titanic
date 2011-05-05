@@ -92,6 +92,7 @@ public class SimpleGame extends Game {
             }
             if(balls[15]==null)
                 balls[15] = new Ball(0, -0.5f);
+            balls[15].setCoordinates(new Vector3D(0, -0.5f, 0));
             balls[15].setId(15);
             balls[15].setRadius(r);
         }
