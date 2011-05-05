@@ -84,19 +84,22 @@ public class SimpleGame extends Game {
 
             //Random rand = new Random(System.currentTimeMillis());
             for(i=0;i<15;i++){
-                balls[i] = new Ball();
+                if(balls[i]==null)
+                    balls[i] = new Ball();
                 balls[i].setCoordinates(mass[i]);
                 balls[i].setRadius(r);
                 balls[i].setId(i);
             }
-            balls[15] = new Ball(0, -0.5f);
+            if(balls[15]==null)
+                balls[15] = new Ball(0, -0.5f);
             balls[15].setId(15);
             balls[15].setRadius(r);
-            float angle = key.getAngle() + (float)Math.PI/2;   
-            balls[15].setSpeed(new Vector3D(key.getPower()*(float)Math.cos(angle) *20, 
-                    key.getPower()*(float)Math.sin(angle)*20));
-            System.out.println("angle = "+angle);
         }
+        Ball cur = key.getBall();
+        if(cur==null) return;
+        float angle = key.getAngle() + (float)Math.PI/2;   
+        cur.setSpeed(new Vector3D(key.getPower()*(float)Math.cos(angle) *20, 
+                    key.getPower()*(float)Math.sin(angle)*20));
     }
 
     /**
@@ -104,6 +107,7 @@ public class SimpleGame extends Game {
      */
     public void start(){
         stop();
+        changeStatus(Game.S_MOVING);
         if(!rearrange) 
             rearrange = true;
         else 
