@@ -51,7 +51,6 @@ public class GameWindow extends javax.swing.JFrame {
         awtEventListener = new GameAWTEventListener(this, game);
         Toolkit.getDefaultToolkit().addAWTEventListener(awtEventListener,
                 AWTEvent.KEY_EVENT_MASK | AWTEvent.WINDOW_EVENT_MASK | AWTEvent.ACTION_EVENT_MASK);
-        
         GUIRoutines.toScreenCenter(this);
     }
 

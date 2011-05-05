@@ -393,6 +393,9 @@ public class MainWindow extends javax.swing.JFrame {
         userUpdateTimer.stop();
         trafficCheckTimer.stop();
         checkRequestsTimer.stop();
+        if(gameWindows!=null)
+            for(GameWindow w : gameWindows)
+                w.dispose();
     }//GEN-LAST:event_formWindowClosing
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
