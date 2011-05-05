@@ -299,6 +299,25 @@ public class Graphics3D implements GraphicalEngine {
         SetCoadinates();
         SetDrawBalls();
 
+        if (game.getGameStatus()==Game.S_MOVING || game.getGameStatus()==Game.S_FINISH) {
+                        Transform3D key = new Transform3D();
+                        key.setTranslation(new Vector3f(-.7f, 0.0f, 0.0f));
+                        Keytrans.setTransform(key);
+                        int i;
+                        for (i = 0; i < 16; i++) {
+                            if (game.getBilliardKey().getBall().getId() == i) {
+                                Sphere chsp;
+                                chsp = (Sphere) objTrans[i].getChild(0);
+                                chsp.getAppearance().getTransparencyAttributes().setTransparency(0.0f);
+                            }
+                        }
+
+                         Transform3D strpos = new Transform3D();
+                         strpos.setTranslation(new Vector3d(-5,0,0));
+                         Stripline.setTransform(strpos);
+
+                    }
+
 
     }
 
