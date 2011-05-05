@@ -82,6 +82,7 @@ public class GameStartingSplashWindow extends javax.swing.JDialog {
         setUndecorated(true);
 
         jPanel1.setBackground(new java.awt.Color(0, 153, 51));
+        jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
 
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
         jLabel1.setText("The game will start in few seconds. Please, wait...");
