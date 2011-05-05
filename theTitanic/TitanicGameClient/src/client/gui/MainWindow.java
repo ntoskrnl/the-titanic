@@ -71,9 +71,6 @@ public class MainWindow extends javax.swing.JFrame {
         checkConnectionTimer.start();
         checkRequestsTimer.start();
         
-        if(GameWindow.splash==null)
-            GameWindow.splash = new GameStartingSplashWindow();
-        
         GUIRoutines.toScreenCenter(this);
     }
 
@@ -156,29 +153,6 @@ public class MainWindow extends javax.swing.JFrame {
             return true;
         } catch(Exception ex){}
         return false;
-    }
-
-    public void initGame(UserProfile rival, boolean first){
-        try{
-            GameWindow.showSplash();
-            if(!Main.checkMemory(12*1024*1024))
-                throw new OutOfMemoryError("Low available memory");
-            if(rival==null){
-                rival=new UserProfile(0);
-                rival.update();
-            }
-            GameWindow g = new GameWindow(rival, first);
-            g.setVisible(true);
-            gameWindows.add(g);
-        } catch (Error ex){
-            System.err.println("Start game error: "+ex.getLocalizedMessage());
-            JOptionPane.showMessageDialog(rootPane,
-                    ex.getLocalizedMessage()+" The application may behave abnormally.",
-                    "Titanic GameCilent: Error",
-                    JOptionPane.ERROR_MESSAGE);
-            System.gc();
-        }
-        GameWindow.hideSplash();
     }
 
     /** This method is called from within the constructor to
@@ -517,7 +491,7 @@ public class MainWindow extends javax.swing.JFrame {
 
     private Timer checkConnectionTimer, userUpdateTimer, trafficCheckTimer, checkRequestsTimer;
     private UserProfile myProfile;
-    private ArrayList<GameWindow> gameWindows = new ArrayList<GameWindow>();
+    public ArrayList<GameWindow> gameWindows = new ArrayList<GameWindow>();
 }
 
 

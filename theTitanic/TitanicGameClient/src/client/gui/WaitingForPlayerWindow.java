@@ -10,6 +10,7 @@ import client.Main;
 import client.util.UserProfile;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.JFrame;
 import javax.swing.Timer;
 
 /**
@@ -42,6 +43,7 @@ public class WaitingForPlayerWindow extends javax.swing.JFrame {
 
         // This will provide a count down
         countDownTimer = new Timer(999, new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 if(count>0){
                     count--;
@@ -54,14 +56,15 @@ public class WaitingForPlayerWindow extends javax.swing.JFrame {
         
         // This will check the response
         responseCheckTimer = new Timer(999, new ActionListener() {
+            @Override
             public void actionPerformed(ActionEvent e) {
                 boolean r = checkRequest();
                 Boolean a = getResponse();
                 if(a!=null) accepted = a;
                 if(r && a!=null && a==true && mainWindow!=null) {
                     closeMe();
-                    mainWindow.initGame(rival, true);
-                    
+                    GameWindow.splash = new GameStartingSplashWindow(mainWindow, rival, true);
+                    GameWindow.splash.setVisible(true);
                 }
                 if(!r || (a!=null && a==false)){
                     closeMe();

@@ -152,7 +152,8 @@ public class GameRequestWindow extends javax.swing.JFrame {
             Main.server.commandAndResponse(100, "ACCEPT GAME", who.getProperty("id"), Main.server.secret);
             EventQueue.invokeLater(new Runnable() {
                 public void run() {
-                    mainWindow.initGame(who, false);
+                    GameWindow.splash = new GameStartingSplashWindow(mainWindow, who, false);
+                    GameWindow.splash.setVisible(true);
                 }
             });
             dispose();

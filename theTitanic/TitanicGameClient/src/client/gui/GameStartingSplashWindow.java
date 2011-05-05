@@ -6,19 +6,60 @@
 
 package client.gui;
 
+import client.Main;
 import client.util.GUIRoutines;
+import client.util.UserProfile;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.JOptionPane;
+import javax.swing.Timer;
 
 /**
  *
  * @author danon
  */
-public class GameStartingSplashWindow extends javax.swing.JFrame {
+public class GameStartingSplashWindow extends javax.swing.JDialog {
 
     /** Creates new form GameStartingSplashWindow */
-    public GameStartingSplashWindow() {
+    public GameStartingSplashWindow(MainWindow m, UserProfile rvl, boolean frst) {
+        super(m, true);
         initComponents();
         jLabel1.setVisible(true);
+        mainWindow = m;
+        rival = rvl;
+        first = frst;
         GUIRoutines.toScreenCenter(this);
+        timer = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                timer.stop();
+                initGame(rival, first);  
+                dispose();
+            }
+        });
+        timer.start();
+    }
+    
+    
+    public void initGame(UserProfile rival, boolean first){
+        try{
+            if(!Main.checkMemory(12*1024*1024))
+                throw new OutOfMemoryError("Low available memory");
+            if(rival==null){
+                rival=new UserProfile(0);
+                rival.update();
+            }
+            GameWindow g = new GameWindow(rival, first);
+            g.setVisible(true);
+            mainWindow.gameWindows.add(g);
+        } catch (Error ex){
+            System.err.println("Start game error: "+ex.getLocalizedMessage());
+            JOptionPane.showMessageDialog(rootPane,
+                    ex.getLocalizedMessage()+" The application may behave abnormally.",
+                    "Titanic GameCilent: Error",
+                    JOptionPane.ERROR_MESSAGE);
+            System.gc();
+        }
     }
 
     /** This method is called from within the constructor to
@@ -30,34 +71,49 @@ public class GameStartingSplashWindow extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
 
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setAlwaysOnTop(true);
         setBackground(new java.awt.Color(0, 153, 51));
         setBounds(new java.awt.Rectangle(400, 300, 0, 0));
         setResizable(false);
         setUndecorated(true);
 
+        jPanel1.setBackground(new java.awt.Color(0, 153, 51));
+
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("Starting game... Please, wait a few seconds.");
+        jLabel1.setText("The game will start in few seconds. Please, wait...");
         jLabel1.setDoubleBuffered(true);
         jLabel1.setFocusable(false);
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel1)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addContainerGap())
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();
@@ -66,6 +122,11 @@ public class GameStartingSplashWindow extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
 
+    private Timer timer;
+    private MainWindow mainWindow;
+    private UserProfile rival;
+    private boolean first;
 }
