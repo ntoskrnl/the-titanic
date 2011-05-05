@@ -1,6 +1,7 @@
 package titanic.basic;
 
 import java.awt.Container;
+import java.awt.event.KeyEvent;
 
 /**
  * Interface for Graphical engine.
@@ -25,4 +26,9 @@ public interface GraphicalEngine {
      * Do not call any methods after calling this one.
      */
     public void dispose();
+    
+    /**
+     * Handle key event
+     */
+    public void processKeyEvent(KeyEvent evt);
 }

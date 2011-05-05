@@ -3,16 +3,21 @@
  *
  * Created on Mar 13, 2011, 10:57:49 PM
  */
-
 package client.gui;
 
 import client.Main;
 import client.util.GUIRoutines;
 import client.util.SimpleGame;
 import client.util.UserProfile;
+import java.awt.AWTEvent;
 import java.awt.EventQueue;
+import java.awt.Toolkit;
+import java.awt.event.AWTEventListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
 import java.util.Timer;
 import javax.swing.JOptionPane;
+import titanic.basic.Game;
 
 /**
  * Window with GameScene and several control buttons.
@@ -20,30 +25,35 @@ import javax.swing.JOptionPane;
  */
 public class GameWindow extends javax.swing.JFrame {
 
-
     /** Creates new form GameWindow */
     public GameWindow(UserProfile rvl, boolean first) {
         initComponents();
         try {
-            if(!Main.checkMemory(10*1024*1024)){
+            if (!Main.checkMemory(10 * 1024 * 1024)) {
                 JOptionPane.showMessageDialog(rootPane, "Too few free memory! Game may bevave abnormally.",
-                    "Titanic GameClient: Warning", JOptionPane.WARNING_MESSAGE);
-            } else if(!Main.checkMemory(8*1024*1024))
+                        "Titanic GameClient: Warning", JOptionPane.WARNING_MESSAGE);
+            } else if (!Main.checkMemory(8 * 1024 * 1024)) {
                 throw new ExceptionInInitializerError("Out of memory.");
+            }
 
-            setTitle(getTitle()+" [You vs. " + rvl.getProperty("pub_nickname") + "]");
+            setTitle(getTitle() + " [You vs. " + rvl.getProperty("pub_nickname") + "]");
             initGame();
 
-        } catch (Exception ex){
+        } catch (Exception ex) {
             JOptionPane.showMessageDialog(rootPane, "Failed to create a game instance!\nIt is trongly recommended to close all games and relogin. If problem repeats, restart the application.",
                     "Titanic GameClient: Error", JOptionPane.ERROR_MESSAGE);
             closeWindowLater();
         }
-        if(splash!=null) splash.setVisible(false);
+        if (splash != null) {
+            splash.setVisible(false);
+        }
         GUIRoutines.toScreenCenter(this);
+
+        Toolkit.getDefaultToolkit().addAWTEventListener(new GameAWTEventListener(),
+                AWTEvent.KEY_EVENT_MASK | AWTEvent.WINDOW_EVENT_MASK | AWTEvent.ACTION_EVENT_MASK);
     }
 
-    public final void initGame(){
+    public final void initGame() {
         game = new SimpleGame(gameScenePanel);
     }
 
@@ -140,33 +150,36 @@ public class GameWindow extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if(game!=null) game.start();
+        if (game != null) {
+            game.start();
+        }
         gameScenePanel.requestFocus();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        if(game!=null) game.stop();
+        if (game != null) {
+            game.stop();
+        }
         gameScenePanel.requestFocus();
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        if(game!=null){
+        if (game != null) {
             game.dispose();
             System.gc();
         }
     }//GEN-LAST:event_formWindowClosing
 
-    private void closeWindowLater(){
+    private void closeWindowLater() {
         EventQueue.invokeLater(new Runnable() {
+
             public void run() {
                 setVisible(false);
                 dispose();
             }
         });
     }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel buttonPanel;
     private javax.swing.JPanel gamePanel;
@@ -174,11 +187,40 @@ public class GameWindow extends javax.swing.JFrame {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     // End of variables declaration//GEN-END:variables
-
     private SimpleGame game;
     private Timer timer;
     private UserProfile rival;
     private boolean blankCycle = true;
     public static javax.swing.JDialog splash;
+}
 
+
+class GameAWTEventListener implements AWTEventListener {
+
+    public GameAWTEventListener(Game g) {
+        game = g; 
+    }
+
+    
+    
+    @Override
+    public void eventDispatched(AWTEvent event) {
+        // KeyEvents
+        if(event instanceof KeyEvent)
+            processKeyEvent((KeyEvent)event);
+        // Window Events
+        if(event instanceof WindowEvent)
+            processWindowEvent((WindowEvent)event);
+        
+    }
+    
+    private void processKeyEvent(KeyEvent evt){
+        game.getGraphicalEngine().processKeyEvent(evt);
+    }
+    
+    private void processWindowEvent(WindowEvent evt){
+        
+    }
+    
+    private Game game;
 }
