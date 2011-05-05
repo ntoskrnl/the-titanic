@@ -19,6 +19,7 @@ public class BallsStopEvent extends GameEvent {
         if(g instanceof SimpleGame){
             SimpleGame sg = (SimpleGame)g;
             sg.stop();
+            sg.changeStatus(Game.S_BALL_SELECT);
         }
     }
 

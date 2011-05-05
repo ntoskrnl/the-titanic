@@ -18,6 +18,7 @@ public abstract class GameEvent {
     public GameEvent(Game src, String type){
         this.type = type;
         source = src;
+        System.out.println(this);
     }
 
     /**
@@ -40,9 +41,7 @@ public abstract class GameEvent {
     /**
      * Executes the event (plays sound / changes game status)
      */
-    public void execute(){
-        System.out.println(this);
-    }
+    public abstract void execute();
 
     public static final String EVENT_IMPACT = "impact";
     public static final String EVENT_WHOLE = "whole";

@@ -95,6 +95,7 @@ public class GameWindow extends javax.swing.JFrame {
         });
 
         jButton2.setText(bundle.getString("GameWindow.jButton2.text")); // NOI18N
+        jButton2.setEnabled(false);
         jButton2.setName("jButton2"); // NOI18N
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
