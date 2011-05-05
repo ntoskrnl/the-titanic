@@ -178,6 +178,10 @@ public class Graphics3D implements GraphicalEngine {
                             }
                         }
 
+                         Transform3D strpos = new Transform3D();
+                         strpos.setTranslation(new Vector3d(-5,0,0));
+                         Stripline.setTransform(strpos);
+
                     }
 
 
@@ -751,7 +755,7 @@ public class Graphics3D implements GraphicalEngine {
             Stripline.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
             Stripline.addChild(strip);
             Transform3D strpos = new Transform3D();
-            strpos.setTranslation(new Vector3d(-0.3,0,0));
+            strpos.setTranslation(new Vector3d(-5,0,0));
             Stripline.setTransform(strpos);
             objRoot.addChild(Stripline);
         } catch (Exception w) {
@@ -832,7 +836,8 @@ public class Graphics3D implements GraphicalEngine {
         double delta = 0.02;
         int K = (int) (p / (delta));
         int i = 0;
-
+        if(K==0) K=2;
+        if(K>100) K=100;
        if( K%2 == 1 ) K++;
         LineArray line = new LineArray(K, LineArray.COORDINATES);
 
@@ -857,55 +862,65 @@ public class Graphics3D implements GraphicalEngine {
     private double Distance(int A) {
         double d = 0;
         double y=0,x=0,x0=0,y0=0;
+        final double xmax,ymax;
+        xmax=1.8;
+        ymax=1;
 
         double wi = game.getBilliardKey().getAngle();
+        if(wi>2*Math.PI) wi-=Math.PI*2;
+        x0 =2*mass[A].getY();
+        y0 =-2*mass[A].getX();
 
-        x0 = mass[A].getX();
-        y0 = mass[A].getY();
-      
-          if ((wi >= 0) && (wi < (Math.PI / 2-0.1))) {
-                y = 0.5;
+     // System.out.println(x0+" "+y0);
+          if ((wi >= 0) && (wi < (Math.PI / 2-0.01))) {
+                y = ymax;
                 x = x0+(y-y0)/Math.tan(wi);
-                     if(x>0.5) {
-                                x = 0.5;
+                     if(x>xmax) {
+                                x = xmax;
                                 y = Math.tan(wi)*(x-x0)+y0;
                             }
+               // System.out.println(x+" "+y+" 1");
                  }
 
         if ((wi >= Math.PI/2+0.01) && (wi < Math.PI)) {
 
-            y = 0.5;
+            y = ymax;
                 x = x0+(y-y0)/Math.tan(wi);
-                     if(x<-0.5) {
-                                x = -0.5;
+                     if(x<-xmax) {
+                                x = -xmax;
                                 y = Math.tan(wi)*(x-x0)+y0;
+
                             }
+               // System.out.println(x+" "+y+" 2");
            
         }
 
 
-        if ((wi >= Math.PI+0.5) && (wi < 3*Math.PI/2-0.5)) {
+        if ((wi >= Math.PI) && (wi < 3*Math.PI/2-0.01)) {
 
-             y = -0.5;
+             y = -ymax;
                 x = x0+(y-y0)/Math.tan(wi);
-                     if(x<-0.5) {
-                                x = -0.5;
+                     if(x<-xmax) {
+                                x = -xmax;
                                 y = Math.tan(wi)*(x-x0)+y0;
                             }
+                System.out.println(x+" "+y+" 3");
            
         }
-        if ((wi >= 3 * Math.PI / 2) && (wi < 2 * Math.PI)) {
+        if ((wi >= 3 * Math.PI / 2+0.01) && (wi < 2 * Math.PI)) {
 
-             y = -0.5;
+             y = -ymax;
                 x = x0+(y-y0)/Math.tan(wi);
-                     if(x>0.5) {
-                                x = 0.5;
+                     if(x>xmax) {
+                                x = xmax;
                                 y = Math.tan(wi)*(x-x0)+y0;
                             }
+                System.out.println(x+" "+y+" 4");
             
         }
 
         d=Math.sqrt((x-x0)*(x-x0)+(y-y0)*(y-y0));
+        //System.out.println("Dist"+d);
         return d;
     }
 }
