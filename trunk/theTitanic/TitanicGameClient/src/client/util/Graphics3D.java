@@ -80,217 +80,7 @@ public class Graphics3D implements GraphicalEngine {
 
     /** Adds some mouse and key listeners to the component */
     private void setEventListeners(Component c) {
-        /**
-         * Behavour on key pressing
-         */
-        c.addKeyListener(new KeyAdapter() {
-
-            @Override
-            public void keyPressed(KeyEvent evt) {
-                try {
-                    int Gamestatus = game.getGameStatus();
-                    int code = evt.getKeyCode();
-                    Ball b = game.getBilliardKey().getBall();
-                    int curBall = 0;
-                    if (b != null) {
-                        curBall = game.getBilliardKey().getBall().getId();
-                    }
-
-                    if (Gamestatus != Game.S_MOVING && Gamestatus != Game.S_MAKE_HIT && Gamestatus != Game.S_PAUSE && Gamestatus != Game.S_WAIT_RIVAL) {
-                        if (code == KeyEvent.VK_COMMA || code == KeyEvent.VK_PERIOD || code == KeyEvent.VK_A || code == KeyEvent.VK_D) {
-
-                           
-                            if (code == KeyEvent.VK_COMMA) {
-                                curBall += game.getGameScene().getBalls().length - 1;
-                                game.getBilliardKey().setAngle(0);
-                            }
-                            if (code == KeyEvent.VK_PERIOD) {
-                                curBall += game.getGameScene().getBalls().length + 1;
-                                game.getBilliardKey().setAngle(0);
-                            }
-
-                            if (code == KeyEvent.VK_A) {
-                                float inc = 0;
-                                do {
-                                    inc += (float) Math.PI / 150;
-                                    game.getBilliardKey().setAngle(game.getBilliardKey().getAngle() - (float) Math.PI / 150);
-
-                                } while (!game.getBilliardKey().validAngle(game) && inc < Math.PI * 2);
-                            }
-
-                            if (code == KeyEvent.VK_D) {
-                                float inc = 0;
-                                do {
-                                    inc += (float) Math.PI / 150;
-                                    game.getBilliardKey().setAngle(game.getBilliardKey().getAngle() + (float) Math.PI / 150);
-                                } while (!game.getBilliardKey().validAngle(game) && inc < Math.PI * 2);
-                            }
-
-                            curBall %= game.getGameScene().getBalls().length;
-                            game.getBilliardKey().changeBall(game.getGameScene().getBalls()[curBall]);
-                            setStrip();
-                            if (Keyposition == null) {
-                                Keyposition = new Transform3D();
-                            }
-
-                            Keyposition.rotZ(game.getBilliardKey().getAngle());
-                            Transform3D rotk = new Transform3D();
-                            rotk.rotX(-Math.PI / 24);
-                            Keyposition.mul(rotk);
-
-                            // }
-
-                            Vector3f pos = new Vector3f();
-                            pos.setX(game.getBilliardKey().getBall().getCoordinates().getX() / maxwidth * 1.6f * width);
-                            pos.setY(game.getBilliardKey().getBall().getCoordinates().getY() / maxhight * 1.6f * high);
-                            pos.setZ(game.getBilliardKey().getBall().getCoordinates().getZ());
-                            Keyposition.setTranslation(pos);
-
-                            Keytrans.setTransform(Keyposition);
-
-                            //Changing color of 15 ball
-                            int i;
-                            for (i = 0; i < 16; i++) {
-
-                                if (curBall == i) {
-                                    Sphere chsp;
-                                    chsp = (Sphere) objTrans[i].getChild(0);
-                                    chsp.getAppearance().getTransparencyAttributes().setTransparency(0.3f);
-                                } else {
-                                    Sphere chsp;
-                                    chsp = (Sphere) objTrans[i].getChild(0);
-                                    chsp.getAppearance().getTransparencyAttributes().setTransparency(0);
-                                }
-                            }
-
-                        }
-                    }
-                    if (code == KeyEvent.VK_END || Gamestatus==Game.S_MOVING || Gamestatus==Game.S_FINISH) {
-                        Transform3D key = new Transform3D();
-                        key.setTranslation(new Vector3f(-.7f, 0.0f, 0.0f));
-                        Keytrans.setTransform(key);
-                        int i;
-                        for (i = 0; i < 16; i++) {
-                            if (curBall == i) {
-                                Sphere chsp;
-                                chsp = (Sphere) objTrans[i].getChild(0);
-                                chsp.getAppearance().getTransparencyAttributes().setTransparency(0.0f);
-                            }
-                        }
-
-                         Transform3D strpos = new Transform3D();
-                         strpos.setTranslation(new Vector3d(-5,0,0));
-                         Stripline.setTransform(strpos);
-
-                    }
-
-
-
-                    if (code == KeyEvent.VK_LEFT) {
-                        phi = phi + 0.01f;
-                        Transform3D t = new Transform3D();
-                        t.rotZ(phi);
-                        Transform3D setscenerot = new Transform3D();
-                        setscenerot.rotX(psi);
-                        setscenerot.mul(t);
-                        setscenerot.setScale(scale);
-                        Gamescenegroup.setTransform(setscenerot);
-                    }
-
-
-                    if (code == KeyEvent.VK_RIGHT) {
-                        phi = phi - 0.01f;
-                        Transform3D t = new Transform3D();
-                        t.rotZ(phi);
-                        Transform3D setscenerot = new Transform3D();
-                        setscenerot.rotX(psi);
-                        setscenerot.mul(t);
-                        setscenerot.setScale(scale);
-                        Gamescenegroup.setTransform(setscenerot);
-                    }
-
-                    if (code == KeyEvent.VK_UP) {
-                        Transform3D t = new Transform3D();
-                        t.rotZ(phi);
-                        psi = psi - 0.01f;
-                        Transform3D setscenerot = new Transform3D();
-                        setscenerot.rotX(psi);
-                        setscenerot.mul(t);
-                        setscenerot.setScale(scale);
-                        Gamescenegroup.setTransform(setscenerot);
-                    }
-
-                    if (code == KeyEvent.VK_DOWN) {
-                        Transform3D t = new Transform3D();
-                        t.rotZ(phi);
-                        psi = psi + 0.01f;
-                        Transform3D setscenerot = new Transform3D();
-                        setscenerot.rotX(psi);
-                        setscenerot.mul(t);
-                        setscenerot.setScale(scale);
-                        Gamescenegroup.setTransform(setscenerot);
-                    }
-
-
-                    if (code == KeyEvent.VK_ESCAPE) {
-                        phi = 0;
-                        psi = 0;
-                        scale.x = 1;
-                        scale.y = 1;
-                        scale.z = 1;
-                        Transform3D t = new Transform3D();
-                        t.rotZ(phi);
-                        Transform3D setscenerot = new Transform3D();
-                        setscenerot.rotX(psi);
-                        setscenerot.mul(t);
-                        setscenerot.setScale(scale);
-                        Gamescenegroup.setTransform(setscenerot);
-                    }
-
-                    if (code == KeyEvent.VK_0) {
-                        scale.setX(scale.getX() + scale.getX() / 50);
-                        scale.setY(scale.getY() + scale.getY() / 50);
-                        scale.setZ(scale.getZ() + scale.getZ() / 50);
-
-                        Transform3D t = new Transform3D();
-                        t.rotZ(phi);
-                        Transform3D setscenerot = new Transform3D();
-                        setscenerot.rotX(psi);
-                        setscenerot.mul(t);
-                        setscenerot.setScale(scale);
-                        Gamescenegroup.setTransform(setscenerot);
-
-
-                    }
-                    if (code == KeyEvent.VK_9) {
-                        scale.setX(scale.getX() - scale.getX() / 50);
-                        scale.setY(scale.getY() - scale.getY() / 50);
-                        scale.setZ(scale.getZ() - scale.getZ() / 50);
-
-                        Transform3D t = new Transform3D();
-                        t.rotZ(phi);
-                        Transform3D setscenerot = new Transform3D();
-                        setscenerot.rotX(psi);
-                        setscenerot.mul(t);
-                        setscenerot.setScale(scale);
-                        Gamescenegroup.setTransform(setscenerot);
-
-
-                    }
-                    //Запуск выбора силы кия и отрисовка удара
-                    if (code == KeyEvent.VK_ENTER) {
-
-                        UpDownBottom boto = new UpDownBottom(button, 0.4, Key, game);
-                        boto.start();
-
-                    }
-                } catch (Exception ex) {
-                    System.err.println(ex);
-                    System.exit(1);
-                }
-            }
-        });
-
+                 
         /**
          * Bahavour at mouse (wheel) click or move
          */
@@ -325,6 +115,7 @@ public class Graphics3D implements GraphicalEngine {
 
         c.addMouseWheelListener(new MouseWheelListener() {
 
+            @Override
             public void mouseWheelMoved(MouseWheelEvent e) {
             }
         });
@@ -382,6 +173,7 @@ public class Graphics3D implements GraphicalEngine {
         return Branch;
     }
 
+    @Override
     public void setRenderingArea(Container area) {
         try {
 
@@ -489,6 +281,7 @@ public class Graphics3D implements GraphicalEngine {
     //*               public void render(Game game)                  *
     //****************************************************************
     //---------------------------------------------------------------------------
+    @Override
     public void render(Game game) {
 
         BallsArray = game.getGameScene().getBalls();
@@ -770,6 +563,7 @@ public class Graphics3D implements GraphicalEngine {
 
     }
 
+    @Override
     public void dispose() {
         u.cleanup();
     }
@@ -923,5 +717,211 @@ public class Graphics3D implements GraphicalEngine {
 
         d=Math.sqrt((x-x0)*(x-x0)+(y-y0)*(y-y0));
         return d;
+    }
+
+    @Override
+    public void processKeyEvent(KeyEvent evt) {
+          try {
+                    int Gamestatus = game.getGameStatus();
+                    int code = evt.getKeyCode();
+                    Ball b = game.getBilliardKey().getBall();
+                    int curBall = 0;
+                    if (b != null) {
+                        curBall = game.getBilliardKey().getBall().getId();
+                    }
+
+                    if (Gamestatus != Game.S_MOVING && Gamestatus != Game.S_MAKE_HIT && Gamestatus != Game.S_PAUSE && Gamestatus != Game.S_WAIT_RIVAL) {
+                        if (code == KeyEvent.VK_COMMA || code == KeyEvent.VK_PERIOD || code == KeyEvent.VK_A || code == KeyEvent.VK_D) {
+
+
+                            if (code == KeyEvent.VK_COMMA) {
+                                curBall += game.getGameScene().getBalls().length - 1;
+                                game.getBilliardKey().setAngle(0);
+                            }
+                            if (code == KeyEvent.VK_PERIOD) {
+                                curBall += game.getGameScene().getBalls().length + 1;
+                                game.getBilliardKey().setAngle(0);
+                            }
+
+                            if (code == KeyEvent.VK_A) {
+                                float inc = 0;
+                                do {
+                                    inc += (float) Math.PI / 150;
+                                    game.getBilliardKey().setAngle(game.getBilliardKey().getAngle() - (float) Math.PI / 150);
+
+                                } while (!game.getBilliardKey().validAngle(game) && inc < Math.PI * 2);
+                            }
+
+                            if (code == KeyEvent.VK_D) {
+                                float inc = 0;
+                                do {
+                                    inc += (float) Math.PI / 150;
+                                    game.getBilliardKey().setAngle(game.getBilliardKey().getAngle() + (float) Math.PI / 150);
+                                } while (!game.getBilliardKey().validAngle(game) && inc < Math.PI * 2);
+                            }
+
+                            curBall %= game.getGameScene().getBalls().length;
+                            game.getBilliardKey().changeBall(game.getGameScene().getBalls()[curBall]);
+                            setStrip();
+                            if (Keyposition == null) {
+                                Keyposition = new Transform3D();
+                            }
+
+                            Keyposition.rotZ(game.getBilliardKey().getAngle());
+                            Transform3D rotk = new Transform3D();
+                            rotk.rotX(-Math.PI / 24);
+                            Keyposition.mul(rotk);
+
+                            // }
+
+                            Vector3f pos = new Vector3f();
+                            pos.setX(game.getBilliardKey().getBall().getCoordinates().getX() / maxwidth * 1.6f * width);
+                            pos.setY(game.getBilliardKey().getBall().getCoordinates().getY() / maxhight * 1.6f * high);
+                            pos.setZ(game.getBilliardKey().getBall().getCoordinates().getZ());
+                            Keyposition.setTranslation(pos);
+
+                            Keytrans.setTransform(Keyposition);
+
+                            //Changing color of 15 ball
+                            int i;
+                            for (i = 0; i < 16; i++) {
+
+                                if (curBall == i) {
+                                    Sphere chsp;
+                                    chsp = (Sphere) objTrans[i].getChild(0);
+                                    chsp.getAppearance().getTransparencyAttributes().setTransparency(0.3f);
+                                } else {
+                                    Sphere chsp;
+                                    chsp = (Sphere) objTrans[i].getChild(0);
+                                    chsp.getAppearance().getTransparencyAttributes().setTransparency(0);
+                                }
+                            }
+
+                        }
+                    }
+                    if (code == KeyEvent.VK_END || Gamestatus==Game.S_MOVING || Gamestatus==Game.S_FINISH) {
+                        Transform3D key = new Transform3D();
+                        key.setTranslation(new Vector3f(-.7f, 0.0f, 0.0f));
+                        Keytrans.setTransform(key);
+                        int i;
+                        for (i = 0; i < 16; i++) {
+                            if (curBall == i) {
+                                Sphere chsp;
+                                chsp = (Sphere) objTrans[i].getChild(0);
+                                chsp.getAppearance().getTransparencyAttributes().setTransparency(0.0f);
+                            }
+                        }
+
+                         Transform3D strpos = new Transform3D();
+                         strpos.setTranslation(new Vector3d(-5,0,0));
+                         Stripline.setTransform(strpos);
+
+                    }
+
+
+
+                    if (code == KeyEvent.VK_LEFT) {
+                        phi = phi + 0.01f;
+                        Transform3D t = new Transform3D();
+                        t.rotZ(phi);
+                        Transform3D setscenerot = new Transform3D();
+                        setscenerot.rotX(psi);
+                        setscenerot.mul(t);
+                        setscenerot.setScale(scale);
+                        Gamescenegroup.setTransform(setscenerot);
+                    }
+
+
+                    if (code == KeyEvent.VK_RIGHT) {
+                        phi = phi - 0.01f;
+                        Transform3D t = new Transform3D();
+                        t.rotZ(phi);
+                        Transform3D setscenerot = new Transform3D();
+                        setscenerot.rotX(psi);
+                        setscenerot.mul(t);
+                        setscenerot.setScale(scale);
+                        Gamescenegroup.setTransform(setscenerot);
+                    }
+
+                    if (code == KeyEvent.VK_UP) {
+                        Transform3D t = new Transform3D();
+                        t.rotZ(phi);
+                        psi = psi - 0.01f;
+                        Transform3D setscenerot = new Transform3D();
+                        setscenerot.rotX(psi);
+                        setscenerot.mul(t);
+                        setscenerot.setScale(scale);
+                        Gamescenegroup.setTransform(setscenerot);
+                    }
+
+                    if (code == KeyEvent.VK_DOWN) {
+                        Transform3D t = new Transform3D();
+                        t.rotZ(phi);
+                        psi = psi + 0.01f;
+                        Transform3D setscenerot = new Transform3D();
+                        setscenerot.rotX(psi);
+                        setscenerot.mul(t);
+                        setscenerot.setScale(scale);
+                        Gamescenegroup.setTransform(setscenerot);
+                    }
+
+
+                    if (code == KeyEvent.VK_ESCAPE) {
+                        phi = 0;
+                        psi = 0;
+                        scale.x = 1;
+                        scale.y = 1;
+                        scale.z = 1;
+                        Transform3D t = new Transform3D();
+                        t.rotZ(phi);
+                        Transform3D setscenerot = new Transform3D();
+                        setscenerot.rotX(psi);
+                        setscenerot.mul(t);
+                        setscenerot.setScale(scale);
+                        Gamescenegroup.setTransform(setscenerot);
+                    }
+
+                    if (code == KeyEvent.VK_0) {
+                        scale.setX(scale.getX() + scale.getX() / 50);
+                        scale.setY(scale.getY() + scale.getY() / 50);
+                        scale.setZ(scale.getZ() + scale.getZ() / 50);
+
+                        Transform3D t = new Transform3D();
+                        t.rotZ(phi);
+                        Transform3D setscenerot = new Transform3D();
+                        setscenerot.rotX(psi);
+                        setscenerot.mul(t);
+                        setscenerot.setScale(scale);
+                        Gamescenegroup.setTransform(setscenerot);
+
+
+                    }
+                    if (code == KeyEvent.VK_9) {
+                        scale.setX(scale.getX() - scale.getX() / 50);
+                        scale.setY(scale.getY() - scale.getY() / 50);
+                        scale.setZ(scale.getZ() - scale.getZ() / 50);
+
+                        Transform3D t = new Transform3D();
+                        t.rotZ(phi);
+                        Transform3D setscenerot = new Transform3D();
+                        setscenerot.rotX(psi);
+                        setscenerot.mul(t);
+                        setscenerot.setScale(scale);
+                        Gamescenegroup.setTransform(setscenerot);
+
+
+                    }
+                    //Запуск выбора силы кия и отрисовка удара
+                    if (code == KeyEvent.VK_ENTER) {
+
+                        UpDownBottom boto = new UpDownBottom(button, 0.4, Key, game);
+                        boto.start();
+
+                    }
+                } catch (Exception ex) {
+                    System.err.println(ex);
+                    System.exit(1);
+                }
+
     }
 }
