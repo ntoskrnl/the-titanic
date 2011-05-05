@@ -47,10 +47,12 @@ public class GameWindow extends javax.swing.JFrame {
         if (splash != null) {
             splash.setVisible(false);
         }
-        GUIRoutines.toScreenCenter(this);
-
-        Toolkit.getDefaultToolkit().addAWTEventListener(new GameAWTEventListener(game),
+        
+        awtEventListener = new GameAWTEventListener(this, game);
+        Toolkit.getDefaultToolkit().addAWTEventListener(awtEventListener,
                 AWTEvent.KEY_EVENT_MASK | AWTEvent.WINDOW_EVENT_MASK | AWTEvent.ACTION_EVENT_MASK);
+        
+        GUIRoutines.toScreenCenter(this);
     }
 
     public final void initGame() {
@@ -170,6 +172,7 @@ public class GameWindow extends javax.swing.JFrame {
             game.dispose();
             System.gc();
         }
+        Toolkit.getDefaultToolkit().removeAWTEventListener(awtEventListener);
     }//GEN-LAST:event_formWindowClosing
 
     private void closeWindowLater() {
@@ -193,19 +196,23 @@ public class GameWindow extends javax.swing.JFrame {
     private UserProfile rival;
     private boolean blankCycle = true;
     public static javax.swing.JDialog splash;
+    private AWTEventListener awtEventListener;
 }
 
 
 class GameAWTEventListener implements AWTEventListener {
 
-    public GameAWTEventListener(Game g) {
+    public GameAWTEventListener(GameWindow w, Game g) {
         game = g; 
+        window = w;
     }
 
     
     
     @Override
     public void eventDispatched(AWTEvent event) {
+        if(game==null || window == null) return;
+        if(!window.isActive()) return;
         // KeyEvents
         if(event instanceof KeyEvent)
             processKeyEvent((KeyEvent)event);
@@ -224,4 +231,5 @@ class GameAWTEventListener implements AWTEventListener {
     }
     
     private Game game;
+    private GameWindow window;
 }
