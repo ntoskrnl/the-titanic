@@ -570,62 +570,124 @@ public class Graphics3D implements GraphicalEngine {
 
     private Geometry getqw(double h, double w, double b, int look) {
 
+        Point3d A[] = new Point3d[12];
+        A[0] = new Point3d(-w / 2, -h / 2, 0);
+        A[1] = new Point3d(-w / 2 + b / 2, -h / 2 + b / 2, 0);
+        A[2] = new Point3d(-w / 2 + b / 2, h / 2 - b / 2, 0);
+        A[3] = new Point3d(-w / 2, h / 2, 0);
+        A[4] = new Point3d(-w / 2 + b, -h / 2 + b, 0);
+        A[5] = new Point3d(-w / 2 + b, h / 2 - b, 0);
+        A[6] = new Point3d(w / 2 - b, -h / 2 + b, 0);
+        A[7] = new Point3d(w / 2 - b, h / 2 - b, 0);
+        A[8] = new Point3d(w / 2 - b / 2, -h / 2 + b / 2, 0);
+        A[9] = new Point3d(w / 2 - b / 2, h / 2 - b / 2, 0);
+        A[10] = new Point3d(w / 2, -h / 2, 0);
+        A[11] = new Point3d(w / 2, h / 2, 0);
 
-        QuadArray qward = new QuadArray(20, QuadArray.COORDINATES | TriangleArray.COLOR_3);
+        Color3f color[] = new Color3f[2];
+        //The color of center
+        color[0] = new Color3f(1, 1, 1);
+        //The color of border
+        color[1] = new Color3f(0, 0, 10);
 
-        qward.setCoordinate(0, new Point3d(-w / 2, -h / 2, 0));
-        qward.setCoordinate(1, new Point3d(b - w / 2, -h / 2, 0));
-        qward.setCoordinate(2, new Point3d(b - w / 2, h / 2, 0));
-        qward.setCoordinate(3, new Point3d(-w / 2, h / 2, 0));
 
-        qward.setColor(0, new Color3f(0, 0, 10));
-        qward.setColor(1, new Color3f(0, 0, 10));
-        qward.setColor(2, new Color3f(0, 0, 10));
-        qward.setColor(3, new Color3f(0, 0, 10));
+        QuadArray qward = new QuadArray(36, QuadArray.COORDINATES | TriangleArray.COLOR_3);
 
-        qward.setCoordinate(4, new Point3d(-w / 2, -b + h / 2, 0));
-        qward.setCoordinate(5, new Point3d(w / 2, -b + h / 2, 0));
-        qward.setCoordinate(6, new Point3d(w / 2, h / 2, 0));
-        qward.setCoordinate(7, new Point3d(-w / 2, h / 2, 0));
+        qward.setCoordinate(0, A[0]);
+        qward.setCoordinate(1, A[1]);
+        qward.setCoordinate(2, A[2]);
+        qward.setCoordinate(3, A[3]);
 
-        qward.setColor(4, new Color3f(0, 0, 10));
-        qward.setColor(5, new Color3f(0, 0, 10));
-        qward.setColor(6, new Color3f(0, 0, 10));
-        qward.setColor(7, new Color3f(0, 0, 10));
+        qward.setColor(0, color[1]);
+        qward.setColor(1, color[0]);
+        qward.setColor(2, color[0]);
+        qward.setColor(3, color[1]);
 
-        qward.setCoordinate(8, new Point3d(w / 2, h / 2, 0));
-        qward.setCoordinate(9, new Point3d(-b + w / 2, h / 2, 0));
-        qward.setCoordinate(10, new Point3d(-b + w / 2, -h / 2, 0));
-        qward.setCoordinate(11, new Point3d(w / 2, -h / 2, 0));
+        qward.setCoordinate(4, A[1]);
+        qward.setCoordinate(5, A[4]);
+        qward.setCoordinate(6, A[5]);
+        qward.setCoordinate(7, A[2]);
 
-        qward.setColor(8, new Color3f(0, 0, 10));
-        qward.setColor(9, new Color3f(0, 0, 10));
-        qward.setColor(10, new Color3f(0, 0, 10));
-        qward.setColor(11, new Color3f(0, 0, 10));
+        qward.setColor(4, color[0]);
+        qward.setColor(5, color[1]);
+        qward.setColor(6, color[1]);
+        qward.setColor(7, color[0]);
 
-        qward.setCoordinate(12, new Point3d(-w / 2, -h / 2, 0));
-        qward.setCoordinate(13, new Point3d(w / 2, -h / 2, 0));
-        qward.setCoordinate(14, new Point3d(w / 2, b - h / 2, 0));
-        qward.setCoordinate(15, new Point3d(-w / 2, b - h / 2, 0));
+        qward.setCoordinate(8, A[0]);
+        qward.setCoordinate(9, A[10]);
+        qward.setCoordinate(10, A[8]);
+        qward.setCoordinate(11, A[1]);
 
-        qward.setColor(12, new Color3f(0, 0, 10));
-        qward.setColor(13, new Color3f(0, 0, 10));
-        qward.setColor(14, new Color3f(0, 0, 10));
-        qward.setColor(15, new Color3f(0, 0, 10));
+        qward.setColor(8, color[1]);
+        qward.setColor(9, color[1]);
+        qward.setColor(10, color[0]);
+        qward.setColor(11, color[0]);
+
+        qward.setCoordinate(12, A[1]);
+        qward.setCoordinate(13, A[8]);
+        qward.setCoordinate(14, A[6]);
+        qward.setCoordinate(15, A[4]);
+
+        qward.setColor(12, color[0]);
+        qward.setColor(13, color[0]);
+        qward.setColor(14, color[1]);
+        qward.setColor(15, color[1]);
+        
+        qward.setCoordinate(16, A[8]);
+        qward.setCoordinate(17, A[10]);
+        qward.setCoordinate(18, A[11]);
+        qward.setCoordinate(19, A[9]);
+
+        qward.setColor(16, color[0]);
+        qward.setColor(17, color[1]);
+        qward.setColor(18, color[1]);
+        qward.setColor(19, color[0]);
+        
+        qward.setCoordinate(20, A[6]);
+        qward.setCoordinate(21, A[8]);
+        qward.setCoordinate(22, A[9]);
+        qward.setCoordinate(23, A[7]);
+
+        qward.setColor(20, color[1]);
+        qward.setColor(21, color[0]);
+        qward.setColor(22, color[0]);
+        qward.setColor(23, color[1]);
+        
+        qward.setCoordinate(24, A[5]);
+        qward.setCoordinate(25, A[7]);
+        qward.setCoordinate(26, A[9]);
+        qward.setCoordinate(27, A[2]);
+
+        qward.setColor(24, color[1]);
+        qward.setColor(25, color[1]);
+        qward.setColor(26, color[0]);
+        qward.setColor(27, color[0]);
+        
+        qward.setCoordinate(28, A[2]);
+        qward.setCoordinate(29, A[9]);
+        qward.setCoordinate(30, A[11]);
+        qward.setCoordinate(31, A[3]);
+
+        qward.setColor(28, color[0]);
+        qward.setColor(29, color[0]);
+        qward.setColor(30, color[1]);
+        qward.setColor(31, color[1]);
+
+
+
         if (look == 1) {
 
-            qward.setCoordinate(16, new Point3d(-w / 2 + b, -h / 2 + b, 0));
-            qward.setCoordinate(17, new Point3d(w / 2 - b, -h / 2 + b, 0));
-            qward.setCoordinate(18, new Point3d(w / 2 - b, h / 2 - b, 0));
-            qward.setCoordinate(19, new Point3d(-w / 2 + b, h / 2 - b, 0));
+            qward.setCoordinate(32, A[4]);
+            qward.setCoordinate(33, A[6]);
+            qward.setCoordinate(34, A[7]);
+            qward.setCoordinate(35, A[5]);
 
-            qward.setColor(16, new Color3f(0, 10, 0));
-            qward.setColor(17, new Color3f(0, 10, 0));
-            qward.setColor(18, new Color3f(10, 0, 0));
-            qward.setColor(19, new Color3f(10, 0, 0));
+            qward.setColor(32, new Color3f(0, 10, 0));
+            qward.setColor(33, new Color3f(0, 10, 0));
+            qward.setColor(34, new Color3f(10, 0, 0));
+            qward.setColor(35, new Color3f(10, 0, 0));
         }
-
-        return qward;
+         return qward;
     }
 
     private Geometry StriptedLine(double p) {
