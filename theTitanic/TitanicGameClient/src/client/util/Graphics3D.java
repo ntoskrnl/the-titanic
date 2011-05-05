@@ -157,6 +157,7 @@ public class Graphics3D implements GraphicalEngine {
         Branch.addChild(field);
 
 
+
         Text2D text = new Text2D("Game in process", diffuse, "Times new Roman", 25, Font.PLAIN);
         TransformGroup texttr = new TransformGroup();
         texttr.setCapability(TransformGroup.ALLOW_TRANSFORM_READ);
@@ -167,6 +168,16 @@ public class Graphics3D implements GraphicalEngine {
         textposition.setTranslation(new Vector3f(0.2f, 0f, 0.9f));
         texttr.setTransform(textposition);
         texttr.addChild(text);
+
+        Text2D Strenth = new Text2D("Power", new Color3f(1f,0.0f,0.0f), "Arial", 12, Font.PLAIN );
+
+        TransformGroup TextStr = new TransformGroup();
+        Transform3D powertr = new Transform3D();
+        powertr.rotX(Math.PI / 3.0d);
+        powertr.setTranslation(new Vector3d(0.865f, 0f, 0.53f));
+        TextStr.setTransform(powertr);
+        TextStr.addChild(Strenth);
+        Branch.addChild(TextStr);
 
         Branch.addChild(texttr);
 
