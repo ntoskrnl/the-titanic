@@ -35,7 +35,7 @@ public class yukiEngine implements PhysicalEngine {
     public yukiEngine(Game game){
         /* В качестве параметра передаётся экземпляр игры. */
 
-        dT = (float) 0.25; // Время дискретизации. Дефолтовское.
+        dT = (float) 0.0025; // Время дискретизации. Дефолтовское.
         dTnow = 0; // Время дискретизации. Текущее.
 
         balls = game.getGameScene().getBalls(); // Получаем все шары.
@@ -288,15 +288,15 @@ public class yukiEngine implements PhysicalEngine {
 
     /* Учитываем трение. */
     private void precious(){
-        float Nt = (float) 0.05; //Коэфицент трения.
+        float Nt = (float) 1.5; //Коэфицент трения.
         for( int i=0; i<bQuant; ++i){
             float speed = (float) Math.sqrt((float)(bVel[i][0]*bVel[i][0]+bVel[i][1]*bVel[i][1]));
             if (speed<Nt){
                 bVel[i][0] = 0;
                 bVel[i][1] = 0;
             } else {
-                bVel[i][0] -= bVel[i][0]/speed * Nt;
-                bVel[i][1] -= bVel[i][1]/speed * Nt;
+                bVel[i][0] -= bVel[i][0]/speed * Nt*dT*10;
+                bVel[i][1] -= bVel[i][1]/speed * Nt*dT*10;
             }
         }
     }

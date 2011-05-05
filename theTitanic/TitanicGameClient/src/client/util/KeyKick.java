@@ -54,6 +54,7 @@ public class KeyKick extends Thread {
     }
         }
        game.getBilliardKey().setPower(Str);
+       ((SimpleGame)game).start();
     }
 
 }

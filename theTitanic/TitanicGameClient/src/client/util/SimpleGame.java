@@ -1,6 +1,5 @@
 package client.util;
 
-import java.awt.Color;
 import java.awt.Container;
 import java.util.Random;
 import titanic.basic.Ball;
@@ -36,10 +35,10 @@ public class SimpleGame extends Game {
         Ball[] balls = new Ball[16];
         renderingArea = c;
         scene = new SimpleGameScene(c, balls);
-        arrangeBalls(balls, scene.getBounds());
-
         key = new SimpleBilliardKey();
         key.changeBall(balls[15]);
+        
+        arrangeBalls(balls, scene.getBounds());
 
         events = new SimpleEventPipeLine();
 
@@ -83,7 +82,7 @@ public class SimpleGame extends Game {
                 }
             }
 
-            Random rand = new Random(System.currentTimeMillis());
+            //Random rand = new Random(System.currentTimeMillis());
             for(i=0;i<15;i++){
                 balls[i] = new Ball();
                 balls[i].setCoordinates(mass[i]);
@@ -93,7 +92,10 @@ public class SimpleGame extends Game {
             balls[15] = new Ball(0, -0.5f);
             balls[15].setId(15);
             balls[15].setRadius(r);
-            balls[15].setSpeed(new Vector3D(rand.nextFloat()*1-0.5f, rand.nextFloat()*1-0.5f));
+            float angle = key.getAngle() + (float)Math.PI/2;   
+            balls[15].setSpeed(new Vector3D(key.getPower()*(float)Math.cos(angle) *20, 
+                    key.getPower()*(float)Math.sin(angle)*20));
+            System.out.println("angle = "+angle);
         }
     }
 
@@ -102,13 +104,19 @@ public class SimpleGame extends Game {
      */
     public void start(){
         stop();
-        if(!rearrange) rearrange = true;
-        else arrangeBalls(game.getGameScene().getBalls(), game.getGameScene().getBounds());
+        if(!rearrange) 
+            rearrange = true;
+        else 
+            arrangeBalls(game.getGameScene().getBalls(), game.getGameScene().getBounds());
         thread1 = new Thread(new Runnable() {
             public void run() {
                 try {
                     while(!thread1.isInterrupted()){
-                        graphics.render(game);
+                       try{
+                            graphics.render(game);
+                         } catch(Exception ex){}
+                        catch (Error er) {}
+                        catch (Throwable th) {}
                         Thread.currentThread().sleep(25);
                     }
                 } catch (InterruptedException ex){}
@@ -118,7 +126,11 @@ public class SimpleGame extends Game {
             public void run() {
                 try {
                     while(!thread2.isInterrupted()){
-                        physics.compute();
+                        try{
+                            physics.compute();
+                        } catch(Exception ex){}
+                        catch (Error er) {}
+                        catch (Throwable th) {}
                         Thread.currentThread().sleep(30);
                     }
                 } catch (InterruptedException ex){}
@@ -128,7 +140,12 @@ public class SimpleGame extends Game {
             public void run() {
                 try{
                     while(!thread3.isInterrupted()){
-                        while(events.size()!=0) events.getFirst().execute();
+                        try{
+                            while(events.size()!=0) 
+                                events.getFirst().execute();
+                         } catch(Exception ex){}
+                        catch (Error er) {}
+                        catch (Throwable th) {}
                         Thread.currentThread().sleep(10);
                     }
                 } catch(InterruptedException ex){}
@@ -149,6 +166,9 @@ public class SimpleGame extends Game {
             thread2.interrupt();
         if(thread3!=null)
             thread3.interrupt();
+        rearrange = false;
+        arrangeBalls(getGameScene().getBalls(), null);
+        graphics.render(game);
     }
 
     @Override
