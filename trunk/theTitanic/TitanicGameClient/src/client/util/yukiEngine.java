@@ -1,9 +1,5 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package client.util;
+import client.util.event.BallsStopEvent;
 import client.util.event.ImpactEvent;
 import titanic.basic.*;
 

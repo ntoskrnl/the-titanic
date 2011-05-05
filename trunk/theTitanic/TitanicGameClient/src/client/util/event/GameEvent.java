@@ -40,7 +40,9 @@ public abstract class GameEvent {
     /**
      * Executes the event (plays sound / changes game status)
      */
-    abstract public void execute();
+    public void execute(){
+        System.out.println(this);
+    }
 
     public static final String EVENT_IMPACT = "impact";
     public static final String EVENT_WHOLE = "whole";

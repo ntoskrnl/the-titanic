@@ -44,7 +44,7 @@ public class BallToPocketEvent extends GameEvent{
     
     @Override
     public void execute() {
-        
+        System.out.println(this);
     }
     
 }

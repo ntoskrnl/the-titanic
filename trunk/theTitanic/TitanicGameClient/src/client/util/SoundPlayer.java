@@ -11,18 +11,18 @@ import java.net.URL;
 
 public class SoundPlayer extends Thread {
 
-    private final int EXTERNAL_BUFFER_SIZE = 524288; // 128Kb
+    private final int EXTERNAL_BUFFER_SIZE = 524288/4; // 128Kb
     private URL soundFile;
     private float soundVolume;
     /** Print exception messages? */
-    private static final boolean quiet = false;
+    private static final boolean quiet = true;
     
-    public static final int MAX_THREADS = 2;
+    public static final int MAX_THREADS = 4;
     private static int numThreads = 0;
 
     public SoundPlayer(URL src) {
         soundFile = src;
-        soundVolume = 0.99f;
+        soundVolume = 0.999f;
     }
 
     public SoundPlayer(URL src, float vol) {
@@ -40,8 +40,9 @@ public class SoundPlayer extends Thread {
             return;
         }
         increment();
-        if (vol >= 0.99f) {
-            vol = 0.99f;
+        vol = Math.abs(vol);
+        if (vol >= 0.999f) {
+            vol = 0.999f;
         }
         Thread t = new SoundPlayer(src, vol);
         t.start();
@@ -102,7 +103,6 @@ public class SoundPlayer extends Thread {
 
             try {
                 FloatControl volume = (FloatControl) line.getControl(FloatControl.Type.VOLUME);
-                System.out.println("Trying to set volume ratio " + soundVolume);
                 volume.setValue(volume.getMaximum() * soundVolume);
             } catch (Exception e) {
                 if (!quiet) {
