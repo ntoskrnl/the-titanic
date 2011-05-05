@@ -34,6 +34,7 @@ public class yukiEngine implements PhysicalEngine {
     /* Конструктор физического движка. */
     public yukiEngine(Game game){
         /* В качестве параметра передаётся экземпляр игры. */
+        tgame = game;
 
         dT = (float) 0.0025; // Время дискретизации. Дефолтовское.
         dTnow = 0; // Время дискретизации. Текущее.
@@ -69,6 +70,7 @@ public class yukiEngine implements PhysicalEngine {
         posPocket[5][0] = (-1)*width; posPocket[5][1] = (-1)*height;
     }
 
+    Game tgame;
     private Ball[] balls; // Массив шаров для обработки.
 //    private int impList[]; // Массив столкновений шаров.
     private int conList[]; // Массив состояний шаров.
@@ -220,6 +222,7 @@ public class yukiEngine implements PhysicalEngine {
 
         //Получаем скорости после столкновения.
         if (p>0){
+            tgame.getEventPipeLine().add(new ImpactEvent(tgame, p));
             bVel[b1][0] += p*x; bVel[b2][0] -= p*x;
             bVel[b1][1] += p*y; bVel[b2][1] -= p*y;
             bVel[b1][2] += p*z; bVel[b2][2] -= p*z;
@@ -326,6 +329,7 @@ public class yukiEngine implements PhysicalEngine {
              шарики остановились. Если Антону вообще такое сообщение от физики
              нужно.
              */
+            tgame.getEventPipeLine().add(new BallsStopEvent( tgame));
             dTnow = dT;
         } else {
             double p = r/(4*max);
