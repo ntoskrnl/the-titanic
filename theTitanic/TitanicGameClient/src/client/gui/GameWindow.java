@@ -49,7 +49,7 @@ public class GameWindow extends javax.swing.JFrame {
         }
         GUIRoutines.toScreenCenter(this);
 
-        Toolkit.getDefaultToolkit().addAWTEventListener(new GameAWTEventListener(),
+        Toolkit.getDefaultToolkit().addAWTEventListener(new GameAWTEventListener(game),
                 AWTEvent.KEY_EVENT_MASK | AWTEvent.WINDOW_EVENT_MASK | AWTEvent.ACTION_EVENT_MASK);
     }
 
