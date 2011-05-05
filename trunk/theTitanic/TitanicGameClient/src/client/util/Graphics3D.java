@@ -721,7 +721,11 @@ public class Graphics3D implements GraphicalEngine {
 
     @Override
     public void processKeyEvent(KeyEvent evt) {
+
+
           try {
+                if(evt.getID()!=KeyEvent.KEY_PRESSED) return;
+                else{
                     int Gamestatus = game.getGameStatus();
                     int code = evt.getKeyCode();
                     Ball b = game.getBilliardKey().getBall();
@@ -918,6 +922,7 @@ public class Graphics3D implements GraphicalEngine {
                         boto.start();
 
                     }
+                }
                 } catch (Exception ex) {
                     System.err.println(ex);
                     System.exit(1);
