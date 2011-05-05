@@ -44,6 +44,8 @@ public class Graphics3D implements GraphicalEngine {
     private TransformGroup Key;
     private Transform3D Keypos;
     private Transform3D Keyposition;
+
+    private TransformGroup Stripline;
     private TransformGroup button;
     Appearance startballapp = new Appearance();
     Appearance ballapp = new Appearance();
@@ -82,7 +84,7 @@ public class Graphics3D implements GraphicalEngine {
          * Behavour on key pressing
          */
         c.addKeyListener(new KeyAdapter() {
-            
+
             @Override
             public void keyPressed(KeyEvent evt) {
                 try {
@@ -93,9 +95,11 @@ public class Graphics3D implements GraphicalEngine {
                     if (b != null) {
                         curBall = game.getBilliardKey().getBall().getId();
                     }
-                   
-                    if(Gamestatus != Game.S_MOVING && Gamestatus != Game.S_MAKE_HIT && Gamestatus != Game.S_PAUSE && Gamestatus != Game.S_WAIT_RIVAL){
+
+                    if (Gamestatus != Game.S_MOVING && Gamestatus != Game.S_MAKE_HIT && Gamestatus != Game.S_PAUSE && Gamestatus != Game.S_WAIT_RIVAL) {
                         if (code == KeyEvent.VK_COMMA || code == KeyEvent.VK_PERIOD || code == KeyEvent.VK_A || code == KeyEvent.VK_D) {
+
+                           
                             if (code == KeyEvent.VK_COMMA) {
                                 curBall += game.getGameScene().getBalls().length - 1;
                                 game.getBilliardKey().setAngle(0);
@@ -124,7 +128,7 @@ public class Graphics3D implements GraphicalEngine {
 
                             curBall %= game.getGameScene().getBalls().length;
                             game.getBilliardKey().changeBall(game.getGameScene().getBalls()[curBall]);
-
+                            setStrip();
                             if (Keyposition == null) {
                                 Keyposition = new Transform3D();
                             }
@@ -159,7 +163,7 @@ public class Graphics3D implements GraphicalEngine {
                                 }
                             }
 
-                          }
+                        }
                     }
                     if (code == KeyEvent.VK_END) {
                         Transform3D key = new Transform3D();
@@ -739,6 +743,17 @@ public class Graphics3D implements GraphicalEngine {
 
 
             objRoot.addChild(tabletransform);
+
+            Shape3D strip = new Shape3D(StriptedLine(1));
+            strip.getGeometry().setCapability(Geometry.ALLOW_INTERSECT);
+            strip.setCapability(Shape3D.ALLOW_GEOMETRY_WRITE);
+            Stripline = new TransformGroup();
+            Stripline.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
+            Stripline.addChild(strip);
+            Transform3D strpos = new Transform3D();
+            strpos.setTranslation(new Vector3d(-0.3,0,0));
+            Stripline.setTransform(strpos);
+            objRoot.addChild(Stripline);
         } catch (Exception w) {
             System.err.println(w);
         }
@@ -811,5 +826,86 @@ public class Graphics3D implements GraphicalEngine {
         }
 
         return qward;
+    }
+
+    private Geometry StriptedLine(double p) {
+        double delta = 0.02;
+        int K = (int) (p / (delta));
+        int i = 0;
+
+       if( K%2 == 1 ) K++;
+        LineArray line = new LineArray(K, LineArray.COORDINATES);
+
+
+        for (i = 0; i < K; i++) {
+            line.setCoordinate(i, new Point3d(0, i * delta, 0.02));
+        }
+
+        return line;
+    }
+
+    private void setStrip() {
+        Shape3D obj;
+        obj = (Shape3D) Stripline.getChild(0);
+        obj.setGeometry(StriptedLine(0.5*Distance(game.getBilliardKey().getBall().getId())));
+        Transform3D pos = new Transform3D();
+        pos.rotZ(game.getBilliardKey().getAngle());
+        pos.setTranslation(mass[game.getBilliardKey().getBall().getId()]);
+        Stripline.setTransform(pos);
+    }
+
+    private double Distance(int A) {
+        double d = 0;
+        double y=0,x=0,x0=0,y0=0;
+
+        double wi = game.getBilliardKey().getAngle();
+
+        x0 = mass[A].getX();
+        y0 = mass[A].getY();
+      
+          if ((wi >= 0) && (wi < (Math.PI / 2-0.1))) {
+                y = 0.5;
+                x = x0+(y-y0)/Math.tan(wi);
+                     if(x>0.5) {
+                                x = 0.5;
+                                y = Math.tan(wi)*(x-x0)+y0;
+                            }
+                 }
+
+        if ((wi >= Math.PI/2+0.01) && (wi < Math.PI)) {
+
+            y = 0.5;
+                x = x0+(y-y0)/Math.tan(wi);
+                     if(x<-0.5) {
+                                x = -0.5;
+                                y = Math.tan(wi)*(x-x0)+y0;
+                            }
+           
+        }
+
+
+        if ((wi >= Math.PI+0.5) && (wi < 3*Math.PI/2-0.5)) {
+
+             y = -0.5;
+                x = x0+(y-y0)/Math.tan(wi);
+                     if(x<-0.5) {
+                                x = -0.5;
+                                y = Math.tan(wi)*(x-x0)+y0;
+                            }
+           
+        }
+        if ((wi >= 3 * Math.PI / 2) && (wi < 2 * Math.PI)) {
+
+             y = -0.5;
+                x = x0+(y-y0)/Math.tan(wi);
+                     if(x>0.5) {
+                                x = 0.5;
+                                y = Math.tan(wi)*(x-x0)+y0;
+                            }
+            
+        }
+
+        d=Math.sqrt((x-x0)*(x-x0)+(y-y0)*(y-y0));
+        return d;
     }
 }
