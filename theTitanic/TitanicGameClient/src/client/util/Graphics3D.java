@@ -165,7 +165,7 @@ public class Graphics3D implements GraphicalEngine {
 
                         }
                     }
-                    if (code == KeyEvent.VK_END) {
+                    if (code == KeyEvent.VK_END || Gamestatus==Game.S_MOVING || Gamestatus==Game.S_FINISH) {
                         Transform3D key = new Transform3D();
                         key.setTranslation(new Vector3f(-.7f, 0.0f, 0.0f));
                         Keytrans.setTransform(key);
@@ -751,6 +751,8 @@ public class Graphics3D implements GraphicalEngine {
             Shape3D strip = new Shape3D(StriptedLine(1));
             strip.getGeometry().setCapability(Geometry.ALLOW_INTERSECT);
             strip.setCapability(Shape3D.ALLOW_GEOMETRY_WRITE);
+
+            
             Stripline = new TransformGroup();
             Stripline.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
             Stripline.addChild(strip);
@@ -871,7 +873,7 @@ public class Graphics3D implements GraphicalEngine {
         x0 =2*mass[A].getY();
         y0 =-2*mass[A].getX();
 
-     // System.out.println(x0+" "+y0);
+     
           if ((wi >= 0) && (wi < (Math.PI / 2-0.01))) {
                 y = ymax;
                 x = x0+(y-y0)/Math.tan(wi);
@@ -879,7 +881,7 @@ public class Graphics3D implements GraphicalEngine {
                                 x = xmax;
                                 y = Math.tan(wi)*(x-x0)+y0;
                             }
-               // System.out.println(x+" "+y+" 1");
+              
                  }
 
         if ((wi >= Math.PI/2+0.01) && (wi < Math.PI)) {
@@ -891,7 +893,7 @@ public class Graphics3D implements GraphicalEngine {
                                 y = Math.tan(wi)*(x-x0)+y0;
 
                             }
-               // System.out.println(x+" "+y+" 2");
+              
            
         }
 
@@ -904,7 +906,7 @@ public class Graphics3D implements GraphicalEngine {
                                 x = -xmax;
                                 y = Math.tan(wi)*(x-x0)+y0;
                             }
-                System.out.println(x+" "+y+" 3");
+            
            
         }
         if ((wi >= 3 * Math.PI / 2+0.01) && (wi < 2 * Math.PI)) {
@@ -915,12 +917,11 @@ public class Graphics3D implements GraphicalEngine {
                                 x = xmax;
                                 y = Math.tan(wi)*(x-x0)+y0;
                             }
-                System.out.println(x+" "+y+" 4");
+               
             
         }
 
         d=Math.sqrt((x-x0)*(x-x0)+(y-y0)*(y-y0));
-        //System.out.println("Dist"+d);
         return d;
     }
 }
