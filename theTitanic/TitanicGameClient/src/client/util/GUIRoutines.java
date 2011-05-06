@@ -3,6 +3,7 @@ package client.util;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import javax.swing.UIManager;
 
 /**
  *
@@ -22,5 +23,18 @@ public class GUIRoutines {
         // Move the window
         window.setLocation(x, y);
     }
+    
+    public static boolean tryLookAndFeel(String name){
+        try {
+            for (UIManager.LookAndFeelInfo info : UIManager.getInstalledLookAndFeels()) {
+                if (name.equals(info.getName())) {
+                    UIManager.setLookAndFeel(info.getClassName());
+                return true;
+                }
+            }
+        } catch (Exception ex){}
+        return false;
+    }
+    
     
 }

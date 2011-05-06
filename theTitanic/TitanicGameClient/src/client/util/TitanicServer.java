@@ -38,6 +38,7 @@ public class TitanicServer {
             socket = new Socket(host, port);
             socket.setTcpNoDelay(true);
             socket.setSoTimeout(DEFAULT_TIME_OUT);
+            socket.setKeepAlive(true);
             
             in = new MeasuringInputStream(socket.getInputStream());
             out = new MeasuringOutputStream(socket.getOutputStream());
