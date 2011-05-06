@@ -1,6 +1,7 @@
 package client;
 
 import client.gui.ClientLoginWindow;
+import client.util.GUIRoutines;
 import client.util.TitanicServer;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
@@ -25,11 +26,12 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("Starting Titanic GameClient version 1.0b");
         if (!checkSystem()) return;
-        try{
-            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-        } catch(Exception ex){
-            System.err.println("Failed to apply LookAndFeel theme.");
-        }
+        
+        boolean l = GUIRoutines.tryLookAndFeel("Nimbus");
+        if(!l) l = GUIRoutines.tryLookAndFeel("Windows");
+        if(!l) l = GUIRoutines.tryLookAndFeel("GTK+");
+        if(!l) GUIRoutines.tryLookAndFeel("Metal");
+        
 
         new Thread(new autoGC()).start();
         
