@@ -1,13 +1,10 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package client.util;
 
 /**
  *
  * @author 7
  */
+import client.util.event.MakeHitEvent;
 import javax.media.j3d.*;
 import javax.vecmath.*;
 import titanic.basic.Game;
@@ -50,10 +47,10 @@ public class KeyKick extends Thread {
 
             } catch (Exception ex) {
                 System.err.print(ex);
+                return;
             }
         }
-        game.getBilliardKey().setPower(Str);
-        game.getBilliardKey().makeHit();
-        game.changeStatus(Game.S_MOVING);
+        
+        game.getEventPipeLine().add(new MakeHitEvent(game, Str));
     }
 }

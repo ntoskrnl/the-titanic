@@ -19,7 +19,7 @@ public class SimpleGame extends Game {
     private GameScene scene;
     private PhysicalEngine physics;
     private GraphicalEngine graphics;
-    private Thread thread1, thread2, thread3;
+    private Thread thread1, thread2, thread3, thread4;
     private Game game;
     private EventPipeLine events;
     private BilliardKey key;
@@ -37,11 +37,11 @@ public class SimpleGame extends Game {
      * @param c JPanel or other container where to render the scene
      * @param first Is it the first player?
      */
-    public SimpleGame(Container c, boolean first, UserProfile rival) {
+    public SimpleGame(Container c, boolean first, UserProfile rvl) {
         Ball[] balls = new Ball[16];
         renderingArea = c;
         this.first = first;
-        this.rival = rival;
+        this.rival = rvl;
         
         if(this.rival==null) this.rival = new UserProfile(0);
         this.rival.update();
@@ -69,8 +69,31 @@ public class SimpleGame extends Game {
         graphics = new Graphics3D(this);
         graphics.setRenderingArea(c);
 
+        
+        // Starting server synchronization thread
+        thread4 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    while (!thread4.isInterrupted()) {
+                        Thread.sleep(250);
+                        if(game.getGameStatus()==S_NONE || game.getGameStatus()==S_PAUSE)
+                            continue;
+                        if(game.getGameStatus()==S_WAIT_RIVAL){
+                            requestRivalsStatus(rival);
+                        } else {
+                            sendMyStatus();
+                        }
+                        
+                    }
+                } catch (InterruptedException ex) {
+                }
+            }
+        });
         game = this;
         //graphics.render(this);
+        
+        thread4.start();
     }
 
     /**
@@ -294,11 +317,13 @@ public class SimpleGame extends Game {
     @Override
     public void dispose() {
         stop();
+        thread4.interrupt();
         renderingArea.removeAll();
         if (graphics != null) {
             graphics.dispose();
         }
         events.clear();
+        System.runFinalization();
         System.gc();
     }
 
@@ -319,5 +344,18 @@ public class SimpleGame extends Game {
     }
     public boolean iPlayNext(){
         return iPlayNext;
+    }
+    
+    private void requestRivalsStatus(UserProfile u){
+        
+    }
+    
+    private void sendMyStatus(){
+        
+    }
+
+    @Override
+    public void makeHit() {
+        System.out.println("HIT!");
     }
 }
