@@ -45,4 +45,6 @@ public interface BilliardKey {
      * @return false if angle is invalid (there are intersections with balls), otherwise - true.
      */
     public boolean validAngle(Game game);
+
+    public void makeHit();
 }

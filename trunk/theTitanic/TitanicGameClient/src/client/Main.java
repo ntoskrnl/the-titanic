@@ -5,7 +5,6 @@ import client.util.GUIRoutines;
 import client.util.TitanicServer;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.UIManager;
 
 /**
  * Client application for theTitanicServer
@@ -27,14 +26,18 @@ public class Main {
         System.out.println("Starting Titanic GameClient version 1.0b");
         if (!checkSystem()) return;
         
-        boolean l = GUIRoutines.tryLookAndFeel("Nimbus");
+        // Applying look and feel
+        String look = "Nimbus";
+        boolean l = GUIRoutines.tryLookAndFeel(look);
+        if(!l) l = GUIRoutines.tryLookAndFeel("Nimbus");
         if(!l) l = GUIRoutines.tryLookAndFeel("Windows");
         if(!l) l = GUIRoutines.tryLookAndFeel("GTK+");
         if(!l) GUIRoutines.tryLookAndFeel("Metal");
         
-
+        // Starting gc thread
         new Thread(new autoGC()).start();
         
+        // Create and show login window
         loginWindow = new ClientLoginWindow();
         loginWindow.setVisible(true);
     }
@@ -57,6 +60,11 @@ public class Main {
         return true;
     }
 
+    /**
+     * Finds out is there enough memory to run.
+     * @param limit Memory limit in bytes
+     * @return true if there is >= <code>limit</code> of memory available, otherwise - false.
+     */
     public static boolean checkMemory(long limit){
         System.gc();
         long memAvailable = Runtime.getRuntime().maxMemory()-Runtime.getRuntime().totalMemory()+Runtime.getRuntime().freeMemory();
@@ -65,9 +73,13 @@ public class Main {
 
 }
 
-
+/**
+ * Garbage collection thread.
+ * @author danon
+ */
 class autoGC implements Runnable {
 
+    @Override
     public void run() {
         //Mimimum acceptable free memory you think your app needs
         long minRunningMemory = (12*1024*1024);
@@ -75,11 +87,9 @@ class autoGC implements Runnable {
 
         while(!Thread.currentThread().isInterrupted()){
             Runtime runtime = Runtime.getRuntime();
-
-            System.out.print("Free memory: "+runtime.freeMemory()/1024/1024+"Mb... ");
-
             if(runtime.freeMemory()<minRunningMemory){
-                Runtime.getRuntime().runFinalization();
+                System.out.print("Free memory: "+runtime.freeMemory()/1024/1024+"Mb... ");
+                runtime.runFinalization();
                 System.gc();
                 System.out.println("gc");
                 interval = 10000;
@@ -89,7 +99,7 @@ class autoGC implements Runnable {
             }
             
             try{
-                Thread.currentThread().sleep(interval);
+                Thread.sleep(interval);
             } catch(InterruptedException ex){
                 break;
             }

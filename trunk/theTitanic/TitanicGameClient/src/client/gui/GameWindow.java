@@ -26,8 +26,9 @@ import titanic.basic.Game;
 public class GameWindow extends javax.swing.JFrame {
 
     /** Creates new form GameWindow */
-    public GameWindow(UserProfile rvl, boolean first) {
+    public GameWindow(UserProfile rvl, boolean f) {
         initComponents();
+        first = f;
         try {
             if (!Main.checkMemory(10 * 1024 * 1024)) {
                 JOptionPane.showMessageDialog(rootPane, "Too few free memory! Game may bevave abnormally.",
@@ -55,7 +56,7 @@ public class GameWindow extends javax.swing.JFrame {
     }
 
     public final void initGame() {
-        game = new SimpleGame(gameScenePanel);
+        game = new SimpleGame(gameScenePanel, first);
     }
 
     /** This method is called from within the constructor to
@@ -70,6 +71,7 @@ public class GameWindow extends javax.swing.JFrame {
         buttonPanel = new javax.swing.JPanel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
         gamePanel = new javax.swing.JPanel();
         gameScenePanel = new javax.swing.JPanel();
 
@@ -96,7 +98,6 @@ public class GameWindow extends javax.swing.JFrame {
         });
 
         jButton2.setText(bundle.getString("GameWindow.jButton2.text")); // NOI18N
-        jButton2.setEnabled(false);
         jButton2.setName("jButton2"); // NOI18N
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -104,16 +105,23 @@ public class GameWindow extends javax.swing.JFrame {
             }
         });
 
+        jLabel1.setText(bundle.getString("GameWindow.jLabel1.text")); // NOI18N
+        jLabel1.setName("jLabel1"); // NOI18N
+
         javax.swing.GroupLayout buttonPanelLayout = new javax.swing.GroupLayout(buttonPanel);
         buttonPanel.setLayout(buttonPanelLayout);
         buttonPanelLayout.setHorizontalGroup(
             buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(buttonPanelLayout.createSequentialGroup()
-                .addGap(21, 21, 21)
+                .addContainerGap()
                 .addGroup(buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jButton2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(25, Short.MAX_VALUE))
+                .addContainerGap(49, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, buttonPanelLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         buttonPanelLayout.setVerticalGroup(
             buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -122,7 +130,9 @@ public class GameWindow extends javax.swing.JFrame {
                 .addComponent(jButton1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton2)
-                .addContainerGap(355, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(277, Short.MAX_VALUE))
         );
 
         getContentPane().add(buttonPanel, java.awt.BorderLayout.LINE_END);
@@ -189,11 +199,14 @@ public class GameWindow extends javax.swing.JFrame {
     private javax.swing.JPanel gameScenePanel;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
     private SimpleGame game;
     private Timer timer;
     private UserProfile rival;
-    private boolean blankCycle = true;
+    //private boolean blankCycle = true;
+    private boolean first;
+    
     public static javax.swing.JDialog splash;
     private AWTEventListener awtEventListener;
 }

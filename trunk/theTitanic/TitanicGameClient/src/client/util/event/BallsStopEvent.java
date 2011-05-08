@@ -18,7 +18,7 @@ public class BallsStopEvent extends GameEvent {
         Game g = (Game)getSource();
         if(g instanceof SimpleGame){
             SimpleGame sg = (SimpleGame)g;
-            sg.stop();
+            // here we should decide who plays next
             sg.changeStatus(Game.S_BALL_SELECT);
         }
     }
