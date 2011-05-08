@@ -6,20 +6,20 @@ package titanic.basic;
  */
 public abstract class Game {
     /**
-     * Retruns game scene
+     * Returns game scene
      * @return Game scene of null.
      */
     public abstract GameScene getGameScene();
 
     /**
-     * Chenges current status of the game.
+     * Changes current status of the game.
      * @param gameStatus New game status.
      * @return final game status.
      */
     public abstract int changeStatus(int gameStatus);
 
     /**
-     * Returns currrent status as <code>int</code>.
+     * Returns current status as <code>int</code>.
      */
     public abstract int getGameStatus();
 
@@ -38,6 +38,12 @@ public abstract class Game {
     public abstract void dispose();
     
     public abstract boolean isFirst();
+    
+    public abstract boolean iPlayNext();
+    public abstract void setIPlayNext(boolean me);
+    
+    public abstract void setScore(int score);
+    public abstract int getScore();
 
     /**
      * Waiting for user to make next impact. (no physics)
@@ -56,7 +62,7 @@ public abstract class Game {
      */
     public static final int S_FINISH = 4;
     /**
-     * Cofee break or something like that (no physics).
+     * Coffee break or something like that (no physics).
      */
     public static final int S_PAUSE = 5;
     /**

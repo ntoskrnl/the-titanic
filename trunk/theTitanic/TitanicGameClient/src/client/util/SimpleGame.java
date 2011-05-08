@@ -1,7 +1,6 @@
 package client.util;
 
 import java.awt.Container;
-import javax.swing.JOptionPane;
 import titanic.basic.Ball;
 import titanic.basic.BilliardKey;
 import titanic.basic.EventPipeLine;
@@ -28,17 +27,34 @@ public class SimpleGame extends Game {
     private boolean rearrange = false;
     private int status = Game.S_NONE;
     private boolean first;
+    private int score;
+    private boolean iPlayNext = true;
+    private UserProfile rival, me;
+    private boolean blankCycle;
 
     /**
      * Constructs new Game instance and sets c as default rendering area.
      * @param c JPanel or other container where to render the scene
      * @param first Is it the first player?
      */
-    public SimpleGame(Container c, boolean first) {
+    public SimpleGame(Container c, boolean first, UserProfile rival) {
         Ball[] balls = new Ball[16];
         renderingArea = c;
         this.first = first;
+        this.rival = rival;
+        
+        if(this.rival==null) this.rival = new UserProfile(0);
+        this.rival.update();
+        
+        me = new UserProfile(0);
+        me.update();
+        
+        if(me.equals(this.rival)) blankCycle = true;
+        else blankCycle = false;
+        
         status = S_NONE;
+        
+        
 
         scene = new SimpleGameScene(c, balls);
         key = new SimpleBilliardKey();
@@ -54,7 +70,6 @@ public class SimpleGame extends Game {
         graphics.setRenderingArea(c);
 
         game = this;
-
         //graphics.render(this);
     }
 
@@ -115,13 +130,16 @@ public class SimpleGame extends Game {
         // Rearrange balls
         arrangeBalls(game.getGameScene().getBalls(), game.getGameScene().getBounds());
         
+        // I play next
+        setIPlayNext(!first);
+        
         // Setting initial game status
         if(first) changeStatus(S_BALL_SELECT);
         else changeStatus(S_WAIT_RIVAL);
         if(status == S_BALL_SELECT) System.out.println("It's your turn. Please, select a ball and hit");
         else if(status == S_WAIT_RIVAL) System.out.println("Now wait for player 1 to make hit.");
         else {
-            System.out.println("Failed to set start status.");
+            System.err.println("Failed to set start status.");
             return;
         }
         
@@ -222,6 +240,8 @@ public class SimpleGame extends Game {
     @Override
     synchronized public int changeStatus(int newStatus) {
         if (newStatus==status) return status;
+        if (newStatus == S_WAIT_RIVAL && blankCycle)
+            newStatus = S_BALL_SELECT;
         if(newStatus==S_NONE) return status = S_NONE;
         if(status==S_NONE){
             if(newStatus!=S_BALL_SELECT && newStatus!=S_WAIT_RIVAL)
@@ -284,5 +304,20 @@ public class SimpleGame extends Game {
 
     public boolean isFirst() {
         return first;
+    }
+    
+    public void setScore(int score){
+        this.score = score;
+    }
+    
+    public int getScore(){
+        return score;
+    }
+    
+    public void setIPlayNext(boolean me){
+        iPlayNext = me;
+    }
+    public boolean iPlayNext(){
+        return iPlayNext;
     }
 }

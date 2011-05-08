@@ -56,7 +56,7 @@ public class GameWindow extends javax.swing.JFrame {
     }
 
     public final void initGame() {
-        game = new SimpleGame(gameScenePanel, first);
+        game = new SimpleGame(gameScenePanel, first, rival);
     }
 
     /** This method is called from within the constructor to

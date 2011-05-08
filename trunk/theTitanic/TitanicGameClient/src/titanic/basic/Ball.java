@@ -15,6 +15,7 @@ public class Ball implements PhysicalBall, GraphicalBall {
     private int id;
     private boolean selected;
     private static final double EPS = 1e-7;
+    boolean active = true;
 
     public Ball(){
         color = Color.WHITE;
@@ -23,7 +24,7 @@ public class Ball implements PhysicalBall, GraphicalBall {
         coordinates = new Vector3D(0, 0);
         mass = 0;
         radius = 0;
-        selected = false;
+        active = true;
     }
 
     public Ball(float x, float y){
@@ -33,6 +34,7 @@ public class Ball implements PhysicalBall, GraphicalBall {
         coordinates = new Vector3D(x, y);
         mass = 0;
         radius = 0;
+        active = true;
     }
 
     public float getRadius() {
@@ -83,7 +85,7 @@ public class Ball implements PhysicalBall, GraphicalBall {
         return s;
     }
 
-    public boolean isActive(){
+    public boolean isMoving(){
         return this.getSpeed().getNorm() > EPS;
     }
 
@@ -93,6 +95,14 @@ public class Ball implements PhysicalBall, GraphicalBall {
 
     public void setSelected(boolean state){
         selected = state;
+    }
+    
+    public void setActive(boolean a){
+        active = true;
+    }
+    
+    public boolean isActive(){
+        return active;
     }
 
     public int getId(){
