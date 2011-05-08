@@ -32,6 +32,7 @@ public class SimpleGame extends Game {
     private boolean iPlayNext = true;
     private UserProfile rival, me;
     private boolean blankCycle;
+    private String gameID;
 
     /**
      * Constructs new Game instance and sets c as default rendering area.
@@ -53,9 +54,9 @@ public class SimpleGame extends Game {
         if(me.equals(this.rival)) blankCycle = true;
         else blankCycle = false;
         
-        status = S_NONE;
-        
-        
+        requestGameID();
+        if(!blankCycle && gameID==null)
+            throw new UnsupportedOperationException("Unable to get GemeID. Is this operation supported?");
 
         scene = new SimpleGameScene(c, balls);
         key = new SimpleBilliardKey();
@@ -81,8 +82,10 @@ public class SimpleGame extends Game {
                         if(game.getGameStatus()==S_NONE || game.getGameStatus()==S_PAUSE)
                             continue;
                         if(game.getGameStatus()==S_WAIT_RIVAL){
+                            sendMyStatus();
                             requestRivalsStatus(rival);
                         } else {
+                            requestRivalsStatus(rival);
                             sendMyStatus();
                         }
                         
@@ -149,9 +152,6 @@ public class SimpleGame extends Game {
      * Starts game thread
      */
     public final void start() {
-        // Stop all threads
-        stop();
-        
         // Rearrange balls
         arrangeBalls(game.getGameScene().getBalls(), game.getGameScene().getBounds());
         
@@ -254,7 +254,8 @@ public class SimpleGame extends Game {
         } catch (Exception ex) {
             System.err.println("Game.stop: " + ex.getLocalizedMessage());
         }
-        changeStatus(S_NONE);
+        changeStatus(S_FINISH);
+        Main.server.commandAndResponse(100, "GAME FINISH", gameID, Main.server.secret);
     }
 
     @Override
@@ -355,21 +356,25 @@ public class SimpleGame extends Game {
     
     private void requestRivalsStatus(UserProfile u){
         if(blankCycle) return;
-        String[] r = Main.server.commandAndResponse(100,"GAME REQUEST STATUS", "GAMEID", 
-                getGameStatus()+"", Main.server.secret);
+        String[] r = Main.server.commandAndResponse(100,"GAME GET STATUS", gameID, Main.server.secret);
         if(!r[0].equalsIgnoreCase("success")){
             System.err.println("Failed to request game status!");
             return;
         }
-        
+        int s = Integer.parseInt(r[1]);
+        System.out.println("Rival: "+s);
+        if(s==S_WAIT_RIVAL && getGameStatus()==S_WAIT_RIVAL){
+            changeStatus(S_BALL_SELECT);
+            System.out.println("Now it is your turn!");
+        }
     }
     
     private void sendMyStatus(){
         if(blankCycle) return;
-        String[] r = Main.server.commandAndResponse(100, "GAME SEND STATUS", "GAMEID", 
+        String[] r = Main.server.commandAndResponse(100, "GAME SET STATUS", gameID, 
                 getGameStatus()+"", Main.server.secret);
         if(!r[0].equalsIgnoreCase("success")){
-            System.err.println("Failed to request game status!");
+            System.err.println("Failed to send game status!");
             return;
         }
     }
@@ -377,11 +382,22 @@ public class SimpleGame extends Game {
     @Override
     public void makeHit(Ball b) {
         if(blankCycle) return;
-        String[] r = Main.server.commandAndResponse(100, "GAME MAKE HIT", "GAMEID",
+        String[] r = Main.server.commandAndResponse(100, "GAME MAKE HIT", gameID,
                 b.getId()+"", b.getSpeed()+"", Main.server.secret);
         if(!r[0].equalsIgnoreCase("success")){
             System.err.println("Failed to request game status!");
             return;
         }
+    }
+    
+    private void requestGameID(){
+        if(blankCycle) return;
+        String[] r = Main.server.commandAndResponse(100, "GAME GET ID", 
+                me.getId()+"", rival.getId()+"", Main.server.secret);
+        if(!r[0].equalsIgnoreCase("success")){
+            System.err.println("Failed to get GameID!");
+            return;
+        }
+        gameID = r[1];
     }
 }

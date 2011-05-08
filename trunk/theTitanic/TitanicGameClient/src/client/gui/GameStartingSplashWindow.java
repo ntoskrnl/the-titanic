@@ -62,8 +62,8 @@ public class GameStartingSplashWindow extends javax.swing.JDialog {
         } catch (Error ex){
             System.err.println("Start game error: "+ex.getLocalizedMessage());
             JOptionPane.showMessageDialog(rootPane,
-                    ex.getLocalizedMessage()+" The application may behave abnormally.",
-                    "Titanic GameCilent: Error",
+                    "Info: "+ ex.getLocalizedMessage() + 
+                    "\nThe application may behave abnormally.", "Titanic GameCilent: Error",
                     JOptionPane.ERROR_MESSAGE);
             System.gc();
         }

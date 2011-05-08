@@ -42,8 +42,8 @@ public class GameWindow extends javax.swing.JFrame {
             initGame();
 
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(rootPane, "Failed to create a game instance!\n"
-                    + "It is trongly recommended to close all games and relogin. If problem repeats, restart the application.",
+            JOptionPane.showMessageDialog(rootPane, "Failed to create a game instance! " + ex.getMessage() 
+                    + "\nIt is trongly recommended to close all games and relogin. If problem repeats, restart the application.",
                     "Titanic GameClient: Error", JOptionPane.ERROR_MESSAGE);
             closeWindowLater();
         }
@@ -71,8 +71,8 @@ public class GameWindow extends javax.swing.JFrame {
     private void initComponents() {
 
         buttonPanel = new javax.swing.JPanel();
-        jButton2 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
         gamePanel = new javax.swing.JPanel();
         gameScenePanel = new javax.swing.JPanel();
 
@@ -90,38 +90,36 @@ public class GameWindow extends javax.swing.JFrame {
         buttonPanel.setName("buttonPanel"); // NOI18N
         buttonPanel.setPreferredSize(new java.awt.Dimension(180, 326));
 
-        jButton2.setText(bundle.getString("GameWindow.jButton2.text")); // NOI18N
-        jButton2.setName("jButton2"); // NOI18N
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-
         jLabel1.setText(bundle.getString("GameWindow.jLabel1.text")); // NOI18N
         jLabel1.setName("jLabel1"); // NOI18N
+
+        jButton1.setText(bundle.getString("GameWindow.jButton1.text")); // NOI18N
+        jButton1.setName("jButton1"); // NOI18N
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout buttonPanelLayout = new javax.swing.GroupLayout(buttonPanel);
         buttonPanel.setLayout(buttonPanelLayout);
         buttonPanelLayout.setHorizontalGroup(
             buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, buttonPanelLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
             .addGroup(buttonPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton2)
-                .addContainerGap(49, Short.MAX_VALUE))
+                .addGroup(buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE))
+                .addContainerGap())
         );
         buttonPanelLayout.setVerticalGroup(
             buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(buttonPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton2)
-                .addGap(55, 55, 55)
+                .addComponent(jButton1)
+                .addGap(18, 18, 18)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(277, Short.MAX_VALUE))
+                .addContainerGap(284, Short.MAX_VALUE))
         );
 
         getContentPane().add(buttonPanel, java.awt.BorderLayout.LINE_END);
@@ -151,13 +149,6 @@ public class GameWindow extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        if (game != null) {
-            game.start();
-        }
-        gameScenePanel.requestFocus();
-    }//GEN-LAST:event_jButton2ActionPerformed
-
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         if (game != null) {
             game.dispose();
@@ -165,6 +156,10 @@ public class GameWindow extends javax.swing.JFrame {
         }
         Toolkit.getDefaultToolkit().removeAWTEventListener(awtEventListener);
     }//GEN-LAST:event_formWindowClosing
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        dispose();
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     private void closeWindowLater() {
         EventQueue.invokeLater(new Runnable() {
@@ -179,7 +174,7 @@ public class GameWindow extends javax.swing.JFrame {
     private javax.swing.JPanel buttonPanel;
     private javax.swing.JPanel gamePanel;
     private javax.swing.JPanel gameScenePanel;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
     private SimpleGame game;
