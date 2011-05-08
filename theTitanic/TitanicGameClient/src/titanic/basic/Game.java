@@ -45,7 +45,7 @@ public abstract class Game {
     public abstract void setScore(int score);
     public abstract int getScore();
     
-    public abstract void makeHit();
+    public abstract void makeHit(Ball b);
 
     /**
      * Waiting for user to make next impact. (no physics)

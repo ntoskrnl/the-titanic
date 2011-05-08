@@ -1,5 +1,6 @@
 package client.util;
 
+import client.Main;
 import java.awt.Container;
 import titanic.basic.Ball;
 import titanic.basic.BilliardKey;
@@ -48,7 +49,7 @@ public class SimpleGame extends Game {
         
         me = new UserProfile(0);
         me.update();
-        
+
         if(me.equals(this.rival)) blankCycle = true;
         else blankCycle = false;
         
@@ -94,6 +95,7 @@ public class SimpleGame extends Game {
         //graphics.render(this);
         
         thread4.start();
+        start();
     }
 
     /**
@@ -146,7 +148,7 @@ public class SimpleGame extends Game {
     /**
      * Starts game thread
      */
-    public void start() {
+    public final void start() {
         // Stop all threads
         stop();
         
@@ -271,7 +273,7 @@ public class SimpleGame extends Game {
                 return status;
         }
         if(status==S_BALL_SELECT){
-            if(newStatus!=S_MOVING && newStatus!=S_WAIT_RIVAL)
+            if(newStatus!=S_MAKE_HIT && newStatus!=S_WAIT_RIVAL)
                 return status;
         }
         if(status==S_MAKE_HIT){
@@ -327,35 +329,59 @@ public class SimpleGame extends Game {
         System.gc();
     }
 
+    @Override
     public boolean isFirst() {
         return first;
     }
     
+    @Override
     public void setScore(int score){
         this.score = score;
     }
     
+    @Override
     public int getScore(){
         return score;
     }
     
+    @Override
     public void setIPlayNext(boolean me){
         iPlayNext = me;
     }
+    @Override
     public boolean iPlayNext(){
         return iPlayNext;
     }
     
     private void requestRivalsStatus(UserProfile u){
+        if(blankCycle) return;
+        String[] r = Main.server.commandAndResponse(100,"GAME REQUEST STATUS", "GAMEID", 
+                getGameStatus()+"", Main.server.secret);
+        if(!r[0].equalsIgnoreCase("success")){
+            System.err.println("Failed to request game status!");
+            return;
+        }
         
     }
     
     private void sendMyStatus(){
-        
+        if(blankCycle) return;
+        String[] r = Main.server.commandAndResponse(100, "GAME SEND STATUS", "GAMEID", 
+                getGameStatus()+"", Main.server.secret);
+        if(!r[0].equalsIgnoreCase("success")){
+            System.err.println("Failed to request game status!");
+            return;
+        }
     }
 
     @Override
-    public void makeHit() {
-        System.out.println("HIT!");
+    public void makeHit(Ball b) {
+        if(blankCycle) return;
+        String[] r = Main.server.commandAndResponse(100, "GAME MAKE HIT", "GAMEID",
+                b.getId()+"", b.getSpeed()+"", Main.server.secret);
+        if(!r[0].equalsIgnoreCase("success")){
+            System.err.println("Failed to request game status!");
+            return;
+        }
     }
 }

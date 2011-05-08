@@ -29,6 +29,7 @@ public class GameWindow extends javax.swing.JFrame {
     public GameWindow(UserProfile rvl, boolean f) {
         initComponents();
         first = f;
+        rival = rvl;
         try {
             if (!Main.checkMemory(10 * 1024 * 1024)) {
                 JOptionPane.showMessageDialog(rootPane, "Too few free memory! Application may bevave abnormally.",
@@ -41,7 +42,8 @@ public class GameWindow extends javax.swing.JFrame {
             initGame();
 
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(rootPane, "Failed to create a game instance!\nIt is trongly recommended to close all games and relogin. If problem repeats, restart the application.",
+            JOptionPane.showMessageDialog(rootPane, "Failed to create a game instance!\n"
+                    + "It is trongly recommended to close all games and relogin. If problem repeats, restart the application.",
                     "Titanic GameClient: Error", JOptionPane.ERROR_MESSAGE);
             closeWindowLater();
         }
@@ -69,7 +71,6 @@ public class GameWindow extends javax.swing.JFrame {
     private void initComponents() {
 
         buttonPanel = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         gamePanel = new javax.swing.JPanel();
@@ -89,14 +90,6 @@ public class GameWindow extends javax.swing.JFrame {
         buttonPanel.setName("buttonPanel"); // NOI18N
         buttonPanel.setPreferredSize(new java.awt.Dimension(180, 326));
 
-        jButton1.setText(bundle.getString("GameWindow.jButton1.text")); // NOI18N
-        jButton1.setName("jButton1"); // NOI18N
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-
         jButton2.setText(bundle.getString("GameWindow.jButton2.text")); // NOI18N
         jButton2.setName("jButton2"); // NOI18N
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -112,25 +105,21 @@ public class GameWindow extends javax.swing.JFrame {
         buttonPanel.setLayout(buttonPanelLayout);
         buttonPanelLayout.setHorizontalGroup(
             buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(buttonPanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jButton2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(49, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, buttonPanelLayout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
+            .addGroup(buttonPanelLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jButton2)
+                .addContainerGap(49, Short.MAX_VALUE))
         );
         buttonPanelLayout.setVerticalGroup(
             buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(buttonPanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton2)
-                .addGap(18, 18, 18)
+                .addGap(55, 55, 55)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(277, Short.MAX_VALUE))
         );
@@ -162,16 +151,9 @@ public class GameWindow extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        if (game != null) {
-            game.start();
-        }
-        gameScenePanel.requestFocus();
-    }//GEN-LAST:event_jButton1ActionPerformed
-
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         if (game != null) {
-            game.stop();
+            game.start();
         }
         gameScenePanel.requestFocus();
     }//GEN-LAST:event_jButton2ActionPerformed
@@ -197,7 +179,6 @@ public class GameWindow extends javax.swing.JFrame {
     private javax.swing.JPanel buttonPanel;
     private javax.swing.JPanel gamePanel;
     private javax.swing.JPanel gameScenePanel;
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
