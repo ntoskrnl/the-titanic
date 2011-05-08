@@ -19,9 +19,14 @@ public class BallsStopEvent extends GameEvent {
         if(g instanceof SimpleGame){
             SimpleGame sg = (SimpleGame)g;
             // here we should decide who plays next
-            if(sg.iPlayNext())
+            if(sg.iPlayNext()){
                 sg.changeStatus(Game.S_BALL_SELECT);
-            else sg.changeStatus(Game.S_WAIT_RIVAL);
+                sg.setIPlayNext(false);
+            }
+            else {
+                sg.changeStatus(Game.S_WAIT_RIVAL);
+                sg.setIPlayNext(true);
+            }
         }
     }
 

@@ -31,7 +31,7 @@ public class GameWindow extends javax.swing.JFrame {
         first = f;
         try {
             if (!Main.checkMemory(10 * 1024 * 1024)) {
-                JOptionPane.showMessageDialog(rootPane, "Too few free memory! Game may bevave abnormally.",
+                JOptionPane.showMessageDialog(rootPane, "Too few free memory! Application may bevave abnormally.",
                         "Titanic GameClient: Warning", JOptionPane.WARNING_MESSAGE);
             } else if (!Main.checkMemory(8 * 1024 * 1024)) {
                 throw new ExceptionInInitializerError("Out of memory.");
