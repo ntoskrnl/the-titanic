@@ -36,6 +36,8 @@ public abstract class Game {
      * Dispose all objects
      */
     public abstract void dispose();
+    
+    public abstract boolean isFirst();
 
     /**
      * Waiting for user to make next impact. (no physics)

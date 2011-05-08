@@ -33,8 +33,15 @@ public class GameStartingSplashWindow extends javax.swing.JDialog {
             @Override
             public void actionPerformed(ActionEvent e) {
                 timer.stop();
-                initGame(rival, first);  
+                boolean error = false;
+                try{
+                    initGame(rival, first);
+                } catch (Exception ex){ error = true; }
+                catch (Error er) { error = true; }
                 dispose();
+                if(error)
+                    JOptionPane.showMessageDialog(mainWindow, "Connot initialize a game.", 
+                            "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
         timer.start();
