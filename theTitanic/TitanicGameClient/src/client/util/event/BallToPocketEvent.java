@@ -10,7 +10,7 @@ import titanic.basic.Game;
 public class BallToPocketEvent extends GameEvent{
     private Ball ball;
     private int pocket;
-    
+    private boolean myGoal;
     /**
      * Constructs new instance of event with specified ball and pocket
      * @param src Source of the event (Game)
@@ -29,6 +29,10 @@ public class BallToPocketEvent extends GameEvent{
         
         ball = b;
         this.pocket = pocket;
+        if(src.getGameStatus() == Game.S_WAIT_RIVAL) {
+            myGoal = false;
+        }
+        else myGoal = true;
     }
     
     /**
@@ -42,9 +46,22 @@ public class BallToPocketEvent extends GameEvent{
         return pocket;
     }
     
+    public boolean isMyGoal(){
+        return myGoal;
+    }
+    
     @Override
     public void execute() {
-        System.out.println(this);
+        Ball b = getBall();
+        if(b!=null)
+            b.setActive(false);
+        Game g = (Game)getSource();
+        if(!myGoal) {
+            g.setIPlayNext(false);
+            return;
+        }
+        g.setScore(g.getScore()+1);
+        g.setIPlayNext(true);
     }
     
 }
