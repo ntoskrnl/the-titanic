@@ -383,7 +383,8 @@ public class SimpleGame extends Game {
             changeStatus(S_BALL_SELECT);
             System.out.println("Now it is your turn!");
         } else {
-            changeStatus(S_WAIT_RIVAL);
+            status = S_WAIT_RIVAL;
+            sendMyStatus();
         }
         
     }
