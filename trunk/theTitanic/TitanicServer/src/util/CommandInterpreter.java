@@ -204,20 +204,19 @@ public class CommandInterpreter {
                 }
                 
                 if(cmd.equals("request game")){
-                    System.out.println("REQUEST!");
                     int to_id = Integer.parseInt(br.readLine().trim());
                     String secret = br.readLine().trim();
                     result = false;
                     if(secret.equals(u.getSecret())){
-                        if(result = MainServerThread.requests.add(new GameRequest(u.getId(), to_id))){
-                            pw.println("SUCCESS");
-                            result = true;
-                        }
+                        if(MainServerThread.games.get(u.getId(), to_id)==null) 
+                            if(result = MainServerThread.requests.add(new GameRequest(u.getId(), to_id))){
+                                pw.println("SUCCESS");
+                                result = true;
+                            }
                     }
                 }
                 
                 if(cmd.equals("accept game")){
-                    System.out.println("ACCEPT!");
                     int from = Integer.parseInt(br.readLine().trim());
                     int my_id = u.getId();
                     String secret = br.readLine().trim();
@@ -226,8 +225,11 @@ public class CommandInterpreter {
                         GameRequest req = MainServerThread.requests.get(from, my_id);
                         if(req!=null) {
                             req.setAccepted(true);
-                            pw.println("SUCCESS");
-                            result = true;
+                            if(from!=my_id) {
+                                MainServerThread.games.add(from, my_id);
+                                pw.println("SUCCESS");
+                                result = true;
+                            }
                         }
                     }
                 }
@@ -269,7 +271,6 @@ public class CommandInterpreter {
                 }
                 
                 if(cmd.equals("reject game")){
-                    System.out.println("REJECT!");
                     int my_id = u.getId();
                     int from = Integer.parseInt(br.readLine().trim());
                     String secret = br.readLine().trim();
@@ -285,11 +286,11 @@ public class CommandInterpreter {
                 }
                 
                 if(cmd.equals("cancel request")){
-                    System.out.println("CANCEL!");
                     int my_id = u.getId();
                     int to = Integer.parseInt(br.readLine().trim());
                     String secret = br.readLine().trim();
                     result=false;
+                    System.out.println("CANCEL");
                     if(secret.equals(u.getSecret())){
                         GameRequest req = MainServerThread.requests.get(my_id, to);
                         if(req!=null){
@@ -300,7 +301,6 @@ public class CommandInterpreter {
                     }
                 }
                 if(cmd.equals("is request valid")){
-                    System.out.println("VALID?");
                     int from = Integer.parseInt(br.readLine().trim());
                     int to = Integer.parseInt(br.readLine().trim());
                     String secret = br.readLine().trim();
@@ -313,6 +313,163 @@ public class CommandInterpreter {
                         }
                     }
                 }
+                
+                if(cmd.equals("game get id")){
+                    int id1 = Integer.parseInt(br.readLine().trim());
+                    int id2 = Integer.parseInt(br.readLine().trim());
+                    String secret = br.readLine().trim();
+                    Game g = MainServerThread.games.get(id1, id2);
+                    result = false;
+                    if(u.getSecret().equals(secret) && g!=null){
+                        pw.println("SUCCESS");
+                        pw.println(g.getID());
+                        result = true;
+                    }
+                }
+                
+                if(cmd.equals("game get status")){
+                    String gid = br.readLine().trim();
+                    String secret = br.readLine().trim();
+                    Game g = MainServerThread.games.get(gid);
+                    result = false;
+                    if(u.getSecret().equals(secret) && g!=null){
+                        pw.println("SUCCESS");
+                        Player p = g.getPlayer1();
+                        if(p.getId()==u.getId()) p = g.getPlayer2();
+                        pw.println(p.getStatus());
+                        result = true;
+                    }
+                }
+                
+                if(cmd.equals("game set status")){
+                    String gid = br.readLine().trim();
+                    int newStatus = Integer.parseInt(br.readLine().trim());
+                    String secret = br.readLine().trim();                    
+                    Game g = MainServerThread.games.get(gid);
+                    result = false;
+                    if(u.getSecret().equals(secret) && g!=null){
+                        pw.println("SUCCESS");
+                        Player p = g.getPlayer1();
+                        if(p.getId()!=u.getId()) p = g.getPlayer2();
+                        p.setStatus(newStatus);
+                        result = true;
+                    }
+                }
+                
+                if(cmd.equals("game make hit")){
+                    String gid = br.readLine().trim();
+                    int ball = Integer.parseInt(br.readLine().trim());
+                    float power = Float.parseFloat(br.readLine().trim());
+                    float angle = Float.parseFloat(br.readLine().trim());
+                    String secret = br.readLine().trim();                    
+                    Game g = MainServerThread.games.get(gid);
+                    result = false;
+                    if(u.getSecret().equals(secret) && g!=null){
+                        System.out.println("HIT!");
+                        pw.println("SUCCESS");
+                        Player p = g.getPlayer1();
+                        if(p.getId()!=u.getId()) p = g.getPlayer2();
+                        p.setHit(ball, power, angle);
+                        result = true;
+                    }
+                }
+                
+                if(cmd.equals("game get hit")){
+                    String gid = br.readLine().trim();
+                    String secret = br.readLine().trim();                    
+                    Game g = MainServerThread.games.get(gid);
+                    result = false;
+                    if(u.getSecret().equals(secret) && g!=null){
+                        Player p = g.getPlayer1();
+                        if(p.getId()==u.getId()) p = g.getPlayer2();
+                        if(p.hasHit()){
+                           pw.println("SUCCESS");
+                           pw.println((int)p.getHitBall());
+                           pw.println((float)p.getHitPower());
+                           pw.println((float)p.getHitAngle());
+                           p.unsetHit();
+                           result = true; 
+                        }
+                        
+                    }
+                }
+                
+                if(cmd.equals("game sync balls")){
+                    String gid = br.readLine().trim();
+                    String secret = br.readLine().trim();                    
+                    System.out.println("game sync balls");
+                    Game g = MainServerThread.games.get(gid);
+                    result = false;
+                    if(u.getSecret().equals(secret) && g!=null){
+                        Ball[] balls = g.getBalls();
+                        if(balls!=null && g.ballsModified){
+                            pw.println("SUCCESS");
+                            for(int i=0;i<balls.length;i++){
+                                pw.println(balls[i].id + " " + balls[i].x + " " + 
+                                        balls[i].y + " " + balls[i].vx + " "
+                                        + balls[i].vy + " " + balls[i].active);
+                                balls[i].modified = false;
+                            }
+                            result = true;
+                        }
+                    }
+                }
+                
+                if(cmd.equals("game send balls")){
+                    String gid = br.readLine().trim();
+                    String secret = br.readLine().trim(); 
+                    String a[] = new String[16];
+                    for(int i=0;i<16;i++)
+                        a[i] = br.readLine().trim(); 
+                    System.out.println("game send balls");
+                    Game g = MainServerThread.games.get(gid);
+                    result = false;
+                    if(u.getSecret().equals(secret) && g!=null){
+                        g.ballsModified = true;
+                        Ball[] balls = g.getBalls();
+                        if(balls!=null){
+                            for(int i=0;i<16;i++)    
+                                balls[i].update(a[i]);
+                            g.ballsModified = true;
+                            pw.println("SUCCESS");
+                            result = true;
+                        }
+                    }
+                }
+                
+                
+                if(cmd.equals("game finish")){
+                    String gid = br.readLine().trim();
+                    String secret = br.readLine().trim();                    
+                    Game g = MainServerThread.games.get(gid);
+                    result = false;
+                    if(u.getSecret().equals(secret) && g!=null){
+                        MainServerThread.games.remove(g);
+                           pw.println("SUCCESS");
+                           result = true; 
+                        }
+                }
+                
+                
+                if(cmd.equals("change password")){
+                    int id = u.getId();
+                    String oldpwd = br.readLine().trim();
+                    String newpwd = br.readLine().trim();
+                    String secret = br.readLine().trim();
+                    result = false;
+                    if(secret.equals(u.getSecret())){
+                        String sql = "UPDATE profiles SET password = ?"   
+                                + "WHERE (id = " + id + ") AND (password LIKE '" 
+                                + oldpwd + "');";
+                        int r = Main.usersDB.doPreparedUpdate(sql, newpwd);
+                        if(r==1){
+                            result=true;
+                            pw.println("SUCCESS");
+                        }
+                    }
+                }
+                
+                
                 
                 if(result!=null){
                     if (!result) {

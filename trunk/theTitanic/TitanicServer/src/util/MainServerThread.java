@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -20,6 +19,8 @@ public class MainServerThread implements Runnable {
     public static ConnectionContainer connections;
     
     public static RequestContainer requests;
+    
+    public static  GameContainer games;
     /**
      * ServerSocket to accept incoming connections
      */
@@ -36,7 +37,8 @@ public class MainServerThread implements Runnable {
 
                 public void actionPerformed(ActionEvent e) {
                     try{
-                        Main.usersDB.reconnect();
+                        if(Main.usersDB.modified())
+                            Main.usersDB.reconnect();
                     } catch(Exception ex){
                         Main.logs.warning("commitTimer: "+ex.getMessage());
                     }
@@ -52,6 +54,7 @@ public class MainServerThread implements Runnable {
         }
 
         requests = new RequestContainer();
+        games = new GameContainer();
         
         try{
             Main.logs.info("Connecting to databases...");
