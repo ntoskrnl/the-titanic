@@ -27,8 +27,8 @@ public class BallsStopEvent extends GameEvent {
                 sg.changeStatus(Game.S_BALL_SELECT);
             }
             else {
-                sg.changeStatus(Game.S_WAIT_RIVAL);
                 sg.sendBalls();
+                sg.changeStatus(Game.S_WAIT_RIVAL);
             }
         }
     }

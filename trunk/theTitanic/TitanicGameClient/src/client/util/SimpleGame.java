@@ -303,6 +303,10 @@ public class SimpleGame extends Game {
             if(newStatus!=S_BALL_SELECT && newStatus!=S_FINISH)
                 return status;
         }
+        if(status==S_WAIT_RIVAL && newStatus==S_BALL_SELECT)
+            syncBalls();
+//        if(status==S_MOVING && (newStatus==S_BALL_SELECT || newStatus==S_WAIT_RIVAL))
+//                sendBalls();
         status = newStatus;
         sendMyStatus();
         return status;
@@ -383,6 +387,7 @@ public class SimpleGame extends Game {
             status = S_WAIT_RIVAL;
             sendMyStatus();
         } else if(status==S_WAIT_RIVAL && s==S_WAIT_RIVAL){
+            //syncBalls();
             status = S_BALL_SELECT;
             sendMyStatus();
         }
