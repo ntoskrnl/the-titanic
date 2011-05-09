@@ -23,10 +23,10 @@ public class MakeHitEvent extends GameEvent {
 
     public void execute() {
         Game g = (Game)getSource();
-        if(g.getGameStatus()!=Game.S_MAKE_HIT){
-            System.err.println("It is not allowed to make hit now.");
-            return;
-        }
+//        if(g.getGameStatus()!=Game.S_MAKE_HIT){
+//            System.err.println("It is not allowed to make hit now.");
+//            return;
+//        }
             g.getBilliardKey().setPower((float)strength);
             g.getBilliardKey().makeHit();
             g.makeHit(g.getBilliardKey().getBall(), g.getBilliardKey().getPower(), 

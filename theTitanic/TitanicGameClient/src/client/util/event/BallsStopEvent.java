@@ -13,6 +13,7 @@ public class BallsStopEvent extends GameEvent {
     
     public BallsStopEvent(Game src) {
         super(src, GameEvent.EVENT_BALLS_STOP);
+        SimpleGame sg = (SimpleGame)src;
         mine = (src.getGameStatus()==Game.S_MOVING);
     }
 
