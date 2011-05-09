@@ -14,6 +14,7 @@ public class DataBaseAccess {
     private String user = "";
     private boolean anonymous = true;
     private String dbfile;
+    private boolean modified = false;
 
     /**
      * Constructs new instance and connects to the db
@@ -75,6 +76,7 @@ public class DataBaseAccess {
         } catch (SQLException e){
             Main.logs.warning("DataBaseAccess: "+e.getLocalizedMessage());
         }
+        modified = false;
         return isConnected();
     }
     
@@ -96,6 +98,7 @@ public class DataBaseAccess {
             Statement s = connection.createStatement();
             s.setEscapeProcessing(true);
             int r = s.executeUpdate(sql);
+            if(r>0) modified = true;
             return r;
         } catch (Exception ex) {
             Main.logs.warning("DB.doUpdate: "+ex.getMessage());
@@ -109,7 +112,9 @@ public class DataBaseAccess {
             PreparedStatement s = connection.prepareStatement(query);
             for(int i=0;i<values.length;i++)
                 s.setString(i+1, values[i]);
-            return s.executeUpdate();
+            int r = s.executeUpdate();
+            if(r>0) modified = true;
+            return r;
         } catch (Exception ex) {
             Main.logs.warning("DB.doPreparedUpdate: "+ex.getMessage());
             return -1;
@@ -130,5 +135,9 @@ public class DataBaseAccess {
         } catch(SQLException ex){
             Main.logs.warning(ex.getMessage());
         }
+    }
+
+    public synchronized boolean modified() {
+        return modified;
     }
 }
