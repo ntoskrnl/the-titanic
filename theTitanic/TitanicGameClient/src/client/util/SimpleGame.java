@@ -2,6 +2,7 @@ package client.util;
 
 import client.Main;
 import java.awt.Container;
+import java.util.StringTokenizer;
 import titanic.basic.Ball;
 import titanic.basic.BilliardKey;
 import titanic.basic.EventPipeLine;
@@ -33,7 +34,7 @@ public class SimpleGame extends Game {
     private UserProfile rival, me;
     private boolean blankCycle;
     private String gameID;
-
+    private int rivalStatus;
     /**
      * Constructs new Game instance and sets c as default rendering area.
      * @param c JPanel or other container where to render the scene
@@ -82,11 +83,8 @@ public class SimpleGame extends Game {
                         if(game.getGameStatus()==S_NONE || game.getGameStatus()==S_PAUSE)
                             continue;
                         if(game.getGameStatus()==S_WAIT_RIVAL){
-                            sendMyStatus();
-                            requestRivalsStatus(rival);
-                        } else {
-                            requestRivalsStatus(rival);
-                            sendMyStatus();
+                            requestRivalsHit();
+                            requestRivalsStatus();
                         }
                         
                     }
@@ -152,9 +150,6 @@ public class SimpleGame extends Game {
      * Starts game thread
      */
     public final void start() {
-        // Rearrange balls
-        arrangeBalls(game.getGameScene().getBalls(), game.getGameScene().getBounds());
-        
         // I play next
         setIPlayNext(!first);
         
@@ -195,7 +190,7 @@ public class SimpleGame extends Game {
                 try {
                     while (!thread2.isInterrupted()) {
                         try {
-                            if (status == S_MOVING) {
+                            if (status == S_MOVING || rivalStatus == S_MOVING) {
                                 physics.compute();
                             }
                         } catch (Exception ex) {
@@ -255,7 +250,8 @@ public class SimpleGame extends Game {
             System.err.println("Game.stop: " + ex.getLocalizedMessage());
         }
         changeStatus(S_FINISH);
-        Main.server.commandAndResponse(100, "GAME FINISH", gameID, Main.server.secret);
+        if(!blankCycle)
+            Main.server.commandAndResponse(100, "GAME FINISH", gameID, Main.server.secret);
     }
 
     @Override
@@ -278,7 +274,7 @@ public class SimpleGame extends Game {
                 return status;
         }
         if(status==S_MAKE_HIT){
-            if(newStatus!=S_MOVING)
+            if(newStatus!=S_MOVING||newStatus!=S_BALL_SELECT)
                 return status;
         }
         if(status==S_MOVING){
@@ -289,7 +285,9 @@ public class SimpleGame extends Game {
             if(newStatus!=S_BALL_SELECT && newStatus!=S_FINISH)
                 return status;
         }
-        return status = newStatus;
+        status = newStatus;
+        sendMyStatus();
+        return status;
     }
 
     @Override
@@ -354,19 +352,21 @@ public class SimpleGame extends Game {
         return iPlayNext;
     }
     
-    private void requestRivalsStatus(UserProfile u){
+    private void requestRivalsStatus(){
         if(blankCycle) return;
         String[] r = Main.server.commandAndResponse(100,"GAME GET STATUS", gameID, Main.server.secret);
         if(!r[0].equalsIgnoreCase("success")){
-            System.err.println("Failed to request game status!");
+            System.err.println("Failed to request rival's status!");
             return;
         }
         int s = Integer.parseInt(r[1]);
+        rivalStatus = s;
         System.out.println("Rival: "+s);
         if(s==S_WAIT_RIVAL && getGameStatus()==S_WAIT_RIVAL){
             changeStatus(S_BALL_SELECT);
             System.out.println("Now it is your turn!");
         }
+        
     }
     
     private void sendMyStatus(){
@@ -380,14 +380,16 @@ public class SimpleGame extends Game {
     }
 
     @Override
-    public void makeHit(Ball b) {
+    public void makeHit(Ball b, float speed, float angle) {
+        status = S_MOVING;
+        sendMyStatus();
         if(blankCycle) return;
         String[] r = Main.server.commandAndResponse(100, "GAME MAKE HIT", gameID,
-                b.getId()+"", b.getSpeed()+"", Main.server.secret);
+                b.getId()+"", speed+"", angle+"", Main.server.secret);
         if(!r[0].equalsIgnoreCase("success")){
-            System.err.println("Failed to request game status!");
             return;
         }
+        
     }
     
     private void requestGameID(){
@@ -395,9 +397,80 @@ public class SimpleGame extends Game {
         String[] r = Main.server.commandAndResponse(100, "GAME GET ID", 
                 me.getId()+"", rival.getId()+"", Main.server.secret);
         if(!r[0].equalsIgnoreCase("success")){
-            System.err.println("Failed to get GameID!");
             return;
         }
         gameID = r[1];
+    }
+    
+    private void requestRivalsHit(){
+        if(blankCycle) return;
+        String[] r = Main.server.commandAndResponse(100,"GAME GET HIT", gameID, Main.server.secret);
+        if(!r[0].equalsIgnoreCase("success")){
+            System.err.println("Failed to request game hit!");
+            return;
+        }
+        try{
+            int b = Integer.parseInt(r[1]);
+            float s = Float.parseFloat(r[2]);
+            float a = Float.parseFloat(r[3]);
+            System.out.println("Rival's hit: ball = "+r[1]+"; power = "+r[2]+"; angle = "+r[3]);
+            getGameScene().getBalls()[b].setSpeed(new Vector3D(s*(float)Math.cos(a)*20, 
+                    s*(float)Math.sin(a)*20));
+            rivalStatus = S_MOVING;
+        } catch (Exception ex){}
+    }
+    
+    public void sendBalls(){
+        if(blankCycle) return;
+//        if(status!=S_BALL_SELECT && status!=S_MOVING && status!=S_WAIT_RIVAL) 
+//            return;
+//        try{
+//            Ball[] balls = getGameScene().getBalls();
+//            String[] a = new String[balls.length+2];
+//            a[0] = gameID;
+//            a[1] = Main.server.secret;
+//            synchronized(balls){       
+//                for(int i=0;i<balls.length;i++){
+//                    String t = i + " " + balls[i].getCoordinates().getX()+" " +
+//                            " " + balls[i].getCoordinates().getY() + " "
+//                            + balls[i].getSpeed().getX() + " " + balls[i].getSpeed().getY()
+//                            + " " + balls[i].isActive();
+//                    a[i+2] = t;
+//                }
+//            }
+//            String[] r = Main.server.commandAndResponse(200,"GAME SEND BALLS", a);
+//            if(!r[0].equalsIgnoreCase("success")){
+//                System.err.println("Failed to send balls!");
+//                return;
+//            }
+//        } catch (Exception ex){}
+    }
+    
+    public void syncBalls(){
+        if(blankCycle) return;
+//        if(rivalStatus!=S_WAIT_RIVAL||rivalStatus!=S_MOVING||rivalStatus!=S_BALL_SELECT) 
+//            return;
+//        String[] r = Main.server.commandAndResponse(200,"GAME SYNC BALLS", gameID, Main.server.secret);
+//        if(!r[0].equalsIgnoreCase("success")){
+//            System.err.println("Failed to sync!");
+//            return;
+//        }
+//        try{
+//            Ball[] balls = getGameScene().getBalls();
+//            synchronized(balls){
+//                for(int i=0;i<16;i++){
+//                    StringTokenizer stk = new StringTokenizer(r[i+1]);
+//                    int id = Integer.parseInt(stk.nextToken());
+//                    float x = Float.parseFloat(stk.nextToken());
+//                    float y = Float.parseFloat(stk.nextToken());
+//                    float vx = Float.parseFloat(stk.nextToken());
+//                    float vy = Float.parseFloat(stk.nextToken());
+//                    boolean active = Boolean.parseBoolean(stk.nextToken());
+//                    balls[id].setCoordinates(new Vector3D(x, y));
+//                    balls[id].setSpeed(new Vector3D(vx, vy));
+//                    balls[id].setActive(active);   
+//                }
+//            }
+//        } catch (Exception ex){}
     }
 }

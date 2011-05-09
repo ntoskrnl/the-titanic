@@ -94,7 +94,6 @@ class autoGC implements Runnable {
                 System.out.println("gc");
                 interval = 10000;
             } else {
-                System.out.println();
                 interval = 3000;
             }
             
