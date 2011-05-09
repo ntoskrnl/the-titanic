@@ -50,7 +50,6 @@ public class KeyKick extends Thread {
                 return;
             }
         }
-        
         game.getEventPipeLine().add(new MakeHitEvent(game, Str));
     }
 }

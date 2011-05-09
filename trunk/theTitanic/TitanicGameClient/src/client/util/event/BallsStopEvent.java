@@ -9,9 +9,11 @@ import titanic.basic.Game;
  * @author danon
  */
 public class BallsStopEvent extends GameEvent {
-
+    boolean mine;
+    
     public BallsStopEvent(Game src) {
         super(src, GameEvent.EVENT_BALLS_STOP);
+        mine = (src.getGameStatus()==Game.S_MOVING);
     }
 
     public void execute() {
@@ -19,13 +21,13 @@ public class BallsStopEvent extends GameEvent {
         if(g instanceof SimpleGame){
             SimpleGame sg = (SimpleGame)g;
             // here we should decide who plays next
-            if(sg.iPlayNext()){
+            if(!mine){
+                sg.syncBalls();
                 sg.changeStatus(Game.S_BALL_SELECT);
-                sg.setIPlayNext(false);
             }
             else {
                 sg.changeStatus(Game.S_WAIT_RIVAL);
-                sg.setIPlayNext(true);
+                sg.sendBalls();
             }
         }
     }

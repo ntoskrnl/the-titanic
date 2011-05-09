@@ -18,7 +18,6 @@ public abstract class GameEvent {
     public GameEvent(Game src, String type){
         this.type = type;
         source = src;
-        System.out.println(this);
     }
 
     /**
