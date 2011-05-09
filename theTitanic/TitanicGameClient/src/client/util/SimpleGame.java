@@ -83,7 +83,7 @@ public class SimpleGame extends Game {
             public void run() {
                 try {
                     while (!thread4.isInterrupted()) {
-                        Thread.sleep(250);
+                        Thread.sleep(500);
                         if(game.getGameStatus()==S_NONE || game.getGameStatus()==S_PAUSE)
                             continue;
                         if(game.getGameStatus()==S_WAIT_RIVAL){
@@ -268,7 +268,7 @@ public class SimpleGame extends Game {
         }
         changeStatus(S_FINISH);
         if(!blankCycle)
-            Main.server.commandAndResponse(100, "GAME FINISH", gameID, Main.server.secret);
+            Main.server.commandAndResponse(200, "GAME FINISH", gameID, Main.server.secret);
         timer.stop();
     }
 
@@ -372,7 +372,7 @@ public class SimpleGame extends Game {
     
     private void requestRivalsStatus(){
         if(blankCycle) return;
-        String[] r = Main.server.commandAndResponse(100,"GAME GET STATUS", gameID, Main.server.secret);
+        String[] r = Main.server.commandAndResponse(500,"GAME GET STATUS", gameID, Main.server.secret);
         if(!r[0].equalsIgnoreCase("success")){
             System.err.println("Failed to request rival's status!");
             return;
@@ -391,7 +391,7 @@ public class SimpleGame extends Game {
     
     private void sendMyStatus(){
         if(blankCycle) return;
-        String[] r = Main.server.commandAndResponse(100, "GAME SET STATUS", gameID, 
+        String[] r = Main.server.commandAndResponse(300, "GAME SET STATUS", gameID, 
                 getGameStatus()+"", Main.server.secret);
         if(!r[0].equalsIgnoreCase("success")){
             System.err.println("Failed to send game status!");
@@ -442,57 +442,60 @@ public class SimpleGame extends Game {
     
     public void sendBalls(){
         if(blankCycle) return;
-        if(status!=S_BALL_SELECT && status!=S_MOVING && status!=S_WAIT_RIVAL) 
-            return;
-        try{
-            Ball[] balls = getGameScene().getBalls();
-            String[] a = new String[balls.length+2];
-            a[0] = gameID;
-            a[1] = Main.server.secret;
-            synchronized(balls){       
-                for(int i=0;i<balls.length;i++){
-                    String t = i + " " + balls[i].getCoordinates().getX()+" " +
-                            " " + balls[i].getCoordinates().getY() + " "
-                            + balls[i].getSpeed().getX() + " " + balls[i].getSpeed().getY()
-                            + " " + balls[i].isActive();
-                    a[i+2] = t;
-                }
-            }
-            String[] r = Main.server.commandAndResponse(500,"GAME SEND BALLS", a);
-            if(!r[0].equalsIgnoreCase("success")){
-                System.err.println("Failed to send balls!");
-                return;
-            }
-        } catch (Exception ex){}
+//        if(status==S_BALL_SELECT || status==S_MAKE_HIT || status==S_WAIT_RIVAL) 
+//            return;
+//        try{
+//            Ball[] balls = getGameScene().getBalls();
+//            String[] a = new String[balls.length+2];
+//            a[0] = gameID;
+//            a[1] = Main.server.secret;
+//            synchronized(balls){       
+//                for(int i=0;i<balls.length;i++){
+//                    String t = i + " " + balls[i].getCoordinates().getX()+" " +
+//                            " " + balls[i].getCoordinates().getY() + " "
+//                            + balls[i].getSpeed().getX() + " " + balls[i].getSpeed().getY()
+//                            + " " + balls[i].isActive();
+//                    a[i+2] = t;
+//                }
+//            }
+//            String[] r = Main.server.commandAndResponse(500,"GAME SEND BALLS", a);
+//            if(!r[0].equalsIgnoreCase("success")){
+//                System.err.println("Failed to send balls!");
+//                return;
+//            }
+//        } catch (Exception ex){}
     }
     
     public void syncBalls(){
         if(blankCycle) return;
-        if(rivalStatus!=S_WAIT_RIVAL||rivalStatus!=S_MOVING||rivalStatus!=S_BALL_SELECT) 
-            return;
-        String[] r = Main.server.commandAndResponse(300,"GAME SYNC BALLS", gameID, Main.server.secret);
-        if(!r[0].equalsIgnoreCase("success")){
-            System.err.println("Failed to sync!");
-            return;
-        }
-        try{
-            Ball[] balls = getGameScene().getBalls();
-            synchronized(balls){
-                for(int i=0;i<16;i++){
-                    StringTokenizer stk = new StringTokenizer(r[i+1]);
-                    int id = Integer.parseInt(stk.nextToken());
-                    float x = Float.parseFloat(stk.nextToken());
-                    float y = Float.parseFloat(stk.nextToken());
-                    float vx = Float.parseFloat(stk.nextToken());
-                    float vy = Float.parseFloat(stk.nextToken());
-                    boolean active = Boolean.parseBoolean(stk.nextToken());
-                    balls[id].setCoordinates(new Vector3D(x, y));
-                    balls[id].setSpeed(new Vector3D(vx, vy));
-                    balls[id].setActive(active);   
-                }
-            }
-            
-        } catch (Exception ex){}
+//        if(rivalStatus==S_WAIT_RIVAL||rivalStatus==S_MAKE_HIT||rivalStatus==S_BALL_SELECT) 
+//            return;
+//        String[] r = Main.server.commandAndResponse(300,"GAME SYNC BALLS", gameID, Main.server.secret);
+//        if(!r[0].equalsIgnoreCase("success")){
+//            System.err.println("Failed to sync!");
+//            return;
+//        }
+//        try{
+//            Ball[] balls = getGameScene().getBalls();
+//            System.out.println("Sync balls");
+//            synchronized(balls){
+//                for(int i=0;i<16;i++){
+//                    StringTokenizer stk = new StringTokenizer(r[i+1]);
+//                    int id = Integer.parseInt(stk.nextToken());
+//                    float x = Float.parseFloat(stk.nextToken());
+//                    float y = Float.parseFloat(stk.nextToken());
+//                    float vx = Float.parseFloat(stk.nextToken());
+//                    float vy = Float.parseFloat(stk.nextToken());
+//                    boolean active = Boolean.parseBoolean(stk.nextToken());
+//                    balls[id].setCoordinates(new Vector3D(x, y));
+//                    balls[id].setSpeed(new Vector3D(vx, vy));
+//                    balls[id].setActive(active);   
+//                }
+//            }
+//            
+//        } catch (Exception ex){
+//            System.err.println("ex: "+ex.getMessage());
+//        }
     }
     
     public int getRivalStatus(){
