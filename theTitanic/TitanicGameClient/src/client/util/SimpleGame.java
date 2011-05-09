@@ -83,7 +83,7 @@ public class SimpleGame extends Game {
             public void run() {
                 try {
                     while (!thread4.isInterrupted()) {
-                        Thread.sleep(500);
+                        Thread.sleep(400);
                         if(game.getGameStatus()==S_NONE || game.getGameStatus()==S_PAUSE)
                             continue;
                         if(game.getGameStatus()==S_WAIT_RIVAL){
