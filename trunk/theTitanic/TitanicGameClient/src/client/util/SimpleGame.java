@@ -442,7 +442,7 @@ public class SimpleGame extends Game {
     
     public void sendBalls(){
         if(blankCycle) return;
-        if(status==S_BALL_SELECT || status==S_MAKE_HIT || status==S_WAIT_RIVAL) 
+        if(status==S_WAIT_RIVAL) 
             return;
         try{
             Ball[] balls = getGameScene().getBalls();
@@ -468,7 +468,7 @@ public class SimpleGame extends Game {
     
     public void syncBalls(){
         if(blankCycle) return;
-        if(rivalStatus==S_WAIT_RIVAL||rivalStatus==S_MAKE_HIT||rivalStatus==S_BALL_SELECT) 
+        if(status!=S_WAIT_RIVAL||rivalStatus==S_WAIT_RIVAL) 
             return;
         String[] r = Main.server.commandAndResponse(300,"GAME SYNC BALLS", gameID, Main.server.secret);
         if(!r[0].equalsIgnoreCase("success")){
