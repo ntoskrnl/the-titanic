@@ -17,8 +17,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowEvent;
-import java.util.Timer;
 import javax.swing.JOptionPane;
+import javax.swing.Timer;
 import titanic.basic.Game;
 
 /**
@@ -58,7 +58,7 @@ public class GameWindow extends javax.swing.JFrame {
                 AWTEvent.KEY_EVENT_MASK | AWTEvent.WINDOW_EVENT_MASK | AWTEvent.ACTION_EVENT_MASK);
         GUIRoutines.toScreenCenter(this);
         
-        javax.swing.Timer t = new javax.swing.Timer(500, new ActionListener() {
+        timer = new javax.swing.Timer(500, new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -68,7 +68,7 @@ public class GameWindow extends javax.swing.JFrame {
                 jLabel3.setText("Rivals: "+r);
             }
         });
-        t.start();
+        timer.start();
     }
 
     public final void initGame() {
@@ -182,10 +182,14 @@ public class GameWindow extends javax.swing.JFrame {
             game.dispose();
             System.gc();
         }
+        timer.stop();
         Toolkit.getDefaultToolkit().removeAWTEventListener(awtEventListener);
     }//GEN-LAST:event_formWindowClosing
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        game.dispose();
+        game = null;
+        timer.stop();
         dispose();
     }//GEN-LAST:event_jButton1ActionPerformed
 
