@@ -237,8 +237,6 @@ public class SimpleGame extends Game {
                                 if(evt instanceof BallsStopEvent && status==S_WAIT_RIVAL 
                                         && rivalStatus!=S_SYNC)
                                     continue;
-                                if(evt instanceof BallToPocketEvent && status!=S_MOVING)
-                                    continue;
                                 evt.execute();
                             }
                         } catch (Exception ex) {
