@@ -1,6 +1,8 @@
 package client.util;
 
 import client.Main;
+import client.util.event.BallsStopEvent;
+import client.util.event.GameEvent;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -36,7 +38,7 @@ public class SimpleGame extends Game {
     private boolean iPlayNext = true;
     private UserProfile rival, me;
     private boolean blankCycle;
-    private String gameID;
+    public String gameID;
     private int rivalStatus;
     private Timer timer;
     /**
@@ -81,38 +83,42 @@ public class SimpleGame extends Game {
         thread4 = new Thread(new Runnable() {
             @Override
             public void run() {
+                if(blankCycle) return;
                 try {
                     while (!thread4.isInterrupted()) {
-                        Thread.sleep(400);
-                        if(game.getGameStatus()==S_NONE || game.getGameStatus()==S_PAUSE)
-                            continue;
-                        if(game.getGameStatus()==S_WAIT_RIVAL){
+                        Thread.sleep(250);
+                        // Get game status from server
+                        if(status==S_WAIT_RIVAL&&rivalStatus==S_BALL_SELECT)
                             requestRivalsHit();
-                            requestRivalsStatus();
-                        }
-                        
+                        updateStatus();
+                        if(status==S_MOVING || 
+                                (status == S_SYNC && rivalStatus == S_WAIT_RIVAL))
+                            sendBalls();
+                        if(status==S_WAIT_RIVAL)
+                            syncBalls();
                     }
                 } catch (InterruptedException ex) {
                 }
             }
         });
         
-        
+        status = S_NONE;
+        rivalStatus = S_NONE;
        
         game = this;
         //graphics.render(this);
         
         thread4.start();
         
-        timer = new Timer(1000, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(getGameStatus()==Game.S_WAIT_RIVAL)
-                    syncBalls();
-                else sendBalls();
-            }
-        });
-        timer.start();
+//        timer = new Timer(1000, new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                if(getGameStatus()==Game.S_WAIT_RIVAL)
+//                    syncBalls();
+//                else sendBalls();
+//            }
+//        });
+//        timer.start();
         start();
     }
 
@@ -164,20 +170,17 @@ public class SimpleGame extends Game {
     }
 
     /**
-     * Starts game thread
+     * Starts game threads
      */
     public final void start() {
-        // I play next
-        setIPlayNext(!first);
-        
         // Setting initial game status
-        if(first) changeStatus(S_BALL_SELECT);
-        else changeStatus(S_WAIT_RIVAL);
-        if(status == S_BALL_SELECT) System.out.println("It's your turn. Please, select a ball and hit");
-        else if(status == S_WAIT_RIVAL) System.out.println("Now wait for player 1 to make hit.");
+        updateStatus();
+        
+        if(status == S_BALL_SELECT) System.out.println("It's your turn. Please, select a ball and make a hit");
+        else if(status == S_WAIT_RIVAL) System.out.println("Now wait for the first player to make a hit.");
         else {
             System.err.println("Failed to set start status.");
-            return;
+            throw new ExceptionInInitializerError("Unable to retrieve initial status");
         }
         
         // Starting rendering thread
@@ -207,7 +210,8 @@ public class SimpleGame extends Game {
                 try {
                     while (!thread2.isInterrupted()) {
                         try {
-                            if (status == S_MOVING || rivalStatus == S_MOVING) {
+                            if (status == S_MOVING || rivalStatus == S_MOVING || 
+                                    (rivalStatus==S_SYNC && status!=S_SYNC)) {
                                 physics.compute();
                             }
                         } catch (Exception ex) {
@@ -230,7 +234,13 @@ public class SimpleGame extends Game {
                     while (!thread3.isInterrupted()) {
                         try {
                             while (events.size() != 0) {
-                                events.getFirst().execute();
+                                GameEvent evt = events.getFirst();
+                                if(evt instanceof BallsStopEvent && status==S_SYNC)
+                                    continue;
+                                if(evt instanceof BallsStopEvent && status==S_WAIT_RIVAL 
+                                        && rivalStatus!=S_SYNC)
+                                    continue;
+                                evt.execute();
                             }
                         } catch (Exception ex) {
                         } catch (Error er) {
@@ -269,7 +279,7 @@ public class SimpleGame extends Game {
         changeStatus(S_FINISH);
         if(!blankCycle)
             Main.server.commandAndResponse(200, "GAME FINISH", gameID, Main.server.secret);
-        timer.stop();
+        //timer.stop();
     }
 
     @Override
@@ -283,32 +293,11 @@ public class SimpleGame extends Game {
         if (newStatus == S_WAIT_RIVAL && blankCycle)
             newStatus = S_BALL_SELECT;
         if(newStatus==S_NONE) return status = S_NONE;
-        if(status==S_NONE){
-            if(newStatus!=S_BALL_SELECT && newStatus!=S_WAIT_RIVAL)
-                return status;
-        }
-        if(status==S_BALL_SELECT){
-            if(newStatus!=S_MAKE_HIT && newStatus!=S_WAIT_RIVAL)
-                return status;
-        }
-        if(status==S_MAKE_HIT){
-            if(newStatus!=S_MOVING||newStatus!=S_BALL_SELECT)
-                return status;
-        }
-        if(status==S_MOVING){
-            if(newStatus==S_MAKE_HIT)
-                return status;
-        }
-        if(status==S_WAIT_RIVAL){
-            if(newStatus!=S_BALL_SELECT && newStatus!=S_FINISH)
-                return status;
-        }
-        if(status==S_WAIT_RIVAL && newStatus==S_BALL_SELECT)
-            syncBalls();
+//        if(status==S_WAIT_RIVAL && newStatus==S_BALL_SELECT)
+//            syncBalls();
 //        if(status==S_MOVING && (newStatus==S_BALL_SELECT || newStatus==S_WAIT_RIVAL))
 //                sendBalls();
         status = newStatus;
-        sendMyStatus();
         return status;
     }
 
@@ -374,24 +363,29 @@ public class SimpleGame extends Game {
         return iPlayNext;
     }
     
-    private void requestRivalsStatus(){
+    
+    private synchronized void updateStatus(){
         if(blankCycle) return;
-        String[] r = Main.server.commandAndResponse(500,"GAME GET STATUS", gameID, Main.server.secret);
+        String[] r = Main.server.commandAndResponse(500,"GAME MY STATUS", gameID, Main.server.secret);
+        if(!r[0].equalsIgnoreCase("success")){
+            System.err.println("Failed to request my status!");
+            status = S_WAIT_RIVAL;
+            return;
+        }
+        int s = Integer.parseInt(r[1]);
+        status = s;
+        requestRivalsStatus();
+    }
+    
+    private synchronized void requestRivalsStatus(){
+        if(blankCycle) return;
+        String[] r = Main.server.commandAndResponse(500,"GAME RIVALS STATUS", gameID, Main.server.secret);
         if(!r[0].equalsIgnoreCase("success")){
             System.err.println("Failed to request rival's status!");
             return;
         }
         int s = Integer.parseInt(r[1]);
         rivalStatus = s;
-        if(s!=S_WAIT_RIVAL && s!=S_NONE){
-            status = S_WAIT_RIVAL;
-            sendMyStatus();
-        } else if(status==S_WAIT_RIVAL && s==S_WAIT_RIVAL){
-            //syncBalls();
-            status = S_BALL_SELECT;
-            sendMyStatus();
-        }
-        
     }
     
     private void sendMyStatus(){
@@ -406,15 +400,14 @@ public class SimpleGame extends Game {
 
     @Override
     public void makeHit(Ball b, float speed, float angle) {
-        status = S_MOVING;
-        sendMyStatus();
         if(blankCycle) return;
         String[] r = Main.server.commandAndResponse(100, "GAME MAKE HIT", gameID,
                 b.getId()+"", speed+"", angle+"", Main.server.secret);
         if(!r[0].equalsIgnoreCase("success")){
             return;
         }
-        
+        status=S_MOVING;
+        updateStatus();
     }
     
     private void requestGameID(){
@@ -441,7 +434,6 @@ public class SimpleGame extends Game {
             System.out.println("Rival's hit: ball = "+r[1]+"; power = "+r[2]+"; angle = "+r[3]);
             getGameScene().getBalls()[b].setSpeed(new Vector3D(s*(float)Math.cos(a)*20, 
                     s*(float)Math.sin(a)*20));
-            rivalStatus = S_MOVING;
         } catch (Exception ex){}
     }
     

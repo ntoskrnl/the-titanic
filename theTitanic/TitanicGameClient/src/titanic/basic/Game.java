@@ -71,6 +71,10 @@ public abstract class Game {
      * Wait for rival to make a hit
      */
     public static final int S_WAIT_RIVAL = 6;
+    /**
+     * Synchronisation
+     */
+    public static final int S_SYNC = 7;
 
     public static final int S_NONE = 0;
 }
