@@ -426,10 +426,12 @@ public class CommandInterpreter {
                         if(balls!=null && g.ballsModified){
                             pw.println("SUCCESS");
                             for(int i=0;i<balls.length;i++){
-                                pw.println(balls[i].id + " " + balls[i].x + " " + 
+                                String t = balls[i].id + " " + balls[i].x + " " + 
                                         balls[i].y + " " + balls[i].vx + " "
-                                        + balls[i].vy + " " + balls[i].active);
-                                balls[i].modified = false;
+                                        + balls[i].vy + " ";
+                                if(balls[i].active) t = t + 1;
+                                else t = t + 0;
+                                pw.println(t);
                             }
                             result = true;
                         }
@@ -476,6 +478,23 @@ public class CommandInterpreter {
                     }
                 }
                 
+                if(cmd.equals("game ball pocket")){
+                    String gid = br.readLine().trim();
+                    int id = Integer.parseInt(br.readLine().trim());
+                    String secret = br.readLine().trim();                    
+                    Game g = MainServerThread.games.get(gid);
+                    result = false;
+                    if(u.getSecret().equals(secret) && g!=null){
+                        g.getBalls()[id].active = false;
+                        pw.println("SUCCESS");
+                           result = true;
+                        if(g.whoPlays() == u.getId()){
+                            Player p = g.getPlayer1();
+                            if(p.getId()!=u.getId()) p = g.getPlayer2();
+                            p.setScore(p.getScore()+1);
+                        }
+                    }
+                }
                 
                 if(cmd.equals("game finish")){
                     String gid = br.readLine().trim();
