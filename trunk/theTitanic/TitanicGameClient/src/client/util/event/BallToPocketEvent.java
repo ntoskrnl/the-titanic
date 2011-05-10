@@ -1,5 +1,7 @@
 package client.util.event;
 
+import client.Main;
+import client.util.SimpleGame;
 import titanic.basic.Ball;
 import titanic.basic.Game;
 import titanic.basic.Vector3D;
@@ -58,8 +60,10 @@ public class BallToPocketEvent extends GameEvent{
             b.setActive(false);
             b.setSpeed(new Vector3D());
         }
-        Game g = (Game)getSource();
-        g.setScore(g.getScore()+1);
+        SimpleGame g = (SimpleGame)getSource();
+        if(!g.blankCycle)
+            Main.server.commandAndResponse(100, "GAME BALL POCKET", g.gameID, 
+                getBall().getId()+"", Main.server.secret);
     }
     
 }
