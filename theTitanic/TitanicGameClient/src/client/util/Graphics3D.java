@@ -1,5 +1,7 @@
 package client.util;
 
+import client.util.event.BallToPocketEvent;
+import client.util.event.GameEvent;
 import java.awt.*;
 import com.sun.j3d.utils.universe.*;
 import java.awt.event.MouseWheelEvent;
@@ -59,6 +61,8 @@ public class Graphics3D implements GraphicalEngine {
     Color3f emissive = new Color3f(0.0f, 0.0f, 0.0f);
     Color3f diffuse = new Color3f(0.0f, .0f, 1.0f);
     Color3f speculas = new Color3f(1.0f, 1.0f, 1.0f);
+
+     double D[] = new double[6];
 
     public Graphics3D(Game g) {
         game = g;
@@ -257,8 +261,10 @@ public class Graphics3D implements GraphicalEngine {
                 if (BallTransform[i] == null) {
                     BallTransform[i] = new Transform3D();
                 }
+                if(game.getGameScene().getBalls()[i].isActive()==true){
                 BallTransform[i].setTranslation(mass[i]);
                 objTrans[i].setTransform(BallTransform[i]);
+                }
             }
 
         } catch (Exception e) {
@@ -273,12 +279,12 @@ public class Graphics3D implements GraphicalEngine {
         try {
             for (i = 0; i < N; i++) {
 
-                mass[i] = new Vector3f();
-
+               if(mass[i]==null) mass[i] = new Vector3f();
+               if(game.getGameScene().getBalls()[i].isActive() == true){
                 mass[i].setX(BallsArray[i].getCoordinates().getX() / maxwidth * 1.6f * width);
                 mass[i].setY(BallsArray[i].getCoordinates().getY() / maxhight * 1.6f * high);
                 mass[i].setZ(BallsArray[i].getCoordinates().getZ() - 0.005f);
-
+                }
             }
         } catch (Exception ex) {
             System.err.println(ex);
@@ -317,6 +323,26 @@ public class Graphics3D implements GraphicalEngine {
                          Stripline.setTransform(strpos);
 
                     }
+        
+        if(game.getGameStatus() == Game.S_MOVING ){
+            int i;
+            for(i=0;i<N;i++){
+            
+            Vector3D v = game.getGameScene().getBalls()[i].getSpeed();
+            Vector3D v1 = new Vector3D();
+            v1.setX((float)(v.getX()/game.getGameScene().getBalls()[i].getSpeed().getNorm()));
+            v1.setY((float)(v.getY()/game.getGameScene().getBalls()[i].getSpeed().getNorm()));
+            double angle=Math.acos(v1.getX());
+            if(v1.getY()<0) angle=Math.PI+Math.PI-angle;
+            angle=angle*57.3248;
+            //System.out.println("angle="+angle);
+            
+            if(D[(int)Distance(i, 0)]<0.05) {
+                System.out.println("popal v "+Distance(i, 0)+" angle= "+angle);
+                game.getEventPipeLine().add(new BallToPocketEvent(game, game.getGameScene().getBalls()[i], (int)Distance(i, 0)));
+            }
+            }
+        }
 
 
     }
@@ -740,74 +766,103 @@ public class Graphics3D implements GraphicalEngine {
     private void setStrip() {
         Shape3D obj;
         obj = (Shape3D) Stripline.getChild(0);
-        obj.setGeometry(StriptedLine(0.5*Distance(game.getBilliardKey().getBall().getId())));
+        obj.setGeometry(StriptedLine(0.5*Distance(game.getBilliardKey().getBall().getId(), 1)));
         Transform3D pos = new Transform3D();
         pos.rotZ(game.getBilliardKey().getAngle());
         pos.setTranslation(mass[game.getBilliardKey().getBall().getId()]);
         Stripline.setTransform(pos);
     }
 
-    private double Distance(int A) {
+    private double Distance(int A, int fac) {
         double d = 0;
-        double y=0,x=0,x0=0,y0=0;
-        final double xmax,ymax;
-        xmax=1.8;
-        ymax=1;
+        double y = 0, x = 0, x0 = 0, y0 = 0;
+        final double xmax, ymax;
+        xmax = 1.8;
+        ymax = 1;
 
         double wi = game.getBilliardKey().getAngle();
-        if(wi>2*Math.PI) wi-=Math.PI*2;
-        x0 =2*mass[A].getY();
-        y0 =-2*mass[A].getX();
+        if (wi > 2 * Math.PI) {
+            wi -= Math.PI * 2;
+        }
+        x0 = 2 * mass[A].getY();
+        y0 = -2 * mass[A].getX();
 
-     
-          if ((wi >= 0) && (wi < (Math.PI / 2-0.01))) {
+        if (fac == 1) {
+            if ((wi >= 0) && (wi < (Math.PI / 2 - 0.01))) {
                 y = ymax;
-                x = x0+(y-y0)/Math.tan(wi);
-                     if(x>xmax) {
-                                x = xmax;
-                                y = Math.tan(wi)*(x-x0)+y0;
-                            }
-              
-                 }
+                x = x0 + (y - y0) / Math.tan(wi);
+                if (x > xmax) {
+                    x = xmax;
+                    y = Math.tan(wi) * (x - x0) + y0;
+                }
 
-        if ((wi >= Math.PI/2+0.01) && (wi < Math.PI)) {
+            }
 
-            y = ymax;
-                x = x0+(y-y0)/Math.tan(wi);
-                     if(x<-xmax) {
-                                x = -xmax;
-                                y = Math.tan(wi)*(x-x0)+y0;
+            if ((wi >= Math.PI / 2 + 0.01) && (wi < Math.PI)) {
 
-                            }
-              
-           
+                y = ymax;
+                x = x0 + (y - y0) / Math.tan(wi);
+                if (x < -xmax) {
+                    x = -xmax;
+                    y = Math.tan(wi) * (x - x0) + y0;
+
+                }
+
+
+            }
+
+
+            if ((wi >= Math.PI) && (wi < 3 * Math.PI / 2 - 0.01)) {
+
+                y = -ymax;
+                x = x0 + (y - y0) / Math.tan(wi);
+                if (x < -xmax) {
+                    x = -xmax;
+                    y = Math.tan(wi) * (x - x0) + y0;
+                }
+
+
+            }
+            if ((wi >= 3 * Math.PI / 2 + 0.01) && (wi < 2 * Math.PI)) {
+
+                y = -ymax;
+                x = x0 + (y - y0) / Math.tan(wi);
+                if (x > xmax) {
+                    x = xmax;
+                    y = Math.tan(wi) * (x - x0) + y0;
+                }
+
+
+            }
+             d = Math.sqrt((x - x0) * (x - x0) + (y - y0) * (y - y0));
         }
 
+        double Xmax,Ymax;
+        Xmax=0.5;
+        Ymax=0.9;
+        
+        if(fac == 0) {
 
-        if ((wi >= Math.PI) && (wi < 3*Math.PI/2-0.01)) {
+        x0 = mass[A].getX();
+        y0 = mass[A].getY();
 
-             y = -ymax;
-                x = x0+(y-y0)/Math.tan(wi);
-                     if(x<-xmax) {
-                                x = -xmax;
-                                y = Math.tan(wi)*(x-x0)+y0;
-                            }
-            
-           
+        D[0] = Math.sqrt((Xmax - x0) * (Xmax - x0) + (-Ymax - y0) * (-Ymax - y0));
+        D[1] = Math.sqrt((Xmax - x0) * (Xmax - x0) + (- y0) * (- y0));
+        D[2] = Math.sqrt((Xmax - x0) * (Xmax - x0) + (Ymax - y0) * (Ymax - y0));
+        D[3] = Math.sqrt((-Xmax - x0) * (-Xmax - x0) + (Ymax - y0) * (Ymax - y0));
+        D[4] = Math.sqrt((-Xmax - x0) * (-Xmax - x0) + (- y0) * (- y0));
+        D[5] = Math.sqrt((-Xmax - x0) * (-Xmax - x0) + (-Ymax - y0) * (-Ymax - y0));
+
+        if(x0>0 && y0<-Ymax/3) return 0;
+        if(x0>0 && y0>=-Ymax/3 && y0<Ymax/3) return 1;
+        if(x0>0 && y0>=Ymax/3) return 2;
+        if(x0<0 && y0>=Ymax/3) return 3;
+        if(x0<0 && y0>=-Ymax/3 && y0<Ymax/3) return 4;
+        if(x0<0 && y0<-Ymax/3) return 5;
+
         }
-        if ((wi >= 3 * Math.PI / 2+0.01) && (wi < 2 * Math.PI)) {
 
-             y = -ymax;
-                x = x0+(y-y0)/Math.tan(wi);
-                     if(x>xmax) {
-                                x = xmax;
-                                y = Math.tan(wi)*(x-x0)+y0;
-                            }
-               
-            
-        }
-
-        d=Math.sqrt((x-x0)*(x-x0)+(y-y0)*(y-y0));
+       
         return d;
     }
 
