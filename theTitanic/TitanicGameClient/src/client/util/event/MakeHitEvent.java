@@ -14,6 +14,9 @@ public class MakeHitEvent extends GameEvent {
     public MakeHitEvent(Game src, double str) {
         super(src, GameEvent.EVENT_IMPACT);
         strength = str;
+        Game g = (Game)getSource();
+        g.getBilliardKey().setPower((float)strength);
+        
     }
 
     public void execute() {
@@ -21,11 +24,18 @@ public class MakeHitEvent extends GameEvent {
 //        if(g.getGameStatus()!=Game.S_MAKE_HIT){
 //            System.err.println("It is not allowed to make hit now.");
 //            return;
-//        }
-            g.getBilliardKey().setPower((float)strength);
-            g.getBilliardKey().makeHit();
-            g.makeHit(g.getBilliardKey().getBall(), g.getBilliardKey().getPower(), 
-                        g.getBilliardKey().getAngle() + (float)Math.PI/2);
+//        }  
+        if(g.getBilliardKey().getBall()==null) {
+            g.changeStatus(Game.S_BALL_SELECT);
+            return;
+        }
+        if(g.getBilliardKey().getBall().isActive() == false){
+            g.changeStatus(Game.S_BALL_SELECT);
+            return;
+        }
+        g.getBilliardKey().makeHit();
+        g.makeHit(g.getBilliardKey().getBall(), g.getBilliardKey().getPower(), 
+                    g.getBilliardKey().getAngle() + (float)Math.PI/2);
     }
 
     @Override
