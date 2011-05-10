@@ -12,7 +12,7 @@ public class Player {
     private int hBall;
     private float hAngle;
     private float hPower;
-    private boolean playNext;
+    private int lastHits;
 
     public Player(int id) {
         this.id = id;
@@ -25,6 +25,8 @@ public class Player {
     }
 
     public void setScore(int score) {
+        if(score>this.score)
+            lastHits+=score-this.score;
         this.score = score;
     }
 
@@ -72,11 +74,11 @@ public class Player {
         hit = false;
     }
 
-    public boolean playNext() {
-        return playNext;
+    public int lastHits() {
+        return lastHits;
     }
-    
-    public void setPlayNext(boolean p){
-        playNext = true;
+
+    void resetLastHits() {
+        lastHits = 0;
     }
 }

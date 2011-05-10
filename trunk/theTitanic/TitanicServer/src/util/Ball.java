@@ -23,7 +23,7 @@ public class Ball {
          y = Float.parseFloat(stk.nextToken());
          vx = Float.parseFloat(stk.nextToken());
          vy = Float.parseFloat(stk.nextToken());
-         active = Boolean.parseBoolean(stk.nextToken());
+         active = (int)Integer.parseInt(stk.nextToken()) == 1;
          modified = true;
     }
    

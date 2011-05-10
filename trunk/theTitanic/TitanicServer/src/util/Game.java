@@ -19,11 +19,9 @@ public class Game {
         whoPlays = player1;
         balls = new Ball[16];
         for(int i=0;i<16;i++)
-            balls[i]= new Ball(i + " 0 0 0 0 true");
+            balls[i]= new Ball(i + " 0 0 0 0 1");
         player1.setStatus(Game.S_BALL_SELECT);
-        player1.setPlayNext(false);
         player2.setStatus(Game.S_WAIT_RIVAL);
-        player2.setPlayNext(true);
     }
     
     public String getID(){
@@ -58,14 +56,26 @@ public class Game {
     
     public void resolveTurn(){
         if(whoPlays.equals(player1)){
-            whoPlays = player2;
-            player2.setStatus(S_BALL_SELECT);
-            player1.setStatus(S_WAIT_RIVAL);
+            if(player1.lastHits()==0){
+                whoPlays = player2;
+                player2.setStatus(S_BALL_SELECT);
+                player1.setStatus(S_WAIT_RIVAL);
+            } else {
+                player1.setStatus(S_BALL_SELECT);
+                player2.setStatus(S_WAIT_RIVAL);
+            }
         } else {
-            whoPlays = player1;
-            player1.setStatus(S_BALL_SELECT);
-            player2.setStatus(S_WAIT_RIVAL);
+            if(player2.lastHits()==0){
+                whoPlays = player1;
+                player1.setStatus(S_BALL_SELECT);
+                player2.setStatus(S_WAIT_RIVAL);
+            } else {
+                player2.setStatus(S_BALL_SELECT);
+                player1.setStatus(S_WAIT_RIVAL);
+            }
         }
+        player1.resetLastHits();
+        player2.resetLastHits();
     }
 
     Ball[] getBalls() {
