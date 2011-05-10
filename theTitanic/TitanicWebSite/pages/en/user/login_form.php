@@ -4,7 +4,7 @@
             <p>Вход выполнен <b><?php echo(strip_tags($_SESSION['login'])); ?></b><br /><a href="user/login/out">Выйти</a></p>
         </div>
 <?php else: ?>
-        <form method="post" action="user/login" class="align_r" id="login_form">
+        <form method="post" action="user/login" class="align_r" id="login_form" onsubmit="ajax_login()">
             <fieldset style="border-style: none;">
                 <div>
                     <input type="text" id="login_input" placeholder="Логин" name="login" style="width: 100px;" />

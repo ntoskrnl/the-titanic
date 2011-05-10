@@ -11,7 +11,7 @@ class Controller_Lang extends Controller_Base {
         $_SESSION['lang'] = $args[0];
         $lang = $args[0];
         $this->registry['smarty']->assign("lang", $lang);
-        $this->message("Current language is <b>$lang</b>.", "Language", "index", 0);
+        $this->message("Current language is <b>$lang</b>.", "Language", "index");
     }
     
 }
