@@ -25,7 +25,7 @@
                     <div>
                         <p>
                             Вы можете перейти на страницу <a href="{$redirect}">{$redirect}</a>
-                            {if isset($redirect_timeout)} Либо вы будете автоматически на неё перенаправлены через {$redirect_timeout} секунд.{/if}
+                            {if isset($redirect_timeout)} Либо вы будете автоматически на неё перенаправлены через {$redirect_timeout}с.{/if}
                         </p>
                     </div> 
                     {/if}
