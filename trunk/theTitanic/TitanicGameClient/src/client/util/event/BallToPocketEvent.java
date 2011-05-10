@@ -20,11 +20,10 @@ public class BallToPocketEvent extends GameEvent{
     public BallToPocketEvent(Game src, Ball b, int pocket) 
             throws IllegalArgumentException {
         super(src, GameEvent.EVENT_WHOLE);
-        
         if(pocket>5 || pocket<0) 
             throw new IllegalArgumentException("Invalid pocket number " + pocket);
         
-        if(ball==null) 
+        if(b==null) 
             throw new IllegalArgumentException("Invalid ball (null)");
         
         ball = b;
@@ -56,12 +55,7 @@ public class BallToPocketEvent extends GameEvent{
         if(b!=null)
             b.setActive(false);
         Game g = (Game)getSource();
-        if(!myGoal) {
-            g.setIPlayNext(false);
-            return;
-        }
         g.setScore(g.getScore()+1);
-        g.setIPlayNext(true);
     }
     
 }

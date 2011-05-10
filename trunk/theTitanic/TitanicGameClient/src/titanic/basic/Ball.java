@@ -98,7 +98,7 @@ public class Ball implements PhysicalBall, GraphicalBall {
     }
     
     public void setActive(boolean a){
-        active = true;
+        active = a;
     }
     
     public boolean isActive(){
