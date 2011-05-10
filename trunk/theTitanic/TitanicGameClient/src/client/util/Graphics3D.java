@@ -328,7 +328,7 @@ public class Graphics3D implements GraphicalEngine {
 
                     }
         
-        if(game.getGameStatus() == Game.S_MOVING ){
+        if(game.getGameStatus() == Game.S_MOVING || game.getGameStatus() == Game.S_WAIT_RIVAL){
             int i;
             for(i=0;i<N;i++){
             

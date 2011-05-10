@@ -451,7 +451,9 @@ public class SimpleGame extends Game {
                     String t = i + " " + balls[i].getCoordinates().getX()+" " +
                             " " + balls[i].getCoordinates().getY() + " "
                             + balls[i].getSpeed().getX() + " " + balls[i].getSpeed().getY()
-                            + " " + balls[i].isActive();
+                            + " ";
+                    if(balls[i].isActive()) t = t + 1;
+                    else t = t + 0;
                     a[i+2] = t;
                 }
             }
@@ -482,10 +484,10 @@ public class SimpleGame extends Game {
                     float y = Float.parseFloat(stk.nextToken());
                     float vx = Float.parseFloat(stk.nextToken());
                     float vy = Float.parseFloat(stk.nextToken());
-                    boolean active = Boolean.parseBoolean(stk.nextToken());
+                    int active = (int)Integer.parseInt(stk.nextToken());
                     balls[id].setCoordinates(new Vector3D(x, y));
                     balls[id].setSpeed(new Vector3D(vx, vy));
-                    balls[id].setActive(active);   
+                    balls[id].setActive(active==1);   
                 }
             }
             
