@@ -12,6 +12,7 @@ public class Player {
     private int hBall;
     private float hAngle;
     private float hPower;
+    private boolean playNext;
 
     public Player(int id) {
         this.id = id;
@@ -69,5 +70,13 @@ public class Player {
     
     public synchronized void unsetHit(){
         hit = false;
+    }
+
+    public boolean playNext() {
+        return playNext;
+    }
+    
+    public void setPlayNext(boolean p){
+        playNext = true;
     }
 }

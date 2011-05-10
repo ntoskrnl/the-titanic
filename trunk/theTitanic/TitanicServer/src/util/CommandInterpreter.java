@@ -327,7 +327,7 @@ public class CommandInterpreter {
                     }
                 }
                 
-                if(cmd.equals("game get status")){
+                if(cmd.equals("game rivals status")){
                     String gid = br.readLine().trim();
                     String secret = br.readLine().trim();
                     Game g = MainServerThread.games.get(gid);
@@ -340,6 +340,21 @@ public class CommandInterpreter {
                         result = true;
                     }
                 }
+                
+                if(cmd.equals("game my status")){
+                    String gid = br.readLine().trim();
+                    String secret = br.readLine().trim();                    
+                    Game g = MainServerThread.games.get(gid);
+                    result = false;
+                    if(u.getSecret().equals(secret) && g!=null){
+                        pw.println("SUCCESS");
+                        Player p = g.getPlayer1();
+                        if(p.getId()!=u.getId()) p = g.getPlayer2();
+                        pw.println(p.getStatus());
+                        result = true;
+                    }
+                }
+                
                 
                 if(cmd.equals("game set status")){
                     String gid = br.readLine().trim();
@@ -368,8 +383,14 @@ public class CommandInterpreter {
                         System.out.println("HIT!");
                         pw.println("SUCCESS");
                         Player p = g.getPlayer1();
-                        if(p.getId()!=u.getId()) p = g.getPlayer2();
+                        if(p.getId()!=u.getId()){
+                            p = g.getPlayer2();
+                        }
                         p.setHit(ball, power, angle);
+                        p.setStatus(Game.S_MOVING);
+                        p=g.getPlayer1();
+                        if(p.getId()==u.getId()) p = g.getPlayer2();
+                                p.setStatus(Game.S_WAIT_RIVAL);
                         result = true;
                     }
                 }
@@ -434,6 +455,24 @@ public class CommandInterpreter {
                             pw.println("SUCCESS");
                             result = true;
                         }
+                    }
+                }
+                
+                if (cmd.equals("game balls stop")) {
+                    String gid = br.readLine().trim();
+                    String secret = br.readLine().trim();
+                    Game g = MainServerThread.games.get(gid);
+                    result = false;
+                    if (u.getSecret().equals(secret) && g != null) {
+                        Player p = g.getPlayer1();
+                        if(p.getId()!=u.getId()) p = g.getPlayer2();
+                        p.setStatus(7);
+                        if(g.getPlayer1().getStatus()==7 && g.getPlayer2().getStatus()==7){
+                            System.out.println("77!");
+                            g.resolveTurn();
+                        }
+                        result = true;
+                        pw.println("SUCCESS");
                     }
                 }
                 
