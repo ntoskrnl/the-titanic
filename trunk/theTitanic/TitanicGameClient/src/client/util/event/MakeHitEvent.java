@@ -15,10 +15,6 @@ public class MakeHitEvent extends GameEvent {
     public MakeHitEvent(Game src, double str) {
         super(src, GameEvent.EVENT_IMPACT);
         strength = str;
-        if(str==0) {
-            src.changeStatus(Game.S_BALL_SELECT);
-            throw new InvalidParameterException("Hit with zero power???");
-        }
     }
 
     public void execute() {
@@ -31,7 +27,6 @@ public class MakeHitEvent extends GameEvent {
             g.getBilliardKey().makeHit();
             g.makeHit(g.getBilliardKey().getBall(), g.getBilliardKey().getPower(), 
                         g.getBilliardKey().getAngle() + (float)Math.PI/2);
-        g.changeStatus(Game.S_MOVING);
     }
 
     @Override
