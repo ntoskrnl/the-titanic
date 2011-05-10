@@ -2,6 +2,7 @@ package client.util.event;
 
 import titanic.basic.Ball;
 import titanic.basic.Game;
+import titanic.basic.Vector3D;
 
 /**
  * This class represents the event that happens when a ball comes to the pocket.
@@ -27,6 +28,7 @@ public class BallToPocketEvent extends GameEvent{
             throw new IllegalArgumentException("Invalid ball (null)");
         
         ball = b;
+        ball.setActive(false);
         this.pocket = pocket;
         if(src.getGameStatus() == Game.S_WAIT_RIVAL) {
             myGoal = false;
@@ -52,8 +54,10 @@ public class BallToPocketEvent extends GameEvent{
     @Override
     public void execute() {
         Ball b = getBall();
-        if(b!=null)
+        if(b!=null){
             b.setActive(false);
+            b.setSpeed(new Vector3D());
+        }
         Game g = (Game)getSource();
         g.setScore(g.getScore()+1);
     }

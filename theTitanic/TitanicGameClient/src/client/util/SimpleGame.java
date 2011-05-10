@@ -1,6 +1,7 @@
 package client.util;
 
 import client.Main;
+import client.util.event.BallToPocketEvent;
 import client.util.event.BallsStopEvent;
 import client.util.event.GameEvent;
 import java.awt.Container;
@@ -235,6 +236,8 @@ public class SimpleGame extends Game {
                                     continue;
                                 if(evt instanceof BallsStopEvent && status==S_WAIT_RIVAL 
                                         && rivalStatus!=S_SYNC)
+                                    continue;
+                                if(evt instanceof BallToPocketEvent && status!=S_MOVING)
                                     continue;
                                 evt.execute();
                             }

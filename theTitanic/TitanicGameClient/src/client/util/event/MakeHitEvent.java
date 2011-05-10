@@ -1,6 +1,5 @@
 package client.util.event;
 
-import java.security.InvalidParameterException;
 import javax.sound.sampled.DataLine.*;
 import titanic.basic.Game;
 
