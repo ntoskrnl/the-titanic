@@ -285,6 +285,10 @@ public class Graphics3D implements GraphicalEngine {
                 mass[i].setY(BallsArray[i].getCoordinates().getY() / maxhight * 1.6f * high);
                 mass[i].setZ(BallsArray[i].getCoordinates().getZ() - 0.005f);
                 }
+                else{
+                   Vector3D pos = new Vector3D(500+10*i,500+10*i,500+10*i);
+                   game.getGameScene().getBalls()[i].setCoordinates(pos);
+                }
             }
         } catch (Exception ex) {
             System.err.println(ex);
@@ -335,11 +339,12 @@ public class Graphics3D implements GraphicalEngine {
             double angle=Math.acos(v1.getX());
             if(v1.getY()<0) angle=Math.PI+Math.PI-angle;
             angle=angle*57.3248;
-            //System.out.println("angle="+angle);
-            
-            if(D[(int)Distance(i, 0)]<0.05) {
-                System.out.println("popal v "+Distance(i, 0)+" angle= "+angle);
+                       
+            if(D[(int)Distance(i, 0)]<0.05 && game.getGameScene().getBalls()[i].isActive()==true) {
                 game.getEventPipeLine().add(new BallToPocketEvent(game, game.getGameScene().getBalls()[i], (int)Distance(i, 0)));
+                System.out.println("popal v "+(int)Distance(i, 0)+" angle= "+angle);
+
+
             }
             }
         }
@@ -885,16 +890,16 @@ public class Graphics3D implements GraphicalEngine {
                         if (code == KeyEvent.VK_COMMA || code == KeyEvent.VK_PERIOD || code == KeyEvent.VK_A || code == KeyEvent.VK_D) {
 
 
-                            if (code == KeyEvent.VK_COMMA) {
+                            if (code == KeyEvent.VK_COMMA && game.getGameScene().getBalls()[curBall].isActive()==true) {
                                 curBall += game.getGameScene().getBalls().length - 1;
                                 game.getBilliardKey().setAngle(0);
                             }
-                            if (code == KeyEvent.VK_PERIOD) {
+                            if (code == KeyEvent.VK_PERIOD && game.getGameScene().getBalls()[curBall].isActive()==true) {
                                 curBall += game.getGameScene().getBalls().length + 1;
                                 game.getBilliardKey().setAngle(0);
                             }
 
-                            if (code == KeyEvent.VK_A) {
+                            if (code == KeyEvent.VK_A && game.getGameScene().getBalls()[curBall].isActive()==true) {
                                 float inc = 0;
                                 do {
                                     inc += (float) Math.PI / 150;
@@ -903,7 +908,7 @@ public class Graphics3D implements GraphicalEngine {
                                 } while (!game.getBilliardKey().validAngle(game) && inc < Math.PI * 2);
                             }
 
-                            if (code == KeyEvent.VK_D) {
+                            if (code == KeyEvent.VK_D && game.getGameScene().getBalls()[curBall].isActive()==true) {
                                 float inc = 0;
                                 do {
                                     inc += (float) Math.PI / 150;
@@ -1063,7 +1068,7 @@ public class Graphics3D implements GraphicalEngine {
 
                     }
                     //Запуск выбора силы кия и отрисовка удара
-                    if (code == KeyEvent.VK_ENTER) {
+                    if ((code == KeyEvent.VK_ENTER && game.getGameStatus()==Game.S_BALL_SELECT )||(code == KeyEvent.VK_ENTER && game.getGameStatus()==Game.S_BALL_SELECT )) {
 
                         UpDownBottom boto = new UpDownBottom(button, 0.4, Key, game);
                         boto.start();
