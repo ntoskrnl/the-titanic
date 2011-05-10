@@ -890,16 +890,17 @@ public class Graphics3D implements GraphicalEngine {
                         if (code == KeyEvent.VK_COMMA || code == KeyEvent.VK_PERIOD || code == KeyEvent.VK_A || code == KeyEvent.VK_D) {
 
 
-                            if (code == KeyEvent.VK_COMMA && game.getGameScene().getBalls()[curBall].isActive()==true) {
+                            if (code == KeyEvent.VK_COMMA && game.getGameScene().getBalls()[curBall].isActive() == true ) {
+                                
                                 curBall += game.getGameScene().getBalls().length - 1;
                                 game.getBilliardKey().setAngle(0);
                             }
-                            if (code == KeyEvent.VK_PERIOD && game.getGameScene().getBalls()[curBall].isActive()==true) {
+                            if (code == KeyEvent.VK_PERIOD && game.getGameScene().getBalls()[curBall].isActive() == true) {
                                 curBall += game.getGameScene().getBalls().length + 1;
                                 game.getBilliardKey().setAngle(0);
                             }
 
-                            if (code == KeyEvent.VK_A && game.getGameScene().getBalls()[curBall].isActive()==true) {
+                            if (code == KeyEvent.VK_A && game.getGameScene().getBalls()[curBall].isActive() == true) {
                                 float inc = 0;
                                 do {
                                     inc += (float) Math.PI / 150;
@@ -908,7 +909,7 @@ public class Graphics3D implements GraphicalEngine {
                                 } while (!game.getBilliardKey().validAngle(game) && inc < Math.PI * 2);
                             }
 
-                            if (code == KeyEvent.VK_D && game.getGameScene().getBalls()[curBall].isActive()==true) {
+                            if (code == KeyEvent.VK_D && game.getGameScene().getBalls()[curBall].isActive() == true) {
                                 float inc = 0;
                                 do {
                                     inc += (float) Math.PI / 150;
@@ -1068,7 +1069,7 @@ public class Graphics3D implements GraphicalEngine {
 
                     }
                     //Запуск выбора силы кия и отрисовка удара
-                    if ((code == KeyEvent.VK_ENTER && game.getGameStatus()==Game.S_BALL_SELECT )||(code == KeyEvent.VK_ENTER && game.getGameStatus()==Game.S_BALL_SELECT )) {
+                    if ((code == KeyEvent.VK_ENTER && game.getGameStatus()==Game.S_BALL_SELECT )||(code == KeyEvent.VK_ENTER && game.getGameStatus()==Game.S_MAKE_HIT )) {
 
                         UpDownBottom boto = new UpDownBottom(button, 0.4, Key, game);
                         boto.start();
