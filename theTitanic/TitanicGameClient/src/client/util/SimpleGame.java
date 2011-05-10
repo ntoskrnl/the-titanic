@@ -4,8 +4,6 @@ import client.Main;
 import client.util.event.BallsStopEvent;
 import client.util.event.GameEvent;
 import java.awt.Container;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.StringTokenizer;
 import javax.swing.Timer;
 import titanic.basic.Ball;
@@ -37,10 +35,9 @@ public class SimpleGame extends Game {
     private int score;
     private boolean iPlayNext = true;
     private UserProfile rival, me;
-    private boolean blankCycle;
+    public final boolean blankCycle;
     public String gameID;
     private int rivalStatus;
-    private Timer timer;
     /**
      * Constructs new Game instance and sets c as default rendering area.
      * @param c JPanel or other container where to render the scene
@@ -87,6 +84,7 @@ public class SimpleGame extends Game {
                 try {
                     while (!thread4.isInterrupted()) {
                         Thread.sleep(250);
+                        if(blankCycle) continue;
                         // Get game status from server
                         if(status==S_WAIT_RIVAL&&rivalStatus==S_BALL_SELECT)
                             requestRivalsHit();
@@ -94,7 +92,7 @@ public class SimpleGame extends Game {
                         if(status==S_MOVING || 
                                 (status == S_SYNC && rivalStatus == S_WAIT_RIVAL))
                             sendBalls();
-                        if(status==S_WAIT_RIVAL)
+                        if(status==S_WAIT_RIVAL && rivalStatus == S_MOVING)
                             syncBalls();
                     }
                 } catch (InterruptedException ex) {
@@ -109,16 +107,6 @@ public class SimpleGame extends Game {
         //graphics.render(this);
         
         thread4.start();
-        
-//        timer = new Timer(1000, new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent e) {
-//                if(getGameStatus()==Game.S_WAIT_RIVAL)
-//                    syncBalls();
-//                else sendBalls();
-//            }
-//        });
-//        timer.start();
         start();
     }
 
@@ -174,7 +162,15 @@ public class SimpleGame extends Game {
      */
     public final void start() {
         // Setting initial game status
-        updateStatus();
+        if(!blankCycle)
+            updateStatus();
+        else{
+            if(first) status = S_BALL_SELECT;
+            else status = S_WAIT_RIVAL;
+            if(first) rivalStatus = S_WAIT_RIVAL;
+            else rivalStatus = S_BALL_SELECT;
+        }
+        
         
         if(status == S_BALL_SELECT) System.out.println("It's your turn. Please, select a ball and make a hit");
         else if(status == S_WAIT_RIVAL) System.out.println("Now wait for the first player to make a hit.");
@@ -290,7 +286,7 @@ public class SimpleGame extends Game {
     @Override
     synchronized public int changeStatus(int newStatus) {
         if (newStatus==status) return status;
-        if (newStatus == S_WAIT_RIVAL && blankCycle)
+        if ((newStatus == S_WAIT_RIVAL || newStatus==S_SYNC) && blankCycle)
             newStatus = S_BALL_SELECT;
         if(newStatus==S_NONE) return status = S_NONE;
 //        if(status==S_WAIT_RIVAL && newStatus==S_BALL_SELECT)
@@ -400,7 +396,10 @@ public class SimpleGame extends Game {
 
     @Override
     public void makeHit(Ball b, float speed, float angle) {
-        if(blankCycle) return;
+        if(blankCycle){
+            changeStatus(S_MOVING);
+            return;
+        }
         String[] r = Main.server.commandAndResponse(100, "GAME MAKE HIT", gameID,
                 b.getId()+"", speed+"", angle+"", Main.server.secret);
         if(!r[0].equalsIgnoreCase("success")){
@@ -474,7 +473,6 @@ public class SimpleGame extends Game {
         }
         try{
             Ball[] balls = getGameScene().getBalls();
-            System.out.println("Sync balls");
             synchronized(balls){
                 for(int i=0;i<16;i++){
                     StringTokenizer stk = new StringTokenizer(r[i+1]);
