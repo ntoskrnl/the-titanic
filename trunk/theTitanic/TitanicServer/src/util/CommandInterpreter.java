@@ -141,7 +141,32 @@ public class CommandInterpreter {
                         }
                     }
                 }
-
+                
+                
+                if (cmd.equals("profile update")) {
+                    int id = (int)Integer.parseInt(br.readLine().trim());
+                    if(id==0) id = u.getId();
+                    String secret = br.readLine().trim();
+                    result = false;
+                    if (secret.equals(u.getSecret())&&id==u.getId()) {
+                        String sql = "UPDATE profiles SET ";
+                        String[] v = new String[7];
+                        for(int i=0;i<7;i++){
+                            String t = br.readLine().trim();
+                            String f = t.substring(0, t.indexOf(':'));
+                            v[i] = t.substring(t.indexOf(':')+1);
+                            sql+=f+"=?";
+                            if(i<6) sql+=", ";
+                        }
+                        sql+=" WHERE id = "+u.getId()+";";
+                        int r = Main.usersDB.doPreparedUpdate(sql, v);
+                        if(r==1){
+                            result = true;
+                            pw.println("SUCCESS");
+                        }      
+                    }
+                }
+                
                 if (cmd.equals("registered")) {
                     String login = br.readLine().trim();
                     ResultSet r = Main.usersDB.doQouery("SELECT id FROM profiles WHERE login like '" + login + "'");
@@ -290,7 +315,6 @@ public class CommandInterpreter {
                     int to = Integer.parseInt(br.readLine().trim());
                     String secret = br.readLine().trim();
                     result=false;
-                    System.out.println("CANCEL");
                     if(secret.equals(u.getSecret())){
                         GameRequest req = MainServerThread.requests.get(my_id, to);
                         if(req!=null){
@@ -380,7 +404,6 @@ public class CommandInterpreter {
                     Game g = MainServerThread.games.get(gid);
                     result = false;
                     if(u.getSecret().equals(secret) && g!=null){
-                        System.out.println("HIT!");
                         pw.println("SUCCESS");
                         Player p = g.getPlayer1();
                         if(p.getId()!=u.getId()){
@@ -418,7 +441,6 @@ public class CommandInterpreter {
                 if(cmd.equals("game sync balls")){
                     String gid = br.readLine().trim();
                     String secret = br.readLine().trim();                    
-                    System.out.println("game sync balls");
                     Game g = MainServerThread.games.get(gid);
                     result = false;
                     if(u.getSecret().equals(secret) && g!=null){
@@ -444,7 +466,6 @@ public class CommandInterpreter {
                     String a[] = new String[16];
                     for(int i=0;i<16;i++)
                         a[i] = br.readLine().trim(); 
-                    System.out.println("game send balls");
                     Game g = MainServerThread.games.get(gid);
                     result = false;
                     if(u.getSecret().equals(secret) && g!=null){
@@ -470,7 +491,6 @@ public class CommandInterpreter {
                         if(p.getId()!=u.getId()) p = g.getPlayer2();
                         p.setStatus(7);
                         if(g.getPlayer1().getStatus()==7 && g.getPlayer2().getStatus()==7){
-                            System.out.println("77!");
                             g.resolveTurn();
                         }
                         result = true;
