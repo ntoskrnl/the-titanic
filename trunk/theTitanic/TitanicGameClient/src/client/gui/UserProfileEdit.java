@@ -364,8 +364,8 @@ public class UserProfileEdit extends javax.swing.JDialog {
         data[8] = "location:"+jTextField8.getText().trim();
         String[] r = Main.server.commandAndResponse(300, "PROFILE UPDATE", data);
         if(!r[0].equalsIgnoreCase("SUCCESS")){
-            JOptionPane.showMessageDialog(rootPane, "Failed to update profile. "
-                    + "Probably, this operation was temporarily disabled. ", "Update error",
+            JOptionPane.showMessageDialog(rootPane, java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("failed_update_profile")
+                    + java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("operation_disabled"), java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("update_error"),
                     JOptionPane.WARNING_MESSAGE);
             System.out.println();
             return;

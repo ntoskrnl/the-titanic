@@ -14,6 +14,8 @@ public class Main {
 
     public static TitanicServer server = null;
     public static JFrame loginWindow = null;
+    
+    public static final String version = "1.0 Beta 1";
 
     public static final long minMemorySize = 32*1024*1024;
 
@@ -23,7 +25,7 @@ public class Main {
      * @param args Command line arguments. Ignored for now.
      */
     public static void main(String[] args) {
-        System.out.println("Starting Titanic GameClient version 1.0b");
+        System.out.println("Starting Titanic GameClient version "+version);
         if (!checkSystem()) return;
         
         // Applying look and feel

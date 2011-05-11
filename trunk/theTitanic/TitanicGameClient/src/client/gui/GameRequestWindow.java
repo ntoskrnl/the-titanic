@@ -24,6 +24,9 @@ public class GameRequestWindow extends javax.swing.JFrame {
     public GameRequestWindow(MainWindow mw, UserProfile who) {
         initComponents();
         this.who = who;
+        this.me = new UserProfile(0);
+        this.me.update();
+        
         mainWindow = mw;
         if(who!=null) jLabel3.setText(who.getProperty("pub_nickname"));
         timer1 = new Timer(1000, new ActionListener() {
@@ -31,6 +34,7 @@ public class GameRequestWindow extends javax.swing.JFrame {
             public void actionPerformed(ActionEvent e) {
                 boolean r = checkRequest();
                 if(!r){
+                    jButton1.setText(java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("REJECTED"));
                     timer1.stop();
                     dispose();
                 } 
@@ -46,8 +50,6 @@ public class GameRequestWindow extends javax.swing.JFrame {
     }
     
     private boolean checkRequest(){
-        UserProfile me = new UserProfile(0);
-        me.update();
         String[] r = Main.server.commandAndResponse(500, "IS REQUEST VALID", who.getProperty("id"), me.getProperty("id"), Main.server.secret);
         if(r[0].equalsIgnoreCase("SUCCESS")) return true;
         return false;
@@ -169,7 +171,7 @@ public class GameRequestWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     // End of variables declaration//GEN-END:variables
 
-    UserProfile who;
+    UserProfile who, me;
     javax.swing.Timer timer1, timer2;
     MainWindow mainWindow;
 }

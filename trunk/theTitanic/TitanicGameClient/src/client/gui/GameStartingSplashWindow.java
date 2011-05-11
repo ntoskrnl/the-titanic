@@ -40,8 +40,8 @@ public class GameStartingSplashWindow extends javax.swing.JDialog {
                 catch (Error er) { error = true; }
                 dispose();
                 if(error)
-                    JOptionPane.showMessageDialog(mainWindow, "Connot initialize a game.", 
-                            "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(mainWindow, java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("cannot_init_game"), 
+                            java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("ERROR"), JOptionPane.ERROR_MESSAGE);
             }
         });
         timer.start();
@@ -51,7 +51,7 @@ public class GameStartingSplashWindow extends javax.swing.JDialog {
     public void initGame(UserProfile rival, boolean first){
         try{
             if(!Main.checkMemory(12*1024*1024))
-                throw new OutOfMemoryError("Low available memory");
+                throw new OutOfMemoryError(java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("low_memory"));
             if(rival==null){
                 rival=new UserProfile(0);
                 rival.update();
@@ -62,8 +62,8 @@ public class GameStartingSplashWindow extends javax.swing.JDialog {
         } catch (Error ex){
             System.err.println("Start game error: "+ex.getLocalizedMessage());
             JOptionPane.showMessageDialog(rootPane,
-                    "Info: "+ ex.getLocalizedMessage() + 
-                    "\nThe application may behave abnormally.", "Titanic GameCilent: Error",
+                    java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("info")+ ex.getLocalizedMessage() + 
+                    java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("n_app_may_behave_abnormally"), "Titanic GameCilent: Error",
                     JOptionPane.ERROR_MESSAGE);
             System.gc();
         }
@@ -92,7 +92,8 @@ public class GameStartingSplashWindow extends javax.swing.JDialog {
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 2));
 
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel1.setText("The game will start in few seconds. Please, wait...");
+        java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("client/gui/Bundle"); // NOI18N
+        jLabel1.setText(bundle.getString("game_will_start_soon")); // NOI18N
         jLabel1.setDoubleBuffered(true);
         jLabel1.setFocusable(false);
 

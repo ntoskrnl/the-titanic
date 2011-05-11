@@ -34,18 +34,18 @@ public class GameWindow extends javax.swing.JFrame {
         rival = rvl;
         try {
             if (!Main.checkMemory(10 * 1024 * 1024)) {
-                JOptionPane.showMessageDialog(rootPane, "Too few free memory! Application may bevave abnormally.",
+                JOptionPane.showMessageDialog(rootPane, java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("too_few_free_memory"),
                         "Titanic GameClient: Warning", JOptionPane.WARNING_MESSAGE);
             } else if (!Main.checkMemory(8 * 1024 * 1024)) {
-                throw new ExceptionInInitializerError("Out of memory.");
+                throw new ExceptionInInitializerError(java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("out_of_memory"));
             }
 
-            setTitle(getTitle() + " [You vs. " + rvl.getProperty("pub_nickname") + "]");
+            setTitle(getTitle() + java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("You_vs") + rvl.getProperty("pub_nickname") + "]");
             initGame();
 
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(rootPane, "Failed to create a game instance! " + ex.getMessage() 
-                    + "\nIt is trongly recommended to close all games and relogin. If problem repeats, restart the application.",
+            JOptionPane.showMessageDialog(rootPane, java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("failed_to_create_game") + ex.getMessage() 
+                    + java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("n_recommend_to_close"),
                     "Titanic GameClient: Error", JOptionPane.ERROR_MESSAGE);
             closeWindowLater();
         }
@@ -61,14 +61,14 @@ public class GameWindow extends javax.swing.JFrame {
         timer = new javax.swing.Timer(1000, new ActionListener() {
 
             private String convertStatus(int s){
-                if(s==Game.S_NONE) return "Not started";
-                if(s==Game.S_FINISH) return "Finish";
-                if(s==Game.S_MAKE_HIT) return "<span style=\"color: blue;\">Making a hit</span>";
-                if(s==Game.S_MOVING) return "Balls moving";
-                if(s==Game.S_PAUSE) return "Pause";
-                if(s==Game.S_WAIT_RIVAL) return "<span style=\"color: red;\">Waiting</span>";
-                if(s==Game.S_SYNC) return "Synchronization";
-                if(s==Game.S_BALL_SELECT) return "<span style=\"color: green;\">Choose ball</span>";
+                if(s==Game.S_NONE) return java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("not_started");
+                if(s==Game.S_FINISH) return java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("finished");
+                if(s==Game.S_MAKE_HIT) return java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("making_hit_blue");
+                if(s==Game.S_MOVING) return java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("balls_moving");
+                if(s==Game.S_PAUSE) return java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("pause");
+                if(s==Game.S_WAIT_RIVAL) return java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("waiting_red");
+                if(s==Game.S_SYNC) return java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("synch");
+                if(s==Game.S_BALL_SELECT) return java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("ball_select_green");
                 return "?";
             }
             
@@ -76,7 +76,7 @@ public class GameWindow extends javax.swing.JFrame {
             public void actionPerformed(ActionEvent e) {
                 timer.stop();
                 if(game.initialized()&&!game.checkValid()){
-                    JOptionPane.showMessageDialog(rootPane, "The game seems to be finished by the other player.", 
+                    JOptionPane.showMessageDialog(rootPane, java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("game_was_finished"), 
                             "Error", JOptionPane.INFORMATION_MESSAGE);
                     game.changeStatus(Game.S_FINISH);
                     game.dispose();
@@ -88,13 +88,14 @@ public class GameWindow extends javax.swing.JFrame {
                 jLabel5.setText("<html>"+game.getRivalScore()+" "+convertStatus(r)+"</html>");
                 if(game.getMyScore() + game.getRivalScore()>14){
                     if(game.getMyScore()>game.getRivalScore())
-                        JOptionPane.showMessageDialog(rootPane, "Congratulations!!! You win!\nYour victory will be stored on the game server.",
-                                "You win: "+game.getMyScore()+":"+game.getRivalScore(), JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(rootPane, java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("congratulations_win"),
+                                java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("you_win")+game.getMyScore()+":"+game.getRivalScore(), JOptionPane.INFORMATION_MESSAGE);
                     else 
-                        JOptionPane.showMessageDialog(rootPane, "Sorry. You loose! :(\nIt will be stored on the game server.",
-                                "You loose: "+game.getMyScore()+":"+game.getRivalScore(), JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(rootPane, java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("sorry_loose"),
+                                java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("you_loose")+game.getMyScore()+":"+game.getRivalScore(), JOptionPane.INFORMATION_MESSAGE);
                     game.changeStatus(Game.S_FINISH);
                     game.dispose();
+                    closeWindowLater();
                     return;
                 }
                 timer.start();
@@ -157,11 +158,11 @@ public class GameWindow extends javax.swing.JFrame {
         jLabel3.setText(bundle.getString("GameWindow.jLabel3.text")); // NOI18N
         jLabel3.setName("jLabel3"); // NOI18N
 
-        jLabel4.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel4.setFont(new java.awt.Font("Dialog", 0, 12));
         jLabel4.setText(bundle.getString("GameWindow.jLabel4.text")); // NOI18N
         jLabel4.setName("jLabel4"); // NOI18N
 
-        jLabel5.setFont(new java.awt.Font("Dialog", 0, 12)); // NOI18N
+        jLabel5.setFont(new java.awt.Font("Dialog", 0, 12));
         jLabel5.setText(bundle.getString("GameWindow.jLabel5.text")); // NOI18N
         jLabel5.setName("jLabel5"); // NOI18N
 
@@ -173,7 +174,7 @@ public class GameWindow extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 156, Short.MAX_VALUE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 168, Short.MAX_VALUE)
                     .addGroup(buttonPanelLayout.createSequentialGroup()
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
@@ -199,7 +200,7 @@ public class GameWindow extends javax.swing.JFrame {
                 .addGroup(buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5))
-                .addContainerGap(206, Short.MAX_VALUE))
+                .addContainerGap(225, Short.MAX_VALUE))
         );
 
         getContentPane().add(buttonPanel, java.awt.BorderLayout.LINE_END);
