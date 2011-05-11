@@ -54,7 +54,7 @@ public class ChangePasswordDialog extends javax.swing.JDialog {
     
     private void changePassword(){
         try{
-            String r[] = Main.server.commandAndResponse(200, "CHANGE PASSWORD", 
+            String r[] = Main.server.commandAndResponse(500, "CHANGE PASSWORD", 
                     Crypto.md5(new String(jPasswordField1.getPassword())),
                     Crypto.md5(new String(jPasswordField2.getPassword())),
                     Main.server.secret);
