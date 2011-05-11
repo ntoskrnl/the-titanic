@@ -25,7 +25,7 @@ public class UserProfile implements Comparable<UserProfile> {
 
     }
 
-    public int getId() {
+    public synchronized int getId() {
         return Integer.parseInt(data.get("id"));
 
     }
@@ -74,14 +74,13 @@ public class UserProfile implements Comparable<UserProfile> {
      * If server command failed, it does not make any changes.
      * @return <code>true</code> if profile was updated, otherwise - <code>false</code>.
      */
-    public boolean update(){
-        String r[] = Main.server.commandAndResponse(200, "profile by id", getId()+"", Main.server.secret);
+    public synchronized boolean update(){
+        String r[] = Main.server.commandAndResponse(500, "profile by id", getId()+"", Main.server.secret);
         if(r[0]==null || !r[0].equals("SUCCESS")) return false;
-        data.clear();
         for(int j=1;j<r.length;j++){
-            if(r[j].indexOf(':')>0)
+            if(r[j]!=null && r[j].indexOf(':')>0)
                 setProperty(r[j].substring(0, r[j].indexOf(':')).trim(), 
-            r[j].substring(r[j].indexOf(':')+1, r[j].length()).trim());
+                            r[j].substring(r[j].indexOf(':')+1, r[j].length()).trim());
         }
         return true;
     }
