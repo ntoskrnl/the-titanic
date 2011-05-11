@@ -58,4 +58,14 @@ public class RequestContainer {
     public synchronized void clear(){
         r.clear();
     }
+
+    public void removeFor(int id) {
+        ArrayList<GameRequest> d = new ArrayList<GameRequest>();
+        for(GameRequest req : r){
+            if(req.getFrom()==id || req.getTo()==id)
+                d.add(req);
+        }
+        r.removeAll(d);
+        d.clear();
+    }
 }

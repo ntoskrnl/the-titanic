@@ -23,7 +23,7 @@ public class CommandInterpreter {
 
         Boolean result = null;
         String cmd = command.toLowerCase().trim();
-
+        System.out.println(cmd);
         synchronized (Main.usersDB) {
             try {
                 // Connection stop
@@ -184,7 +184,7 @@ public class CommandInterpreter {
                     String sql = "SELECT * FROM profiles WHERE login LIKE '" + login + "' AND password LIKE '" + password + "'";
 
                     ResultSet r = Main.usersDB.doQouery(sql);
-                    if (r.next()) {
+                    if(r.next()) {
                         if (!r.next()) {
                             pw.println("SUCCESS");
                             result = true;
@@ -512,7 +512,51 @@ public class CommandInterpreter {
                             Player p = g.getPlayer1();
                             if(p.getId()!=u.getId()) p = g.getPlayer2();
                             p.setScore(p.getScore()+1);
+                            if(g.getPlayer1().getScore()+g.getPlayer2().getScore()>14){
+                                g.getPlayer1().setStatus(Game.S_FINISH);
+                                g.getPlayer2().setStatus(Game.S_FINISH);
+                            } 
                         }
+                    }
+                }
+                if(cmd.equals("game scores")){
+                    String gid = br.readLine().trim();
+                    String secret = br.readLine().trim();                    
+                    Game g = MainServerThread.games.get(gid);
+                    result = false;
+                    if(u.getSecret().equals(secret) && g!=null){
+                        pw.println("SUCCESS");
+                        result = true;
+                        if(g.getPlayer1().getId()==u.getId()){
+                            pw.println(g.getPlayer1().getScore());
+                            pw.println(g.getPlayer2().getScore());
+                        } else {
+                            pw.println(g.getPlayer2().getScore());
+                            pw.println(g.getPlayer1().getScore());
+                        }
+                    }
+                }
+                
+                if(cmd.equals("game surrender")){
+                    String gid = br.readLine().trim();
+                    String secret = br.readLine().trim();                    
+                    Game g = MainServerThread.games.get(gid);
+                    result = false;
+                    if(u.getSecret().equals(secret) && g!=null){
+                        Player p = g.getPlayer1();
+                        if(p.getId()==u.getId()) p=g.getPlayer2();
+                        MainServerThread.games.remove(g);
+                        String sql = "UPDATE rating SET matches = matches + 1, score = score + 1 "
+                                + "WHERE user_id = "+p.getId()+";";
+                        int r = Main.usersDB.doUpdate(sql);
+                        if(r!=1) 
+                            throw new SQLException("Cannot update table rating.");
+                        sql = "UPDATE rating SET matches = matches + 1 WHERE user_id = "+u.getId()+";";
+                        r = Main.usersDB.doUpdate(sql);
+                        if(r!=1) 
+                            throw new SQLException("Cannot update table rating.");
+                        pw.println("SUCCESS");
+                        result = true; 
                     }
                 }
                 
@@ -522,13 +566,35 @@ public class CommandInterpreter {
                     Game g = MainServerThread.games.get(gid);
                     result = false;
                     if(u.getSecret().equals(secret) && g!=null){
+                        int id1 = g.getPlayer1().getId();
+                        int id2 = g.getPlayer2().getId();
+                        int s1 = g.getPlayer1().getScore();
+                        int s2 = g.getPlayer2().getScore();
+                        String sql = "UPDATE rating SET matches = matches + 1 "
+                                + "WHERE (user_id = "+id1+") OR ("
+                                + "user_id = "+id2+");";
+                        int r = Main.usersDB.doUpdate(sql);
+                        if(r!=1 && r!=2) throw new SQLException("Cannot update table rating.");
+                        if(s1>=0 && s2>=0 && s1+s2 > 0){
+                            if(s1 > s2){
+                                sql = "UPDATE rating SET score = score + 1 WHERE user_id = "+id1+";";
+                                r = Main.usersDB.doUpdate(sql);
+                            } else if(s1 < s2) {
+                                sql = "UPDATE rating SET score = score + 1 WHERE user_id = "+id2+";";
+                                r = Main.usersDB.doUpdate(sql);
+                            } else {
+                                sql = "UPDATE rating SET score = score + 0.5 WHERE (user_id = "+id1+
+                                        " OR user_id = "+id2+";";
+                                r = Main.usersDB.doUpdate(sql);
+                            }
+                            if(r!=1) throw new SQLException("Cannot update table rating.");
+                        } 
                         MainServerThread.games.remove(g);
-                           pw.println("SUCCESS");
-                           result = true; 
-                        }
+                        pw.println("SUCCESS");
+                        result = true; 
+                    }
                 }
-                
-                
+                       
                 if(cmd.equals("change password")){
                     int id = u.getId();
                     String oldpwd = br.readLine().trim();

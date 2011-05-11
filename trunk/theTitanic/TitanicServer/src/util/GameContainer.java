@@ -41,4 +41,15 @@ public class GameContainer {
     public void remove(Game g){
         games.remove(g);
     }
+
+    public void removeFor(int id) {
+        ArrayList<Game> d = new ArrayList<Game>();
+        for(Game g : games){
+            if(g.getPlayer1().getId()==id || g.getPlayer2().getId()==id){
+                d.add(g);
+            }
+        }
+        games.removeAll(d);
+        d.clear();
+    }
 }
