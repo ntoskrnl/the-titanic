@@ -84,7 +84,7 @@ public class SimpleGame extends Game {
                 if(blankCycle) return;
                 try {
                     while (!thread4.isInterrupted()) {
-                        Thread.sleep(250);
+                        Thread.sleep(500);
                         if(blankCycle) continue;
                         // Get game status from server
                         if(status==S_WAIT_RIVAL&&rivalStatus==S_BALL_SELECT)
@@ -374,7 +374,7 @@ public class SimpleGame extends Game {
         int s = Integer.parseInt(r[1]);
         status = s;
         requestRivalsStatus();
-        r = Main.server.commandAndResponse(300,"GAME SCORES", gameID, Main.server.secret);
+        r = Main.server.commandAndResponse(500,"GAME SCORES", gameID, Main.server.secret);
         if(!r[0].equalsIgnoreCase("success")){
             System.err.println("Failed to update scores!");
             return;

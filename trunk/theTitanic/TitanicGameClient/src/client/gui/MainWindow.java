@@ -33,13 +33,13 @@ public class MainWindow extends javax.swing.JFrame {
         myProfile = new UserProfile(0);
         myProfile.update();
 
-        checkConnectionTimer = new Timer(1000, new ActionListener() {
+        checkConnectionTimer = new Timer(3000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 checkConnection();
             }
         });
-        userUpdateTimer = new Timer(1000, new ActionListener() {
+        userUpdateTimer = new Timer(2000, new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -56,10 +56,10 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
         
-        checkRequestsTimer = new Timer(1000, new ActionListener() {
+        checkRequestsTimer = new Timer(2000, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String[] r = Main.server.commandAndResponse(100, "GET GAME REQUEST", Main.server.secret);
+                String[] r = Main.server.commandAndResponse(500, "GET GAME REQUEST", Main.server.secret);
                 if(!r[0].equalsIgnoreCase("SUCCESS")) return;
                 int id = Integer.parseInt(r[1]);
                 acceptRequest(id);
@@ -79,7 +79,7 @@ public class MainWindow extends javax.swing.JFrame {
         u.update();
         if(u.equals(myProfile)){
             // Automatically agree to play
-            Main.server.commandAndResponse(100, "ACCEPT GAME", u.getProperty("id"), Main.server.secret);
+            Main.server.commandAndResponse(500, "ACCEPT GAME", u.getProperty("id"), Main.server.secret);
             return;
         }
         new GameRequestWindow(this, u).setVisible(true);
