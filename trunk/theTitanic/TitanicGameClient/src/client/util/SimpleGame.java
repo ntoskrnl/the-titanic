@@ -1,12 +1,10 @@
 package client.util;
 
 import client.Main;
-import client.util.event.BallToPocketEvent;
 import client.util.event.BallsStopEvent;
 import client.util.event.GameEvent;
 import java.awt.Container;
 import java.util.StringTokenizer;
-import javax.swing.Timer;
 import titanic.basic.Ball;
 import titanic.basic.BilliardKey;
 import titanic.basic.EventPipeLine;
@@ -39,6 +37,8 @@ public class SimpleGame extends Game {
     public final boolean blankCycle;
     public String gameID;
     private int rivalStatus;
+    private int myScore, rivalScore;
+    private boolean init = false;
     /**
      * Constructs new Game instance and sets c as default rendering area.
      * @param c JPanel or other container where to render the scene
@@ -250,12 +250,14 @@ public class SimpleGame extends Game {
             }
         });
         thread3.start();
+        init = true;
     }
 
     /**
      * Stops game thread
      */
     public void stop() {
+        init = false;
         try {
             if (thread1 != null) {
                 thread1.interrupt();
@@ -363,7 +365,7 @@ public class SimpleGame extends Game {
     
     private synchronized void updateStatus(){
         if(blankCycle) return;
-        String[] r = Main.server.commandAndResponse(500,"GAME MY STATUS", gameID, Main.server.secret);
+        String[] r = Main.server.commandAndResponse(300,"GAME MY STATUS", gameID, Main.server.secret);
         if(!r[0].equalsIgnoreCase("success")){
             System.err.println("Failed to request my status!");
             status = S_WAIT_RIVAL;
@@ -372,11 +374,23 @@ public class SimpleGame extends Game {
         int s = Integer.parseInt(r[1]);
         status = s;
         requestRivalsStatus();
+        r = Main.server.commandAndResponse(300,"GAME SCORES", gameID, Main.server.secret);
+        if(!r[0].equalsIgnoreCase("success")){
+            System.err.println("Failed to update scores!");
+            return;
+        }
+        try{
+            myScore = (int)Integer.parseInt(r[1]);
+            rivalScore = (int)Integer.parseInt(r[2]);
+        } catch (Exception ex){
+            System.err.println("Update Score: "+ex.getLocalizedMessage());
+            return;
+        }
     }
     
     private synchronized void requestRivalsStatus(){
         if(blankCycle) return;
-        String[] r = Main.server.commandAndResponse(500,"GAME RIVALS STATUS", gameID, Main.server.secret);
+        String[] r = Main.server.commandAndResponse(300,"GAME RIVALS STATUS", gameID, Main.server.secret);
         if(!r[0].equalsIgnoreCase("success")){
             System.err.println("Failed to request rival's status!");
             return;
@@ -401,7 +415,7 @@ public class SimpleGame extends Game {
             changeStatus(S_MOVING);
             return;
         }
-        String[] r = Main.server.commandAndResponse(100, "GAME MAKE HIT", gameID,
+        String[] r = Main.server.commandAndResponse(200, "GAME MAKE HIT", gameID,
                 b.getId()+"", speed+"", angle+"", Main.server.secret);
         if(!r[0].equalsIgnoreCase("success")){
             return;
@@ -412,7 +426,7 @@ public class SimpleGame extends Game {
     
     private void requestGameID(){
         if(blankCycle) return;
-        String[] r = Main.server.commandAndResponse(100, "GAME GET ID", 
+        String[] r = Main.server.commandAndResponse(200, "GAME GET ID", 
                 me.getId()+"", rival.getId()+"", Main.server.secret);
         if(!r[0].equalsIgnoreCase("success")){
             return;
@@ -422,7 +436,7 @@ public class SimpleGame extends Game {
     
     private void requestRivalsHit(){
         if(blankCycle) return;
-        String[] r = Main.server.commandAndResponse(100,"GAME GET HIT", gameID, Main.server.secret);
+        String[] r = Main.server.commandAndResponse(200,"GAME GET HIT", gameID, Main.server.secret);
         if(!r[0].equalsIgnoreCase("success")){
             //System.err.println("Failed to request game hit!");
             return;
@@ -457,7 +471,7 @@ public class SimpleGame extends Game {
                     a[i+2] = t;
                 }
             }
-            String[] r = Main.server.commandAndResponse(500,"GAME SEND BALLS", a);
+            String[] r = Main.server.commandAndResponse(300,"GAME SEND BALLS", a);
             if(!r[0].equalsIgnoreCase("success")){
                 System.err.println("Failed to send balls!");
                 return;
@@ -496,8 +510,27 @@ public class SimpleGame extends Game {
         }
     }
     
+    public int getMyScore(){
+        return myScore;
+    }
+    
+    public int getRivalScore(){
+        return rivalScore;
+    }
+    
     public int getRivalStatus(){
-        requestRivalsStatus();
+        //requestRivalsStatus();
         return rivalStatus;
+    }
+
+    public boolean checkValid() {
+        if(blankCycle) return true;
+        String[] r = Main.server.commandAndResponse(400, "GAME GET ID", 
+                me.getId()+"", rival.getId()+"", Main.server.secret);
+        return (r[0].equalsIgnoreCase("SUCCESS"));
+    }
+
+    public boolean initialized() {
+        return init;
     }
 }

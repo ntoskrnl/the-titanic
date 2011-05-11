@@ -261,10 +261,10 @@ public class Graphics3D implements GraphicalEngine {
                 if (BallTransform[i] == null) {
                     BallTransform[i] = new Transform3D();
                 }
-                if(game.getGameScene().getBalls()[i].isActive()==true){
+               // if(game.getGameScene().getBalls()[i].isActive()==true){
                 BallTransform[i].setTranslation(mass[i]);
                 objTrans[i].setTransform(BallTransform[i]);
-                }
+               // }
             }
 
         } catch (Exception e) {
@@ -288,6 +288,10 @@ public class Graphics3D implements GraphicalEngine {
                 else{
                    Vector3D pos = new Vector3D(500+10*i,500+10*i,500+10*i);
                    game.getGameScene().getBalls()[i].setCoordinates(pos);
+                mass[i].setX(BallsArray[i].getCoordinates().getX() / maxwidth * 1.6f * width);
+                mass[i].setY(BallsArray[i].getCoordinates().getY() / maxhight * 1.6f * high);
+                mass[i].setZ(BallsArray[i].getCoordinates().getZ() - 0.005f);
+                   
                 }
             }
         } catch (Exception ex) {
@@ -887,17 +891,23 @@ public class Graphics3D implements GraphicalEngine {
 
             if (Gamestatus != Game.S_MOVING && Gamestatus != Game.S_MAKE_HIT && Gamestatus != Game.S_PAUSE && Gamestatus != Game.S_WAIT_RIVAL) {
                 if (code == KeyEvent.VK_COMMA || code == KeyEvent.VK_PERIOD || code == KeyEvent.VK_A || code == KeyEvent.VK_D) {
+                    int cnt1 = 0;
                     if (code == KeyEvent.VK_COMMA) {
                         do {
                             curBall += game.getGameScene().getBalls().length - 1;
                             curBall %= game.getGameScene().getBalls().length;
-                        } while (!game.getGameScene().getBalls()[curBall].isActive());
+                            cnt1++;
+                        } while (!game.getGameScene().getBalls()[curBall].isActive() 
+                                && cnt1 < game.getGameScene().getBalls().length);
                     }
+                    cnt1 = 0;
                     if (code == KeyEvent.VK_PERIOD) {
                         do {
                             curBall += game.getGameScene().getBalls().length + 1;
                             curBall %= game.getGameScene().getBalls().length;
-                        } while (!game.getGameScene().getBalls()[curBall].isActive());
+                            cnt1++;
+                        } while (!game.getGameScene().getBalls()[curBall].isActive()
+                                && cnt1 < game.getGameScene().getBalls().length);
                         game.getBilliardKey().setAngle(0);
                     }
 
