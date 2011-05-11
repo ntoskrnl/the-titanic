@@ -277,7 +277,7 @@ public class SimpleGame extends Game {
         }
         changeStatus(S_FINISH);
         if(!blankCycle)
-            Main.server.commandAndResponse(200, "GAME FINISH", gameID, Main.server.secret);
+            Main.server.commandAndResponse(500, "GAME FINISH", gameID, Main.server.secret);
         //timer.stop();
     }
 
@@ -365,7 +365,7 @@ public class SimpleGame extends Game {
     
     private synchronized void updateStatus(){
         if(blankCycle) return;
-        String[] r = Main.server.commandAndResponse(300,"GAME MY STATUS", gameID, Main.server.secret);
+        String[] r = Main.server.commandAndResponse(500,"GAME MY STATUS", gameID, Main.server.secret);
         if(!r[0].equalsIgnoreCase("success")){
             System.err.println("Failed to request my status!");
             status = S_WAIT_RIVAL;
@@ -390,7 +390,7 @@ public class SimpleGame extends Game {
     
     private synchronized void requestRivalsStatus(){
         if(blankCycle) return;
-        String[] r = Main.server.commandAndResponse(300,"GAME RIVALS STATUS", gameID, Main.server.secret);
+        String[] r = Main.server.commandAndResponse(500,"GAME RIVALS STATUS", gameID, Main.server.secret);
         if(!r[0].equalsIgnoreCase("success")){
             System.err.println("Failed to request rival's status!");
             return;
@@ -415,7 +415,7 @@ public class SimpleGame extends Game {
             changeStatus(S_MOVING);
             return;
         }
-        String[] r = Main.server.commandAndResponse(200, "GAME MAKE HIT", gameID,
+        String[] r = Main.server.commandAndResponse(500, "GAME MAKE HIT", gameID,
                 b.getId()+"", speed+"", angle+"", Main.server.secret);
         if(!r[0].equalsIgnoreCase("success")){
             return;
@@ -426,7 +426,7 @@ public class SimpleGame extends Game {
     
     private void requestGameID(){
         if(blankCycle) return;
-        String[] r = Main.server.commandAndResponse(200, "GAME GET ID", 
+        String[] r = Main.server.commandAndResponse(500, "GAME GET ID", 
                 me.getId()+"", rival.getId()+"", Main.server.secret);
         if(!r[0].equalsIgnoreCase("success")){
             return;
@@ -436,7 +436,7 @@ public class SimpleGame extends Game {
     
     private void requestRivalsHit(){
         if(blankCycle) return;
-        String[] r = Main.server.commandAndResponse(200,"GAME GET HIT", gameID, Main.server.secret);
+        String[] r = Main.server.commandAndResponse(500,"GAME GET HIT", gameID, Main.server.secret);
         if(!r[0].equalsIgnoreCase("success")){
             //System.err.println("Failed to request game hit!");
             return;
@@ -471,7 +471,7 @@ public class SimpleGame extends Game {
                     a[i+2] = t;
                 }
             }
-            String[] r = Main.server.commandAndResponse(300,"GAME SEND BALLS", a);
+            String[] r = Main.server.commandAndResponse(500,"GAME SEND BALLS", a);
             if(!r[0].equalsIgnoreCase("success")){
                 System.err.println("Failed to send balls!");
                 return;
@@ -483,7 +483,7 @@ public class SimpleGame extends Game {
         if(blankCycle) return;
         if(status!=S_WAIT_RIVAL||rivalStatus==S_WAIT_RIVAL) 
             return;
-        String[] r = Main.server.commandAndResponse(300,"GAME SYNC BALLS", gameID, Main.server.secret);
+        String[] r = Main.server.commandAndResponse(500,"GAME SYNC BALLS", gameID, Main.server.secret);
         if(!r[0].equalsIgnoreCase("success")){
             System.err.println("Failed to sync!");
             return;
@@ -525,7 +525,7 @@ public class SimpleGame extends Game {
 
     public boolean checkValid() {
         if(blankCycle) return true;
-        String[] r = Main.server.commandAndResponse(400, "GAME GET ID", 
+        String[] r = Main.server.commandAndResponse(500, "GAME GET ID", 
                 me.getId()+"", rival.getId()+"", Main.server.secret);
         return (r[0].equalsIgnoreCase("SUCCESS"));
     }
