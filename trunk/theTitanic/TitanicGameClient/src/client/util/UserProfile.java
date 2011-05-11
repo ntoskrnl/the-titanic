@@ -2,6 +2,7 @@ package client.util;
 
 import client.Main;
 import java.util.HashMap;
+import java.util.StringTokenizer;
 
 /**
  * This class provides all information about the user
@@ -56,7 +57,7 @@ public class UserProfile implements Comparable<UserProfile> {
     }
     
     @Override
-    public boolean equals(Object o){
+    public synchronized boolean equals(Object o){
         if(o instanceof UserProfile)
             return this.compareTo((UserProfile)o)==0;
         else return false;
@@ -75,12 +76,18 @@ public class UserProfile implements Comparable<UserProfile> {
      * @return <code>true</code> if profile was updated, otherwise - <code>false</code>.
      */
     public synchronized boolean update(){
-        String r[] = Main.server.commandAndResponse(500, "profile by id", getId()+"", Main.server.secret);
+        String r[] = Main.server.commandAndResponse(1000, "profile by id", getId()+"", Main.server.secret);
         if(r[0]==null || !r[0].equals("SUCCESS")) return false;
         for(int j=1;j<r.length;j++){
-            if(r[j]!=null && r[j].indexOf(':')>0)
-                setProperty(r[j].substring(0, r[j].indexOf(':')).trim(), 
-                            r[j].substring(r[j].indexOf(':')+1, r[j].length()).trim());
+            if(r[j]!=null && r[j].indexOf(':')>0){
+                r[j]=r[j].trim();
+                StringTokenizer stk = new StringTokenizer(r[j],":");
+                String k = stk.nextToken();
+                String v = ""; 
+                if(stk.hasMoreTokens())
+                    v = stk.nextToken();
+                data.put(k, v);
+            }
         }
         return true;
     }
