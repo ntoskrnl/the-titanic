@@ -6,10 +6,12 @@
 
 package client.gui;
 
+import client.Main;
 import client.util.UserProfile;
 import com.sun.java.swing.plaf.windows.WindowsBorders.DashedBorder;
 import java.awt.Color;
 import java.awt.Frame;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.border.LineBorder;
 
@@ -33,6 +35,7 @@ public class UserProfileEdit extends javax.swing.JDialog {
     
     public final void updateFields(){
         if(user==null) return;
+        user.update();
         jTextField1.setText(user.getProperty("login"));
         jTextField2.setText(user.getProperty("first_name"));
         jTextField3.setText(user.getProperty("surname"));
@@ -99,14 +102,6 @@ public class UserProfileEdit extends javax.swing.JDialog {
         jTextField1.setEditable(false);
         jTextField1.setBorder(new DashedBorder(Color.BLACK, 1));
         jTextField1.setName("jTextField1"); // NOI18N
-        jTextField1.addFocusListener(new java.awt.event.FocusAdapter() {
-            public void focusGained(java.awt.event.FocusEvent evt) {
-                startEdit(evt);
-            }
-            public void focusLost(java.awt.event.FocusEvent evt) {
-                endEdit(evt);
-            }
-        });
 
         jTextField2.setEditable(false);
         jTextField2.setBorder(new DashedBorder(Color.BLACK, 1));
@@ -157,16 +152,16 @@ public class UserProfileEdit extends javax.swing.JDialog {
                             .addComponent(jLabel4))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField4, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)
-                            .addComponent(jTextField3, javax.swing.GroupLayout.DEFAULT_SIZE, 193, Short.MAX_VALUE)))
+                            .addComponent(jTextField4, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)
+                            .addComponent(jTextField3, javax.swing.GroupLayout.DEFAULT_SIZE, 200, Short.MAX_VALUE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
                             .addComponent(jLabel1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 192, Short.MAX_VALUE))))
+                            .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE)
+                            .addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 199, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -302,7 +297,6 @@ public class UserProfileEdit extends javax.swing.JDialog {
         });
 
         jButton3.setText(bundle.getString("UserProfileEdit.jButton3.text")); // NOI18N
-        jButton3.setEnabled(false);
         jButton3.setName("jButton3"); // NOI18N
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -329,7 +323,7 @@ public class UserProfileEdit extends javax.swing.JDialog {
                     .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jButton4)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 53, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 92, Short.MAX_VALUE)
                         .addComponent(jButton3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1)))
@@ -358,7 +352,25 @@ public class UserProfileEdit extends javax.swing.JDialog {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        System.out.println("Not supported yet.");
+        String[] data = new String[9];
+        data[0] = user.getId() + "";
+        data[1] = Main.server.secret;
+        data[2] = "first_name:"+jTextField2.getText().trim();
+        data[3] = "surname:"+jTextField3.getText().trim();
+        data[4] = "pub_nickname:"+jTextField4.getText().trim();
+        data[5] = "pub_email:"+jTextField5.getText().trim();
+        data[6] = "sex:"+jTextField6.getText().trim();
+        data[7] = "age:"+jTextField7.getText().trim();
+        data[8] = "location:"+jTextField8.getText().trim();
+        String[] r = Main.server.commandAndResponse(300, "PROFILE UPDATE", data);
+        if(!r[0].equalsIgnoreCase("SUCCESS")){
+            JOptionPane.showMessageDialog(rootPane, "Failed to update profile. "
+                    + "Probably, this operation was temporarily disabled. ", "Update error",
+                    JOptionPane.WARNING_MESSAGE);
+            System.out.println();
+            return;
+        }
+        updateFields();
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void startEdit(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_startEdit
