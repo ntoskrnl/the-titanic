@@ -146,7 +146,7 @@ public class MainWindow extends javax.swing.JFrame {
 //                });
                 
             }     
-            String[] r = Main.server.commandAndResponse(200, "REQUEST GAME", rival.getProperty("id"), Main.server.secret);
+            String[] r = Main.server.commandAndResponse(500, "REQUEST GAME", rival.getProperty("id"), Main.server.secret);
             if(r==null) return false;
             if(r.length==0) return false;
             if(!r[0].toUpperCase().equals("SUCCESS")) return false;

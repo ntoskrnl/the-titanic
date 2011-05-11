@@ -41,14 +41,14 @@ public class GameRequestWindow extends javax.swing.JFrame {
     }
     
     private void reject(){
-        Main.server.commandAndResponse(100, "REJECT GAME", who.getProperty("id"), Main.server.secret);
+        Main.server.commandAndResponse(500, "REJECT GAME", who.getProperty("id"), Main.server.secret);
         timer1.stop();
     }
     
     private boolean checkRequest(){
         UserProfile me = new UserProfile(0);
         me.update();
-        String[] r = Main.server.commandAndResponse(100, "IS REQUEST VALID", who.getProperty("id"), me.getProperty("id"), Main.server.secret);
+        String[] r = Main.server.commandAndResponse(500, "IS REQUEST VALID", who.getProperty("id"), me.getProperty("id"), Main.server.secret);
         if(r[0].equalsIgnoreCase("SUCCESS")) return true;
         return false;
     }
@@ -149,7 +149,7 @@ public class GameRequestWindow extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         if(checkRequest()){
-            Main.server.commandAndResponse(100, "ACCEPT GAME", who.getProperty("id"), Main.server.secret);
+            Main.server.commandAndResponse(500, "ACCEPT GAME", who.getProperty("id"), Main.server.secret);
             EventQueue.invokeLater(new Runnable() {
                 public void run() {
                     GameWindow.splash = new GameStartingSplashWindow(mainWindow, who, false);

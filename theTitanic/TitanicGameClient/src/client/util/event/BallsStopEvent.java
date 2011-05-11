@@ -20,7 +20,7 @@ public class BallsStopEvent extends GameEvent {
         SimpleGame sg = (SimpleGame)getSource();
         sg.changeStatus(Game.S_SYNC);
         if(!sg.blankCycle)
-            Main.server.commandAndResponse(100, "GAME BALLS STOP", sg.gameID, Main.server.secret);
+            Main.server.commandAndResponse(500, "GAME BALLS STOP", sg.gameID, Main.server.secret);
     }
 
     @Override

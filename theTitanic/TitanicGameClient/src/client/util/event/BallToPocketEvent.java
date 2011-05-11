@@ -62,7 +62,7 @@ public class BallToPocketEvent extends GameEvent{
         }
         SimpleGame g = (SimpleGame)getSource();
         if(!g.blankCycle)
-            Main.server.commandAndResponse(100, "GAME BALL POCKET", g.gameID, 
+            Main.server.commandAndResponse(500, "GAME BALL POCKET", g.gameID, 
                 getBall().getId()+"", Main.server.secret);
     }
     
