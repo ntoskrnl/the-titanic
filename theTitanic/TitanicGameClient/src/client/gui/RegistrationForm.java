@@ -449,11 +449,11 @@ public class RegistrationForm extends javax.swing.JDialog {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void loginTextFieldKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_loginTextFieldKeyReleased
-        // TODO add your handling code here:
+        checkFields();
     }//GEN-LAST:event_loginTextFieldKeyReleased
 
     private void loginTextFieldKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_loginTextFieldKeyTyped
-        // TODO add your handling code here:
+        checkFields();
     }//GEN-LAST:event_loginTextFieldKeyTyped
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
