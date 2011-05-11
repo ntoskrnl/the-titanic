@@ -1,5 +1,6 @@
 package client.util.event;
 
+import client.util.SoundPlayer;
 import javax.sound.sampled.DataLine.*;
 import titanic.basic.Game;
 
@@ -20,11 +21,9 @@ public class MakeHitEvent extends GameEvent {
     }
 
     public void execute() {
+        SoundPlayer.play(getClass().getResource("/client/res/event/click.wav"), 
+                (float)Math.pow(Math.abs(strength), 1/5.0));
         Game g = (Game)getSource();
-//        if(g.getGameStatus()!=Game.S_MAKE_HIT){
-//            System.err.println("It is not allowed to make hit now.");
-//            return;
-//        }  
         if(g.getBilliardKey().getBall()==null) {
             g.changeStatus(Game.S_BALL_SELECT);
             return;

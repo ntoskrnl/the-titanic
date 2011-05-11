@@ -58,26 +58,46 @@ public class GameWindow extends javax.swing.JFrame {
                 AWTEvent.KEY_EVENT_MASK | AWTEvent.WINDOW_EVENT_MASK | AWTEvent.ACTION_EVENT_MASK);
         GUIRoutines.toScreenCenter(this);
         
-        timer = new javax.swing.Timer(500, new ActionListener() {
+        timer = new javax.swing.Timer(1000, new ActionListener() {
 
             private String convertStatus(int s){
                 if(s==Game.S_NONE) return "Not started";
                 if(s==Game.S_FINISH) return "Finish";
-                if(s==Game.S_MAKE_HIT) return "Making a hit";
+                if(s==Game.S_MAKE_HIT) return "<span style=\"color: blue;\">Making a hit</span>";
                 if(s==Game.S_MOVING) return "Balls moving";
                 if(s==Game.S_PAUSE) return "Pause";
-                if(s==Game.S_WAIT_RIVAL) return "Waiting";
+                if(s==Game.S_WAIT_RIVAL) return "<span style=\"color: red;\">Waiting</span>";
                 if(s==Game.S_SYNC) return "Synchronization";
-                if(s==Game.S_BALL_SELECT) return "Choose ball";
+                if(s==Game.S_BALL_SELECT) return "<span style=\"color: green;\">Choose ball</span>";
                 return "?";
             }
             
             @Override
             public void actionPerformed(ActionEvent e) {
+                timer.stop();
+                if(game.initialized()&&!game.checkValid()){
+                    JOptionPane.showMessageDialog(rootPane, "The game seems to be finished by the other player.", 
+                            "Error", JOptionPane.INFORMATION_MESSAGE);
+                    game.changeStatus(Game.S_FINISH);
+                    game.dispose();
+                    return;
+                }
                 int r = game.getRivalStatus();
                 int s = game.getGameStatus();
-                jLabel4.setText(convertStatus(s));
-                jLabel5.setText(convertStatus(r));
+                jLabel4.setText("<html>"+game.getMyScore()+" "+convertStatus(s)+"</html>");
+                jLabel5.setText("<html>"+game.getRivalScore()+" "+convertStatus(r)+"</html>");
+                if(game.getMyScore() + game.getRivalScore()>14){
+                    if(game.getMyScore()>game.getRivalScore())
+                        JOptionPane.showMessageDialog(rootPane, "Congratulations!!! You win!\nYour victory will be stored on the game server.",
+                                "You win: "+game.getMyScore()+":"+game.getRivalScore(), JOptionPane.INFORMATION_MESSAGE);
+                    else 
+                        JOptionPane.showMessageDialog(rootPane, "Sorry. You loose! :(\nIt will be stored on the game server.",
+                                "You loose: "+game.getMyScore()+":"+game.getRivalScore(), JOptionPane.INFORMATION_MESSAGE);
+                    game.changeStatus(Game.S_FINISH);
+                    game.dispose();
+                    return;
+                }
+                timer.start();
             }
         });
         timer.start();

@@ -380,9 +380,7 @@ public class MainWindow extends javax.swing.JFrame {
                 f.setVisible(true);
             }
             else{
-//                JOptionPane.showMessageDialog(rootPane, "Sorry. But your request was ignored or server is temporarily down. "
-//                        + "Try again or choose another opponent to play with.",
-//                    "Titanic GameClient: Info", JOptionPane.INFORMATION_MESSAGE);
+                System.out.println("Your game request was rejected by the game server.");
             }
         } catch (Error ex){
             System.err.println("Start game error: "+ex.getLocalizedMessage());
@@ -395,15 +393,23 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
-        Main.server.disconnect();
+        try{
+            Main.server.disconnect();
+        } catch (Exception ex) {}
         Main.loginWindow.setVisible(true);
         checkConnectionTimer.stop();
         userUpdateTimer.stop();
         trafficCheckTimer.stop();
         checkRequestsTimer.stop();
-        if(gameWindows!=null)
-            for(GameWindow w : gameWindows)
-                w.dispose();
+        if(gameWindows!=null){
+            try{
+                for(GameWindow w : gameWindows)
+                    w.dispose();
+            } catch (Exception ex) {}
+            gameWindows.clear();
+            gameWindows = null;
+        }
+            
     }//GEN-LAST:event_formWindowClosing
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed

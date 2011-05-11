@@ -11,13 +11,13 @@ import java.net.URL;
 
 public class SoundPlayer extends Thread {
 
-    private final int EXTERNAL_BUFFER_SIZE = 524288/4; // 128Kb
+    private final int EXTERNAL_BUFFER_SIZE = 524288/4; // 128Kb/4
     private URL soundFile;
     private float soundVolume;
     /** Print exception messages? */
     private static final boolean quiet = true;
     
-    public static final int MAX_THREADS = 4;
+    public static final int MAX_THREADS = 5;
     private static int numThreads = 0;
 
     public SoundPlayer(URL src) {
@@ -27,7 +27,7 @@ public class SoundPlayer extends Thread {
 
     public SoundPlayer(URL src, float vol) {
         soundFile = src;
-        soundVolume = vol;
+        soundVolume = Math.abs(vol);
     }
 
     /**
@@ -36,9 +36,9 @@ public class SoundPlayer extends Thread {
      * @param vol Relative volume value [0.0f, 1.0f). If the value is more than 1.0f it will be decreased.
      */
     public static synchronized void play(URL src, float vol) {
-        if (numThreads > MAX_THREADS) {
+        if (numThreads > MAX_THREADS)
             return;
-        }
+        if(Math.abs(vol) < 0.05) return;
         increment();
         vol = Math.abs(vol);
         if (vol >= 0.999f) {
