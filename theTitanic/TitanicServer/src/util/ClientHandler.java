@@ -36,6 +36,8 @@ public class ClientHandler implements Comparable<ClientHandler>{
     }
 
     public void disconnect(){
+        MainServerThread.requests.removeFor(user.getId());
+        MainServerThread.games.removeFor(user.getId());
         container.remove(this);
         String sql = "DELETE FROM online_users WHERE user_id = "+user.getId();
         Main.logs.info(sql);
