@@ -31,14 +31,14 @@ public class UserProfile implements Comparable<UserProfile> {
 
     }
 
-    public String setProperty(String prop, String val){
+    public synchronized String setProperty(String prop, String val){
         return data.put(prop, val);
     }
-    public String getProperty(String prop) {
+    public synchronized String getProperty(String prop) {
         return data.get(prop);
     }
 
-    public int compareTo(UserProfile o) {
+    public synchronized int compareTo(UserProfile o) {
         if(comp.equals("id")){
             Integer myId = new Integer(getId());
             Integer oId = new Integer(o.getId());
@@ -52,7 +52,7 @@ public class UserProfile implements Comparable<UserProfile> {
     }
     
     @Override
-    public String toString(){
+    public synchronized String toString(){
         return data.get("pub_nickname");
     }
     
