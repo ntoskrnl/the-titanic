@@ -277,8 +277,7 @@ public class SimpleGame extends Game {
         }
         changeStatus(S_FINISH);
         if(!blankCycle)
-            Main.server.commandAndResponse(500, "GAME FINISH", gameID, Main.server.secret);
-        //timer.stop();
+            Main.server.commandAndResponse(500, "GAME SURRENDER", gameID, Main.server.secret);
     }
 
     @Override

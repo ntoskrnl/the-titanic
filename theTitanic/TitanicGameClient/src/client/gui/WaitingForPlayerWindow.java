@@ -37,8 +37,8 @@ public class WaitingForPlayerWindow extends javax.swing.JFrame {
             rival.update();
         }
 
-        jLabel1.setText("<html>The request was successfully sent to your opponent "
-                + rival.getProperty("pub_nickname") + ". <br>Please, wait. There are 20 seconds to respond.</html>");
+        jLabel1.setText(java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("request_was_sent")
+                + rival.getProperty("pub_nickname") + java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("br_please_wait"));
 
         // This will provide a count down
         countDownTimer = new Timer(999, new ActionListener() {
@@ -46,7 +46,7 @@ public class WaitingForPlayerWindow extends javax.swing.JFrame {
             public void actionPerformed(ActionEvent e) {
                 if(count>0){
                     count--;
-                    jButton1.setText("Cancel" + " ("+count+")");
+                    jButton1.setText(java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("CANCEL") + " ("+count+")");
                 } else {
                     closeMe();
                 }
@@ -57,6 +57,7 @@ public class WaitingForPlayerWindow extends javax.swing.JFrame {
         responseCheckTimer = new Timer(999, new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                responseCheckTimer.stop();
                 boolean r = checkRequest();
                 Boolean a = getResponse();
                 if(a!=null) accepted = a;
@@ -64,7 +65,9 @@ public class WaitingForPlayerWindow extends javax.swing.JFrame {
                     closeMe();
                     GameWindow.splash = new GameStartingSplashWindow(mainWindow, rival, true);
                     GameWindow.splash.setVisible(true);
+                    return;
                 }
+                responseCheckTimer.start();
                 if(!r || (a!=null && a==false)){
                     closeMe();
                 }

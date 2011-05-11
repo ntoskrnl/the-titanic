@@ -51,7 +51,7 @@ public class MainWindow extends javax.swing.JFrame {
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                jLabel1.setText("Traffic: "+TitanicServer.in.readBytesCount()/1024 + " K / "
+                jLabel1.setText(java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("traffic")+TitanicServer.in.readBytesCount()/1024 + " K / "
                         + TitanicServer.out.writtenBytesCount()/1024 + " K");
             }
         });
@@ -115,7 +115,7 @@ public class MainWindow extends javax.swing.JFrame {
                 if(r==null || r[0]==null || !r[0].equals("SUCCESS")) continue;
                 UserProfile u = new UserProfile(Integer.parseInt(res[i]));
                 u.update();
-                if(u.equals(myProfile)) u.setProperty("pub_nickname", u.getProperty("pub_nickname")+" (Me)");
+                if(u.equals(myProfile)) u.setProperty("pub_nickname", u.getProperty("pub_nickname")+java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("its_me"));
                 model.addElement(u);
             }
         } catch (Exception ex){
@@ -372,7 +372,7 @@ public class MainWindow extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try{
             if(!Main.checkMemory(12*1024*1024))
-                throw new OutOfMemoryError("Low available memory");
+                throw new OutOfMemoryError(java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("low_memory"));
             UserProfile rival = (UserProfile)jList1.getSelectedValue();
             boolean r = requestGame(rival);
             if(r){
@@ -380,12 +380,12 @@ public class MainWindow extends javax.swing.JFrame {
                 f.setVisible(true);
             }
             else{
-                System.out.println("Your game request was rejected by the game server.");
+                System.out.println(java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("game_request_rejected"));
             }
         } catch (Error ex){
             System.err.println("Start game error: "+ex.getLocalizedMessage());
             JOptionPane.showMessageDialog(rootPane,
-                    ex.getLocalizedMessage()+" The application may behave abnormally.",
+                    ex.getLocalizedMessage()+java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("app_may_behave_abnormally"),
                     "Titanic GameCilent: Error",
                     JOptionPane.ERROR_MESSAGE);
             System.gc();
