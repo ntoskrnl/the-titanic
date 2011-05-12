@@ -264,7 +264,7 @@ public class Graphics3D implements GraphicalEngine {
                // if(game.getGameScene().getBalls()[i].isActive()==true){
                 BallTransform[i].setTranslation(mass[i]);
                 objTrans[i].setTransform(BallTransform[i]);
-               // }
+                //}
             }
 
         } catch (Exception e) {
@@ -337,19 +337,42 @@ public class Graphics3D implements GraphicalEngine {
             for(i=0;i<N;i++){
             
             Vector3D v = game.getGameScene().getBalls()[i].getSpeed();
-            Vector3D v1 = new Vector3D();
-            v1.setX((float)(v.getX()/game.getGameScene().getBalls()[i].getSpeed().getNorm()));
-            v1.setY((float)(v.getY()/game.getGameScene().getBalls()[i].getSpeed().getNorm()));
-            double angle=Math.acos(v1.getX());
-            if(v1.getY()<0) angle=Math.PI+Math.PI-angle;
-            angle=angle*57.3248;
-                       
-            if(D[(int)Distance(i, 0)]<0.05 && game.getGameScene().getBalls()[i].isActive()==true) {
-                game.getEventPipeLine().add(new BallToPocketEvent(game, game.getGameScene().getBalls()[i], (int)Distance(i, 0)));
-                System.out.println("popal v "+(int)Distance(i, 0)+" angle= "+angle);
+            double angle = getAngle(v,new Vector3D(1,0,0));
 
+            if(D[(int)Distance(i, 0)]<0.045 && game.getGameScene().getBalls()[i].isActive()==true) {
+              
+             
+               if((int)Distance(i, 0)==0 && (angle>=295 && angle<=335) && v.getNorm()>0.5){
+                    game.getEventPipeLine().add(new BallToPocketEvent(game, game.getGameScene().getBalls()[i], (int)Distance(i, 0)));
+                    System.out.println("popal v "+(int)Distance(i, 0)+" angle= "+angle);
+                }
 
-            }
+                if((int)Distance(i, 0)==1 && (angle>=0 && angle<=40 || angle>=320 && angle<=360) && v.getNorm()>0.5){
+                    game.getEventPipeLine().add(new BallToPocketEvent(game, game.getGameScene().getBalls()[i], (int)Distance(i, 0)));
+                    System.out.println("popal v "+(int)Distance(i, 0)+" angle= "+angle);
+                }
+
+                if((int)Distance(i, 0)==2 && (angle>=25 && angle<=65) && v.getNorm()>0.5){
+                    game.getEventPipeLine().add(new BallToPocketEvent(game, game.getGameScene().getBalls()[i], (int)Distance(i, 0)));
+                    System.out.println("popal v "+(int)Distance(i, 0)+" angle= "+angle);
+                }
+
+                if((int)Distance(i, 0)==3 && (angle>=115 && angle<=155) && v.getNorm()>0.5){
+                    game.getEventPipeLine().add(new BallToPocketEvent(game, game.getGameScene().getBalls()[i], (int)Distance(i, 0)));
+                    System.out.println("popal v "+(int)Distance(i, 0)+" angle= "+angle);
+                }
+
+                if((int)Distance(i, 0)==4 && (angle>=140 && angle<=220) && v.getNorm()>0.5){
+                    game.getEventPipeLine().add(new BallToPocketEvent(game, game.getGameScene().getBalls()[i], (int)Distance(i, 0)));
+                    System.out.println("popal v "+(int)Distance(i, 0)+" angle= "+angle);
+                }
+
+                if((int)Distance(i, 0)==5 && (angle>=205 && angle<=245) && v.getNorm()>0.5){
+                    game.getEventPipeLine().add(new BallToPocketEvent(game, game.getGameScene().getBalls()[i], (int)Distance(i, 0)));
+                    System.out.println("popal v "+(int)Distance(i, 0)+" angle= "+angle);
+                }
+
+               }
             }
         }
 
@@ -1091,5 +1114,16 @@ public class Graphics3D implements GraphicalEngine {
             System.exit(1);
         }
 
+    }
+    private double getAngle(Vector3D v1, Vector3D v2){
+        double angle=0,cos,sin;
+        double sk=0, vecpr=0;
+        sk = v1.getX()*v2.getX() + v1.getY()*v2.getY() + v1.getZ()*v2.getZ();
+        if(v1.getNorm()==0 && v2.getNorm()==0) return 0;
+        cos = sk / ( v1.getNorm() * v2.getNorm() );
+         
+        if( v1.getY() >=0 ) angle = 57.3248*Math.acos(cos);
+        if( v1.getY() <0 )  angle = 360 - 57.3248*Math.acos(cos);
+        return angle;
     }
 }
