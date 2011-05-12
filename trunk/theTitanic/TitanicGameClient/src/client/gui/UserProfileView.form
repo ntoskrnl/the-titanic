@@ -87,8 +87,8 @@
                           </Group>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jTextField4" pref="160" max="32767" attributes="0"/>
-                              <Component id="jTextField3" alignment="0" pref="160" max="32767" attributes="0"/>
+                              <Component id="jTextField4" pref="167" max="32767" attributes="0"/>
+                              <Component id="jTextField3" alignment="0" pref="167" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
@@ -98,8 +98,8 @@
                           </Group>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="jTextField1" alignment="0" pref="159" max="32767" attributes="0"/>
-                              <Component id="jTextField2" alignment="0" pref="159" max="32767" attributes="0"/>
+                              <Component id="jTextField1" alignment="0" pref="166" max="32767" attributes="0"/>
+                              <Component id="jTextField2" alignment="0" pref="166" max="32767" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>

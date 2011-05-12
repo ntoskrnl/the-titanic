@@ -121,11 +121,15 @@ public class yukiEngine implements PhysicalEngine {
         for( int i=0; i<bQuant; ++i){
             if (conList[i]==0){//Проверка на валидность.
                 if ( ( abs(bPos[i][0])>(width/2-r)) && ((bPos[i][0]*bVel[i][0])>0)
-                        && !isInPocked( bPos[i][0], bPos[i][1]) )
+                        && !isInPocked( bPos[i][0], bPos[i][1]) ){
                         bVel[i][0] *= (-1);
+                        tgame.getEventPipeLine().add(new ImpactEvent(tgame, Math.abs(bVel[i][0])));
+                }
                 if ( ( abs(bPos[i][1])>(height/2-r) ) && ((bPos[i][1]*bVel[i][1])>0)
-                        && !isInPocked( bPos[i][0], bPos[i][1]) )
+                        && !isInPocked( bPos[i][0], bPos[i][1]) ){
                         bVel[i][1] *= (-1);
+                        tgame.getEventPipeLine().add(new ImpactEvent(tgame, Math.abs(bVel[i][0])));
+                }
             }
         }
 /*
@@ -287,7 +291,7 @@ public class yukiEngine implements PhysicalEngine {
 
     /* Учитываем трение. */
     private void precious(){
-        float Nt = (float) 1.5; //Коэфицент трения.
+        float Nt = (float) 2; //Коэфицент трения.
         for( int i=0; i<bQuant; ++i){
             float speed = (float) Math.sqrt((float)(bVel[i][0]*bVel[i][0]+bVel[i][1]*bVel[i][1]));
             if (speed<Nt*dT*10){
@@ -335,13 +339,13 @@ public class yukiEngine implements PhysicalEngine {
 
     /* Проверка на столкновение с лузами. */
     private boolean isInPocked(double x, double y){
-        /* Условие на x. */
-        if (abs((abs((float)((width-realPocketR)/2))-abs((float)x)))<r)
-            return true;
-
-        /* Условие на y. */
-        if (abs((abs((float)((height-realPocketR)/2))-abs((float)y)))<r)
-            return true;
+//        /* Условие на x. */
+//        if (abs((abs((float)((width-realPocketR)/2))-abs((float)x)))<r)
+//            return true;
+//
+//        /* Условие на y. */
+//        if (abs((abs((float)((height-realPocketR)/2))-abs((float)y)))<r)
+//            return true;
 
         return false;
     }

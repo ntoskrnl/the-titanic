@@ -76,9 +76,10 @@ public class GameWindow extends javax.swing.JFrame {
             public void actionPerformed(ActionEvent e) {
                 timer.stop();
                 if(game.initialized()&&!game.checkValid()){
+                    game.changeStatus(Game.S_FINISH);
+                    game.stop();
                     JOptionPane.showMessageDialog(rootPane, java.util.ResourceBundle.getBundle("client/gui/Bundle").getString("game_was_finished"), 
                             "Error", JOptionPane.INFORMATION_MESSAGE);
-                    game.changeStatus(Game.S_FINISH);
                     game.dispose();
                     return;
                 }
@@ -124,6 +125,7 @@ public class GameWindow extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
         gamePanel = new javax.swing.JPanel();
         gameScenePanel = new javax.swing.JPanel();
 
@@ -166,6 +168,9 @@ public class GameWindow extends javax.swing.JFrame {
         jLabel5.setText(bundle.getString("GameWindow.jLabel5.text")); // NOI18N
         jLabel5.setName("jLabel5"); // NOI18N
 
+        jLabel6.setText(bundle.getString("GameWindow.jLabel6.text")); // NOI18N
+        jLabel6.setName("jLabel6"); // NOI18N
+
         javax.swing.GroupLayout buttonPanelLayout = new javax.swing.GroupLayout(buttonPanel);
         buttonPanel.setLayout(buttonPanelLayout);
         buttonPanelLayout.setHorizontalGroup(
@@ -182,7 +187,8 @@ public class GameWindow extends javax.swing.JFrame {
                     .addGroup(buttonPanelLayout.createSequentialGroup()
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jLabel5)))
+                        .addComponent(jLabel5))
+                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         buttonPanelLayout.setVerticalGroup(
@@ -200,7 +206,9 @@ public class GameWindow extends javax.swing.JFrame {
                 .addGroup(buttonPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5))
-                .addContainerGap(225, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 177, Short.MAX_VALUE)
+                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(33, 33, 33))
         );
 
         getContentPane().add(buttonPanel, java.awt.BorderLayout.LINE_END);
@@ -265,6 +273,7 @@ public class GameWindow extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     // End of variables declaration//GEN-END:variables
     private SimpleGame game;
     private Timer timer;
