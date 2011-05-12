@@ -61,6 +61,7 @@
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Component id="jLabel5" min="-2" max="-2" attributes="0"/>
                       </Group>
+                      <Component id="jLabel6" alignment="0" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -83,7 +84,9 @@
                       <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="jLabel5" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="225" max="32767" attributes="0"/>
+                  <EmptySpace pref="177" max="32767" attributes="0"/>
+                  <Component id="jLabel6" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="33" max="-2" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -144,6 +147,14 @@
               <ResourceString bundle="client/gui/Bundle.properties" key="GameWindow.jLabel5.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
             </Property>
             <Property name="name" type="java.lang.String" value="jLabel5" noResource="true"/>
+          </Properties>
+        </Component>
+        <Component class="javax.swing.JLabel" name="jLabel6">
+          <Properties>
+            <Property name="text" type="java.lang.String" editor="org.netbeans.modules.i18n.form.FormI18nStringEditor">
+              <ResourceString bundle="client/gui/Bundle.properties" key="GameWindow.jLabel6.text" replaceFormat="java.util.ResourceBundle.getBundle(&quot;{bundleNameSlashes}&quot;).getString(&quot;{key}&quot;)"/>
+            </Property>
+            <Property name="name" type="java.lang.String" value="jLabel6" noResource="true"/>
           </Properties>
         </Component>
       </SubComponents>

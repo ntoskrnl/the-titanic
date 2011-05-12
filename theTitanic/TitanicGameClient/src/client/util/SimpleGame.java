@@ -445,8 +445,9 @@ public class SimpleGame extends Game {
             float s = Float.parseFloat(r[2]);
             float a = Float.parseFloat(r[3]);
             System.out.println("Rival's hit: ball = "+r[1]+"; power = "+r[2]+"; angle = "+r[3]);
-            getGameScene().getBalls()[b].setSpeed(new Vector3D(s*(float)Math.cos(a)*20, 
-                    s*(float)Math.sin(a)*20));
+            getBilliardKey().setAngle(a);
+            getBilliardKey().setPower(s);
+            getBilliardKey().changeBall(getGameScene().getBalls()[b]);
         } catch (Exception ex){}
     }
     
