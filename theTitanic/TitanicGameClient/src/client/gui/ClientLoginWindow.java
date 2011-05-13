@@ -8,6 +8,7 @@ package client.gui;
 
 import client.util.GUIRoutines;
 import client.Main;
+import client.util.ClientConfiguration;
 import client.util.TitanicServer;
 import javax.swing.JOptionPane;
 
@@ -21,6 +22,7 @@ public class ClientLoginWindow extends javax.swing.JFrame {
     /** Creates new form ClientLoginWindow */
     public ClientLoginWindow() {
         initComponents();
+        loginTextField.setText(ClientConfiguration.lastLogin);
         GUIRoutines.toScreenCenter(this);
     }
 
@@ -45,7 +47,6 @@ public class ClientLoginWindow extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         java.util.ResourceBundle bundle = java.util.ResourceBundle.getBundle("client/gui/Bundle"); // NOI18N
         setTitle(bundle.getString("LoginWindow.title")); // NOI18N
-        setAlwaysOnTop(true);
         setResizable(false);
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(bundle.getString("LoginWindow.panelBorder.text"))); // NOI18N
@@ -98,7 +99,7 @@ public class ClientLoginWindow extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
                         .addComponent(jButton2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton1))
@@ -162,6 +163,8 @@ public class ClientLoginWindow extends javax.swing.JFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         Main.server = new TitanicServer();
         if(Main.server.authorize(loginTextField.getText(), new String(pwdTextField.getPassword()))){
+            ClientConfiguration.lastLogin = loginTextField.getText();
+            ClientConfiguration.savePreferences();
             setVisible(false);
             new MainWindow().setVisible(true);
         } else {

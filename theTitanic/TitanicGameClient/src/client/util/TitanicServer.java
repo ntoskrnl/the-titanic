@@ -25,8 +25,12 @@ public class TitanicServer {
     public static final int DEFAULT_TIME_OUT = 10000;
 
     public TitanicServer() {
-        host = "danon-laptop.campus.mipt.ru";
-        port = 10000;
+        host = ClientConfiguration.serverHost;
+        if(host==null)
+            host = ClientConfiguration.DEFAULT_PROXY_HOST;
+        port = ClientConfiguration.serverPort;
+        if(port==0)
+            port = ClientConfiguration.DEFAULT_PORT;
         connect();
     }
 

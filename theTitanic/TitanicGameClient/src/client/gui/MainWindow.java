@@ -10,7 +10,6 @@ import client.util.GUIRoutines;
 import client.Main;
 import client.util.TitanicServer;
 import client.util.UserProfile;
-import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.net.URI;
@@ -39,7 +38,7 @@ public class MainWindow extends javax.swing.JFrame {
                 checkConnection();
             }
         });
-        userUpdateTimer = new Timer(2000, new ActionListener() {
+        userUpdateTimer = new Timer(1500, new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -47,7 +46,7 @@ public class MainWindow extends javax.swing.JFrame {
             }
         });
         
-        trafficCheckTimer = new Timer(1000, new ActionListener() {
+        trafficCheckTimer = new Timer(2000, new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -267,11 +266,13 @@ public class MainWindow extends javax.swing.JFrame {
 
         jMenuItem10.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem10.setText(bundle.getString("MainWindow.jMenuItem10.text")); // NOI18N
+        jMenuItem10.setEnabled(false);
         jMenuItem10.setName("jMenuItem10"); // NOI18N
         jMenu1.add(jMenuItem10);
 
         jMenuItem9.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem9.setText(bundle.getString("MainWindow.jMenuItem9.text")); // NOI18N
+        jMenuItem9.setEnabled(false);
         jMenuItem9.setName("jMenuItem9"); // NOI18N
         jMenu1.add(jMenuItem9);
 
@@ -305,6 +306,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         jMenuItem5.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem5.setText(bundle.getString("MainWindow.jMenuItem5.text")); // NOI18N
+        jMenuItem5.setEnabled(false);
         jMenuItem5.setName("jMenuItem5"); // NOI18N
         jMenu2.add(jMenuItem5);
 
@@ -315,6 +317,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         jMenuItem6.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
         jMenuItem6.setText(bundle.getString("MainWindow.jMenuItem6.text")); // NOI18N
+        jMenuItem6.setEnabled(false);
         jMenuItem6.setName("jMenuItem6"); // NOI18N
         jMenu3.add(jMenuItem6);
 
@@ -334,6 +337,11 @@ public class MainWindow extends javax.swing.JFrame {
         jMenuItem8.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_MASK));
         jMenuItem8.setText(bundle.getString("MainWindow.jMenuItem8.text")); // NOI18N
         jMenuItem8.setName("jMenuItem8"); // NOI18N
+        jMenuItem8.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem8ActionPerformed(evt);
+            }
+        });
         jMenu3.add(jMenuItem8);
 
         jMenuBar1.add(jMenu3);
@@ -350,7 +358,7 @@ public class MainWindow extends javax.swing.JFrame {
                     .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 125, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 131, Short.MAX_VALUE)
                         .addComponent(jButton1)))
                 .addContainerGap())
         );
@@ -481,6 +489,10 @@ public class MainWindow extends javax.swing.JFrame {
     private void jMenuItem4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem4ActionPerformed
         new UserProfileEdit(this, myProfile).setVisible(true);
     }//GEN-LAST:event_jMenuItem4ActionPerformed
+
+    private void jMenuItem8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem8ActionPerformed
+        new AboutBox(this).setVisible(true);
+    }//GEN-LAST:event_jMenuItem8ActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;

@@ -73,8 +73,8 @@ public class SimpleBilliardKey implements BilliardKey {
     public void makeHit() {
         if(ball==null) return;
         float ang = angle + (float)Math.PI/2;   
-        ball.setSpeed(new Vector3D(power*(float)Math.cos(ang) *30, 
-                    power*(float)Math.sin(ang)*20));
+        ball.setSpeed(new Vector3D(power*(float)Math.cos(ang) *25, 
+                    power*(float)Math.sin(ang)*25));
     }
 
 }
