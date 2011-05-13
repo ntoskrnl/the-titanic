@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- *
+ * Interprets commands
  * @author danon
  */
 public class CommandInterpreter {
@@ -23,7 +23,6 @@ public class CommandInterpreter {
 
         Boolean result = null;
         String cmd = command.toLowerCase().trim();
-        System.out.println(cmd);
         synchronized (Main.usersDB) {
             try {
                 // Connection stop
