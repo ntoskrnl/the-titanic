@@ -1,9 +1,9 @@
 package client.util;
 
-import javax.swing.UIManager;
+import java.util.prefs.Preferences;
 
 /**
- *
+ * Preferences
  * @author Danon
  */
 public class ClientConfiguration {
@@ -21,13 +21,23 @@ public class ClientConfiguration {
     public static String proxyHost = DEFAULT_PROXY_HOST;
     public static int proxyPort = DEFAULT_PROXY_PORT;
 
-    public static String lookAndFeel = UIManager.getCrossPlatformLookAndFeelClassName();
+    public static String lookAndFeel = "Nimbus";
 
-    public void loadPreferences(){
-        // TODO Implement loadPreferences
+    private static Preferences prefs = Preferences.userRoot().node("TitanicGameClient");;
+    
+    public static void loadPreferences(){
+        System.out.println("Loading preferences...");
+        serverHost = prefs.get("server_host", DEFAULT_SERVER);
+        serverPort = prefs.getInt("server_port",DEFAULT_PORT);
+        lastLogin = prefs.get("last_login", "");
+        lookAndFeel = prefs.get("look", lookAndFeel);
     }
 
-    public void savePreferences(){
-       // TODO Implement savePreferences
+    public static void savePreferences(){
+       System.out.println("Saving preferences...");
+       prefs.putInt("server_port", serverPort);
+       prefs.put("server_host", serverHost);
+       prefs.put("last_login", lastLogin);
+       prefs.put("look", lookAndFeel);
     }
 }

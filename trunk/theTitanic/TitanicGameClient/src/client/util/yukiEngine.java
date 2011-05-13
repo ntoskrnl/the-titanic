@@ -291,7 +291,7 @@ public class yukiEngine implements PhysicalEngine {
 
     /* Учитываем трение. */
     private void precious(){
-        float Nt = (float) 2; //Коэфицент трения.
+        float Nt = (float) 3; //Коэфицент трения.
         for( int i=0; i<bQuant; ++i){
             float speed = (float) Math.sqrt((float)(bVel[i][0]*bVel[i][0]+bVel[i][1]*bVel[i][1]));
             if (speed<Nt*dT*10){

@@ -1,6 +1,7 @@
 package client;
 
 import client.gui.ClientLoginWindow;
+import client.util.ClientConfiguration;
 import client.util.GUIRoutines;
 import client.util.TitanicServer;
 import javax.swing.JFrame;
@@ -28,9 +29,11 @@ public class Main {
         System.out.println("Starting Titanic GameClient version "+version);
         if (!checkSystem()) return;
         
+        // Load preferences
+        ClientConfiguration.loadPreferences();
+        
         // Applying look and feel
-        String look = "Nimbus";
-        boolean l = GUIRoutines.tryLookAndFeel(look);
+        boolean l = GUIRoutines.tryLookAndFeel(ClientConfiguration.lookAndFeel);
         if(!l) l = GUIRoutines.tryLookAndFeel("Nimbus");
         if(!l) l = GUIRoutines.tryLookAndFeel("Windows");
         if(!l) l = GUIRoutines.tryLookAndFeel("GTK+");
